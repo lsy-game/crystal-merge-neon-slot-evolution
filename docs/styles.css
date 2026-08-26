@@ -19759,3 +19759,10 @@ body.legacy-smooth .start-mode-grid button small {
     padding-bottom: 14px !important;
   }
 }
+
+/* Move the compact combo strip under the objective title on portrait phones. */
+@media (orientation: portrait) {
+  body.legacy-smooth .side-hud.mobile-hud-root {
+    inset: 18.4svh auto auto 50dvw !important;
+  }
+}
