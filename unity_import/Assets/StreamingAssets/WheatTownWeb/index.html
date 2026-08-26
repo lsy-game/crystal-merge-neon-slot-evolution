@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f31">
+  <title>麦穗小镇 · 丰收经营</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="authGate" class="auth-gate">
+    <div class="auth-bg"></div>
+    <div class="auth-brand">
+      <span class="brand-seal"><img src="assets/images/symbols/wheat.webp" alt=""></span>
+      <h1>麦穗小镇</h1>
+      <p>建设河谷小镇，开启今日丰收</p>
+    </div>
+    <div class="auth-panel">
+      <div class="auth-fields" aria-label="账号登录">
+        <label>
+          <span>账号</span>
+          <input id="accountInput" type="text" inputmode="latin" autocomplete="username" maxlength="16" placeholder="请输入账号">
+        </label>
+        <label>
+          <span>密码</span>
+          <input id="passwordInput" type="password" inputmode="latin" autocomplete="current-password" maxlength="16" placeholder="请输入密码">
+        </label>
+        <small id="loginRule">仅支持字母和数字，不能输入特殊符号</small>
+      </div>
+      <label class="agreement-check">
+        <input id="agreeCheck" type="checkbox">
+        <span>我已阅读并同意 <button id="privacyLink" type="button">隐私协议</button> 和 <button id="termsLink" type="button">用户协议</button></span>
+      </label>
+      <button id="accountLoginBtn" class="auth-secondary">Log in</button>
+      <button id="guestLoginBtn" class="auth-primary">游客登录</button>
+    </div>
+  </section>
+
+  <div id="gameShell" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark"><img src="assets/images/symbols/wheat.webp" alt=""></span>
+        <div><strong>麦穗小镇</strong><small>田园收获季</small></div>
+      </div>
+      <div class="wallets" aria-label="资源">
+        <div class="wallet coin"><img src="assets/images/premium-icons/coin.webp" alt=""><span>金币</span><strong id="coins">0</strong></div>
+        <div class="wallet wood"><img src="assets/images/premium-icons/wood.webp" alt=""><span>木板</span><strong id="wood">0</strong></div>
+        <div class="wallet ore"><img src="assets/images/premium-icons/ore.webp" alt=""><span>矿石</span><strong id="ore">0</strong></div>
+      </div>
+      <button id="settingsBtn" class="icon-btn" aria-label="设置"><img src="assets/images/premium-icons/settings.webp" alt=""></button>
+    </header>
+
+    <main>
+      <section id="lobbyView" class="view active">
+        <div class="lobby-scene">
+          <div class="lobby-title">
+            <span>欢迎回来</span>
+            <h1>麦穗小镇</h1>
+            <p>今日适合收获、建设和完成订单。</p>
+          </div>
+          <div class="lobby-status">
+            <span>今日目标</span>
+            <b>收获 · 建设 · 订单</b>
+            <small>轻松经营，不赶进度</small>
+          </div>
+          <div class="lobby-character"><img src="assets/images/buildings/mia.webp" alt="居民米娅"></div>
+          <div class="lobby-actions">
+            <button class="lobby-card primary" data-view="slot">
+              <img src="assets/images/symbols/wheat.webp" alt="">
+              <span><b>开始收获</b><small>进入丰收台 · 10金币/次</small></span>
+            </button>
+            <button class="lobby-card" data-view="town">
+              <img src="assets/images/premium-icons/town.webp" alt="">
+              <span><b>建设小镇</b><small>升级建筑与灯塔</small></span>
+            </button>
+            <button class="lobby-card" data-view="journey">
+              <img src="assets/images/premium-icons/journey.webp" alt="">
+              <span><b>田园日程</b><small>订单、事件、宝箱</small></span>
+            </button>
+            <button class="lobby-card" id="lobbySettingsBtn">
+              <img src="assets/images/premium-icons/settings.webp" alt="">
+              <span><b>设置</b><small>声音与进度</small></span>
+            </button>
+          </div>
+          <div class="lobby-tip">米娅：先完成几次收获，再去升级小镇建筑。</div>
+        </div>
+      </section>
+
+      <section id="slotView" class="view">
+        <div class="slot-summary">
+          <div>
+            <span class="eyebrow">今日收获</span>
+            <h1>田园收获</h1>
+          </div>
+          <div class="daily-progress">
+            <span><b id="productiveSpins">0</b> / 400</span>
+            <div class="progress-track"><i id="productiveBar"></i></div>
+          </div>
+        </div>
+
+        <section class="slot-machine">
+          <div class="machine-top">
+            <span>丰收路线</span>
+            <strong>丰 收 台</strong>
+            <span id="rtpValue">成长+0.0%</span>
+          </div>
+          <div class="status-strip">
+            <span id="roundMessage">10金币完成一次田园收获</span>
+            <span id="freeSpinsBadge" class="free-badge hidden">赠送 × <b>0</b></span>
+          </div>
+          <div class="reel-window">
+            <div id="reels" class="reels" aria-label="5列3行收获格"></div>
+          </div>
+          <div class="lucky-panel">
+            <div><span>互助能量</span><small>连续低收获时送来补给</small></div>
+            <div id="luckyPips" class="lucky-pips"></div>
+          </div>
+          <div class="controls">
+          <button id="autoBtn" class="round-control"><span>↻</span><small>连续×20</small></button>
+          <button id="spinBtn" class="spin-btn"><span>收获</span><small>10 金币</small></button>
+          <button id="paytableBtn" class="round-control"><span>i</span><small>说明</small></button>
+          </div>
+        </section>
+
+        <div class="quick-dock">
+          <button class="town-peek" data-view="town">
+            <span class="peek-image"></span>
+            <span><b>建设小镇</b><small>建筑总等级 <em id="buildingLevels">5</em> · 去升级</small></span>
+            <i>›</i>
+          </button>
+          <article class="resident-card">
+            <div class="resident-portrait"><img src="assets/images/buildings/mia.webp" alt="居民米娅"></div>
+            <div class="resident-copy">
+              <div><b>米娅</b><span>好感 <em id="friendshipLevel">1</em></span></div>
+              <p id="residentLine">“礼物交给我，会带来今日祝福。”</p>
+              <div id="buffCard" class="buff-card"><b>祝福未激活</b><small>礼物 <em id="gifts">0</em></small></div>
+            </div>
+            <button id="giveGiftBtn" class="gift-btn"><img src="assets/images/premium-icons/gift.webp" alt=""><span>赠送</span></button>
+          </article>
+        </div>
+        <button class="event-log" id="eventLog" data-view="journey"><span>今日日程</span><p id="orderTeaser">查看田园订单与阶段奖励</p><b>›</b></button>
+        <span class="hidden-metric" id="offlineRate">600/小时</span>
+      </section>
+
+      <section id="journeyView" class="view">
+        <div class="journey-page">
+          <header class="journey-header">
+            <div><span>每日刷新</span><h1>田园日程</h1></div>
+            <div class="journey-today"><b id="journeySpinCount">0</b><small>今日收获</small></div>
+          </header>
+
+          <section class="harvest-route">
+            <div class="route-heading"><div><b>今日收获路线</b><small>分段领取，随时都有自然休息点</small></div><span id="routeProgressText">0 / 150</span></div>
+            <div class="route-line"><i id="routeProgressBar"></i></div>
+            <div id="milestoneTrack" class="milestone-track"></div>
+          </section>
+
+          <section class="orders-board">
+            <div class="orders-heading"><div><span>田园订单板</span><small>完成后自动补充新订单</small></div><b><em id="ordersCompleted">0</em> 已完成</b></div>
+            <div id="orderList" class="order-list"></div>
+          </section>
+
+          <div class="journey-lower">
+            <button id="eventPreviewBtn" class="event-preview">
+              <span class="event-art"></span>
+              <span><b>小镇事件</b><small id="nextEventText">再收获25次触发</small></span>
+              <i>›</i>
+            </button>
+            <button id="summaryBtn" class="summary-preview">
+              <span class="summary-art"></span>
+              <span><b>今日总结</b><small id="summaryHint">记录正在积累</small></span>
+              <i>›</i>
+            </button>
+            <button id="collectionBtn" class="collection-preview">
+              <span class="collection-art"></span>
+              <span><b>田园图鉴</b><small id="collectionHint">收集符号换奖励</small></span>
+              <i>›</i>
+            </button>
+            <button id="harvestChestBtn" class="harvest-chest" disabled>
+              <img src="assets/images/journey-ui/harvest-chest.webp" alt="">
+              <span>150次丰收宝箱</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="townView" class="view">
+        <div class="town-scene">
+          <div class="town-title">
+            <button class="back-slot" data-view="slot">‹</button>
+            <div><span>麦穗河谷</span><strong>建设你的小镇</strong></div>
+            <div class="town-rtp"><small>小镇加成</small><b id="townRtpValue">+0.0%</b></div>
+          </div>
+          <div id="buildingGrid" class="building-map" aria-label="城镇建筑"></div>
+
+          <div class="town-mini-stats">
+            <div><span>离线仓库</span><b id="warehouseRate">600 金币/小时</b></div>
+            <div><span>阶段目标</span><b id="goalPercent">进行中</b></div>
+            <button id="claimGoalBtn" disabled>未完成</button>
+          </div>
+
+          <article id="townSelectionPanel" class="town-selection">
+            <div class="selection-art"><img id="selectedBuildingImage" src="assets/images/buildings/bakery.webp" alt=""></div>
+            <div class="selection-copy">
+              <div class="selection-title"><strong id="selectedBuildingName">面包房</strong><span id="selectedBuildingLevel">等级 1/5</span></div>
+              <p id="selectedBuildingDesc">提升小镇长期收获效率</p>
+              <div class="selection-effect"><span id="selectedBuildingEffect">当前加成 +0.0%</span><small id="selectedMaterialCost"></small></div>
+              <div class="progress-track"><i id="goalBar"></i></div>
+              <small id="goalText">将任意建筑升至2级</small>
+            </div>
+            <button id="upgradeSelectedBtn">升级<small id="selectedBuildingCost">500金币</small></button>
+          </article>
+          <span class="hidden-metric" id="townBuffSummary">当前没有生效中的祝福</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="lobby"><span><img src="assets/images/symbols/wheat.webp" alt=""></span><b>大厅</b></button>
+      <button class="nav-item" data-view="slot"><span><img src="assets/images/symbols/wheat.webp" alt=""></span><b>收获</b></button>
+      <button class="nav-item" data-view="journey"><span><img src="assets/images/premium-icons/journey.webp" alt=""></span><b>日程</b><i id="journeyBadge" class="nav-badge hidden">!</i></button>
+      <button class="nav-item" data-view="town"><span><img src="assets/images/premium-icons/town.webp" alt=""></span><b>城镇</b></button>
+    </nav>
+  </div>
+
+  <dialog id="infoDialog">
+    <div class="dialog-head"><h2 id="dialogTitle">说明</h2><button id="closeDialog">×</button></div>
+    <div id="dialogContent" class="dialog-content"></div>
+  </dialog>
+  <dialog id="settingsDialog" class="settings-dialog">
+    <div class="dialog-head"><h2>游戏设置</h2><button id="closeSettings" aria-label="关闭设置">×</button></div>
+    <div class="settings-content">
+      <div class="setting-row">
+        <div><b>游戏声音</b><small>控制收获与界面音效</small></div>
+        <button id="soundToggleBtn" class="toggle-btn" role="switch" aria-checked="true"><i></i><span>开启</span></button>
+      </div>
+      <label class="setting-volume" for="volumeRange">
+        <span><b>音量</b><output id="volumeValue">70%</output></span>
+        <input id="volumeRange" type="range" min="0" max="100" step="5" value="70">
+      </label>
+      <div class="setting-actions">
+        <button id="saveBtn">立即保存</button>
+        <button id="resetBtn" class="danger">重置进度</button>
+      </div>
+      <div class="setting-note">设置会自动保存在当前设备。</div>
+    </div>
+  </dialog>
+
+  <dialog id="policyDialog" class="policy-dialog">
+    <div class="dialog-head"><h2 id="policyTitle">协议</h2><button id="closePolicy" aria-label="关闭协议">×</button></div>
+    <div id="policyContent" class="dialog-content"></div>
+  </dialog>
+
+  <dialog id="eventDialog" class="event-dialog">
+    <div class="dialog-head"><h2>小镇事件</h2></div>
+    <div class="event-dialog-content">
+      <div class="event-dialog-art"></div>
+      <h3 id="eventTitle">旅行商人到访</h3>
+      <p id="eventDescription">集市外停下了一辆装满货物的马车。</p>
+      <div class="event-choices">
+        <button id="eventChoiceA"><b>帮忙卸货</b><small>木板 +15</small></button>
+        <button id="eventChoiceB"><b>请米娅接待</b><small>礼物 +2</small></button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="summaryDialog" class="summary-dialog">
+    <div class="dialog-head"><h2>今日丰收总结</h2><button id="closeSummary" aria-label="关闭总结">×</button></div>
+    <div class="summary-content">
+      <div class="summary-book">
+        <div><span>有效收获</span><b id="summarySpins">0</b></div>
+        <div><span>获得金币</span><b id="summaryCoins">0</b></div>
+        <div><span>连锁生长</span><b id="summaryGrowth">0</b></div>
+        <div><span>完成订单</span><b id="summaryOrders">0</b></div>
+        <div><span>小镇事件</span><b id="summaryEvents">0</b></div>
+        <div><span>收集符号</span><b id="summarySymbols">0</b></div>
+      </div>
+      <p id="summaryMessage">继续收获，完成今日田园日程。</p>
+    </div>
+  </dialog>
+  <dialog id="collectionDialog" class="collection-dialog">
+    <div class="dialog-head"><h2>田园图鉴</h2><button id="closeCollection" aria-label="关闭图鉴">×</button></div>
+    <div class="collection-content">
+      <p class="collection-intro">收集田园符号，补全小镇图鉴。图鉴奖励为一次性局外奖励，不计入收获概率。</p>
+      <div id="collectionList" class="collection-list"></div>
+    </div>
+  </dialog>
+  <div id="toast" class="toast"></div>
+  <script src="game.js"></script>
+</body>
+</html>

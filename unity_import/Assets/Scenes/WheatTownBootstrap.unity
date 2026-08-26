@@ -1,0 +1,444 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 9
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 12
+  m_GIWorkflowMode: 1
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 512
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 256
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 1
+    m_PVRDenoiserTypeDirect: 1
+    m_PVRDenoiserTypeIndirect: 1
+    m_PVRDenoiserTypeAO: 1
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 3
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    buildHeightMesh: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &59199767
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 59199769}
+  - component: {fileID: 59199768}
+  m_Layer: 0
+  m_Name: WheatTownNativeGame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &59199768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59199767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c86ec92d542442a1a789adf7c92bfa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyBackground: {fileID: 21300000, guid: c5b41ab0bd09340b2bf511c51542f9b3, type: 3}
+  slotBackground: {fileID: 21300000, guid: 83601bfc998f348f8b5f75febbc94668, type: 3}
+  townBackground: {fileID: 21300000, guid: c429533b685044ac6b27ddfd3a355218, type: 3}
+  wheatIcon: {fileID: 21300000, guid: 69e457588fb3f4590990969513039f0c, type: 3}
+  breadIcon: {fileID: 21300000, guid: b8f6efec67bca45d6a2e3eb218f5860f, type: 3}
+  milkIcon: {fileID: 21300000, guid: 4331530804bc848cf8d92f332fbd42eb, type: 3}
+  appleIcon: {fileID: 21300000, guid: 7f9518bc9e99640539b522a6b078c8b1, type: 3}
+  gemIcon: {fileID: 21300000, guid: 4a8b1ab3b64c441d0a1f5b70827e1d68, type: 3}
+  wildIcon: {fileID: 21300000, guid: 4716448506e024483b9b55e2d773f548, type: 3}
+  giftIcon: {fileID: 21300000, guid: 217104c7534654bde9facc4d0b77d638, type: 3}
+  resourcePill: {fileID: 21300000, guid: 55e03a7fc3899467a82aa1276b7c4fae, type: 3}
+  navTab: {fileID: 21300000, guid: 404da3309d9c04672acad2d4110d729c, type: 3}
+  reelFrame: {fileID: 21300000, guid: f63a26175cd6e4c6b84841021139b36c, type: 3}
+  cardFrame: {fileID: 21300000, guid: 93e149042330c47e6ad83fc9464c3f75, type: 3}
+  primaryButton: {fileID: 21300000, guid: 0639de4b84cf049deb3835a6c7b7d0da, type: 3}
+  titlePlaque: {fileID: 21300000, guid: 583779ac2ed38423a82a01d14fcbe896, type: 3}
+  utilityButton: {fileID: 21300000, guid: 7f0f9fc3a430944f4994c2091cd2d7b5, type: 3}
+  settingsIcon: {fileID: 21300000, guid: 71d35f5a5b5cd452aaeec4930d4947bf, type: 3}
+  coinIcon: {fileID: 21300000, guid: 507f929fe97344501aebe4867a16cd00, type: 3}
+  woodIcon: {fileID: 21300000, guid: 5cc9d93df3dc3467f85c7c947deb1c82, type: 3}
+  oreIcon: {fileID: 21300000, guid: 365c1b46810a547d1b496525a80595dd, type: 3}
+  wheatCorner: {fileID: 21300000, guid: 985ea5552c9d94c14aa7693c8e5e5c92, type: 3}
+  vineCorner: {fileID: 21300000, guid: 677f6bc020482476aa57ebebed98ac74, type: 3}
+  gemRivets: {fileID: 21300000, guid: 6ce1b3d0bb53047d9bb89c67479c2ac1, type: 3}
+  creamGoldLabel: {fileID: 21300000, guid: 5bc9b7417a44547b68a901e12d74f5a3, type: 3}
+  ribbonCap: {fileID: 21300000, guid: f987686ccea954238a2e8c5904f57347, type: 3}
+  woodDivider: {fileID: 21300000, guid: 3efcbd053c4b84b0a90052215ade0be8, type: 3}
+  infoCard: {fileID: 21300000, guid: 6d888b23bf36a4b3ab16581119ad30e9, type: 3}
+  dialogueCard: {fileID: 21300000, guid: 1010c5bce8d2241b1a75c4457a4f6e15, type: 3}
+  statusStrip: {fileID: 21300000, guid: 47573d4d6509244ab9d3521365f3a36c, type: 3}
+  symbolTile: {fileID: 21300000, guid: fcd97b65838854bc38d5d6ad4fc76261, type: 3}
+  v3PanelOrnate: {fileID: 21300000, guid: 8d299efe17c4b4d23b10d29edffe03d3, type: 3}
+  v3DialogScroll: {fileID: 21300000, guid: 249e0850f87654c4a9e1e0f71e1d1e1d, type: 3}
+  v3StatusBarGreen: {fileID: 21300000, guid: 0264130e9e1e64a5ca8e1ebd32a36abc, type: 3}
+  v3NavPlaqueGreen: {fileID: 21300000, guid: 521f00abb6d124fba9e8368ccb695c90, type: 3}
+  v3ButtonLargeGold: {fileID: 21300000, guid: 4a19bb1386d96412d9c7ac7e9330a0ad, type: 3}
+  v3ButtonSmallGold: {fileID: 21300000, guid: 59cafc6b5bcb749abb2a53df082dad9a, type: 3}
+  v3TabLeft: {fileID: 21300000, guid: 7c68775ebee954df1b867dd1ab3bab8c, type: 3}
+  v3TabRight: {fileID: 21300000, guid: 07168589593e046a99809ec59ef6a417, type: 3}
+  v3CornerWheatSet: {fileID: 21300000, guid: 57c82127ab4134d0b9bc213332281c3c, type: 3}
+  v3WoodDivider: {fileID: 21300000, guid: 10a248b4aad984d8095a8000487de2d1, type: 3}
+  v3SettingsMedallion: {fileID: 21300000, guid: 9861fc1f376654157a4df2d8975b0539, type: 3}
+  v3BadgeRed: {fileID: 21300000, guid: 38c12252923784b4da187be71e539b5f, type: 3}
+  journeySign: {fileID: 21300000, guid: 14d49ff53a86846d59350d643f9fd798, type: 3}
+  orderBoardUi: {fileID: 21300000, guid: b4b0d62ee6a9243028828758ee54eae7, type: 3}
+  eventScroll: {fileID: 21300000, guid: 207b7ff56d1814b4fabace5601620e2e, type: 3}
+  milestoneMedal: {fileID: 21300000, guid: f40e567b838c64458b197ec9d6ffea3b, type: 3}
+  summaryLedger: {fileID: 21300000, guid: 7d2c72128c63d4fc882200d27b67f4db, type: 3}
+  harvestChest: {fileID: 21300000, guid: 2c89180dd00f6457ba6b5e1e9d3619f3, type: 3}
+  npcMiaFull: {fileID: 21300000, guid: 7f906714123404874bda2ad985881436, type: 3}
+  npcTomFull: {fileID: 21300000, guid: e98a088770b0e40be8ad58d8911b698f, type: 3}
+  favorHeartIcon: {fileID: 21300000, guid: 7c43c7024c100497bafff1de4618e9ef, type: 3}
+  commissionMarkIcon: {fileID: 21300000, guid: 8258a61a2dce74d7f9fb0ec1c0b2d711, type: 3}
+  harvestConsoleFrame: {fileID: 21300000, guid: 7bbd902b00e9d4d9d932cefc24547683, type: 3}
+  harvestCellTile: {fileID: 21300000, guid: ff19ce15099a848e2bfa6b8a0ee401e0, type: 3}
+  harvestEnergyBar: {fileID: 21300000, guid: 7a27b8be843f24009a941d14674c439b, type: 3}
+  harvestButtonRound: {fileID: 21300000, guid: 886579e251b0147a99dac3a6ca414fcf, type: 3}
+  harvestInfoPlaque: {fileID: 21300000, guid: c7ad2067257b2453096198ad0de7e1dd, type: 3}
+  harvestBackPlaque: {fileID: 21300000, guid: 215b1f2b563b1474cb101219a01c4440, type: 3}
+  townTitlePlaque: {fileID: 21300000, guid: 3f132566e941649e095be67b01cfa08c, type: 3}
+  townPlotFrame: {fileID: 21300000, guid: 28b481a9493f44bc5b0f03807121d6d9, type: 3}
+  townBuildingBase: {fileID: 21300000, guid: 3d02a9493fb3941039696fd984e5e30e, type: 3}
+  townNameScroll: {fileID: 21300000, guid: ca960288795ba4f95a255a1ce2856f57, type: 3}
+  townBottomInfoFrame: {fileID: 21300000, guid: 0572c068096cd47b4a4f310e2e58c9c5, type: 3}
+  townAttentionBadge: {fileID: 21300000, guid: 5c2208b25b7ef4cae979fca49e91e707, type: 3}
+  inventoryPanelFrame: {fileID: 21300000, guid: dac9c15c185f547efa050edd3030354a, type: 3}
+  inventoryItemSlot: {fileID: 21300000, guid: 7dbe802a4195a47668c17171d785c225, type: 3}
+  inventoryTabActive: {fileID: 21300000, guid: ee2204f3d5b774abdb32ab75419e7763, type: 3}
+  inventoryTabInactive: {fileID: 21300000, guid: d40a4243ae31d4f87a37c9b669416228, type: 3}
+  inventoryCountBadge: {fileID: 21300000, guid: e9b937799211a4c3c8713201852827f8, type: 3}
+  inventoryEmptyBasket: {fileID: 21300000, guid: 98c3bf9d48e3e4b52b93f4db8aeb6fb8, type: 3}
+  taskOrderBoardFrame: {fileID: 21300000, guid: 34fdd2a4ae5b847049b3d021a60ec470, type: 3}
+  taskCommissionEnvelope: {fileID: 21300000, guid: 7dacbbb9ed35e4406a5c7f194ade3192, type: 3}
+  taskDailyRouteScroll: {fileID: 21300000, guid: b7534cdfc252e4cd5964ca38bdfcf4cb, type: 3}
+  taskQuestRowFrame: {fileID: 21300000, guid: 63016ed7712514401989bd8bd7a0b716, type: 3}
+  taskMilestoneBadge: {fileID: 21300000, guid: 138816456258f4fb2be977bf73ddf1e6, type: 3}
+  taskCollectionBook: {fileID: 21300000, guid: cc390ee021eef42e3904964a6c52bd6b, type: 3}
+  authLoginCard: {fileID: 21300000, guid: b9fff99cf9ca0425a9f5971c1da10423, type: 3}
+  authInputFrame: {fileID: 21300000, guid: 7c234be54ef8440d594002b8ac742dd7, type: 3}
+  settingsDialogFrame: {fileID: 21300000, guid: dd788cab007ef4079b9010fdb7d2617c, type: 3}
+  settingsSliderArt: {fileID: 21300000, guid: 461d21df7b0b04858913a8bdde4323b0, type: 3}
+  settingsToggleArt: {fileID: 21300000, guid: 7e4f8188cf83a4389b276b730efffcf1, type: 3}
+  agreementScrollFrame: {fileID: 21300000, guid: d274f7b566afc488097815ce5affccb9, type: 3}
+  v6MainPanelFrame: {fileID: 21300000, guid: 0097a39e587024f5a8e1df802f6182ad, type: 3}
+  v6InfoCardFrame: {fileID: 21300000, guid: a9235f7c6d9254de1ad6f9939e844b50, type: 3}
+  v6TitlePlaque: {fileID: 21300000, guid: 0529576a7f645433db9b1de54f26831b, type: 3}
+  v6PrimaryButton: {fileID: 21300000, guid: 98a75e789b70a444ab61895d03d0b881, type: 3}
+  v6SecondaryButton: {fileID: 21300000, guid: 7e5f83704d8c84b4298a9750fff6c23e, type: 3}
+  v6ItemSlotFrame: {fileID: 21300000, guid: 1fc670df642ca412bbe7289a75c41680, type: 3}
+  v6NotificationBadge: {fileID: 21300000, guid: 8285035445dff4a07b26decad77bf797, type: 3}
+  v6ProgressBarFrame: {fileID: 21300000, guid: 6c46ad7c2d0644bd49bc1897adef2666, type: 3}
+  plotEmpty: {fileID: 21300000, guid: e4e09e3fa6dfa4f9b8cd53952b83d7a4, type: 3}
+  plotGrowingOne: {fileID: 21300000, guid: 7f7b70ae2944f4d2fb5534ef2b53154a, type: 3}
+  plotGrowingTwo: {fileID: 21300000, guid: 27e7183314327424a9907c26462c258b, type: 3}
+  plotReadyWheat: {fileID: 21300000, guid: 910ba93f81eaa4eb0b85a9313b9a4910, type: 3}
+  plotReadyApple: {fileID: 21300000, guid: bea1fc2ab071d40e39185618ef8729e2, type: 3}
+  bakeryIcon: {fileID: 21300000, guid: 6793299bf8c1540d188c4e23d702d6f0, type: 3}
+  dairyIcon: {fileID: 21300000, guid: ffb2bfa536fef40c29603a2b88759eea, type: 3}
+  houseMiaIcon: {fileID: 21300000, guid: f212d7b0a5bde40c99256319724c9c1f, type: 3}
+  houseTomIcon: {fileID: 21300000, guid: 2c16493092f9442298a330816d9ac1d3, type: 3}
+  machineHarvestIcon: {fileID: 21300000, guid: 08dedbbb1d7fb46b2bc1b8084bd41a0a, type: 3}
+  boardOrdersIcon: {fileID: 21300000, guid: 74dbfb662b7f64bd4a44be2033688011, type: 3}
+  bagIcon: {fileID: 21300000, guid: e78b621fb132d49d2921f12c0e51ab22, type: 3}
+  questIcon: {fileID: 21300000, guid: 152db4148568a4a3fb092e4937a6334e, type: 3}
+  miaIcon: {fileID: 21300000, guid: b574a49388b55404b8fb1f3d78e0353a, type: 3}
+  tomIcon: {fileID: 21300000, guid: 6d079a0521aea4fd89f52565a8a61a40, type: 3}
+  completeBubbleIcon: {fileID: 21300000, guid: c11ea95292f554f71a625fa76f88f3a5, type: 3}
+  lockIcon: {fileID: 21300000, guid: 9201aee3caf74418589953b70146942e, type: 3}
+  sickleIcon: {fileID: 21300000, guid: ebd351250263f401daf0e37542ccdafa, type: 3}
+--- !u!4 &59199769
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59199767}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &266548786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 266548789}
+  - component: {fileID: 266548788}
+  - component: {fileID: 266548787}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!81 &266548787
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266548786}
+  m_Enabled: 1
+--- !u!20 &266548788
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266548786}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.08, g: 0.22, b: 0.17, a: 1}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &266548789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266548786}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1956560415
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1956560418}
+  - component: {fileID: 1956560417}
+  - component: {fileID: 1956560416}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1956560416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956560415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
+--- !u!114 &1956560417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956560415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &1956560418
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956560415}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 266548789}
+  - {fileID: 1956560418}
+  - {fileID: 59199769}

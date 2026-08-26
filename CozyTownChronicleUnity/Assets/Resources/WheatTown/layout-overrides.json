@@ -1,0 +1,214 @@
+{
+    "items": [
+        {
+            "key": "NativeCanvas/TownPage/TownTitlePlate",
+            "x": -132.0,
+            "y": 300.0,
+            "w": 116.0,
+            "h": 40.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/TownHintPlate",
+            "x": 76.0,
+            "y": 300.0,
+            "w": 194.0,
+            "h": 30.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/Plot0",
+            "x": -126.0,
+            "y": 218.0,
+            "w": 96.0,
+            "h": 74.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/Plot1",
+            "x": -44.0,
+            "y": 218.0,
+            "w": 96.0,
+            "h": 74.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/Plot2",
+            "x": -130.1999969482422,
+            "y": 144.0,
+            "w": 96.0,
+            "h": 74.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/Plot3",
+            "x": -44.0,
+            "y": 144.0,
+            "w": 96.0,
+            "h": 74.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/Plot4",
+            "x": -126.0,
+            "y": 70.0,
+            "w": 96.0,
+            "h": 74.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/Plot5",
+            "x": -44.0,
+            "y": 70.0,
+            "w": 96.0,
+            "h": 74.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/BakeryHotspot",
+            "x": 126.0,
+            "y": 194.0,
+            "w": 126.0,
+            "h": 124.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/DairyHotspot",
+            "x": 126.0,
+            "y": 16.100000381469727,
+            "w": 122.0,
+            "h": 116.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/MiaHotspot",
+            "x": -140.0,
+            "y": -36.0,
+            "w": 116.0,
+            "h": 108.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/TomHotspot",
+            "x": 4.0,
+            "y": -92.4000015258789,
+            "w": 116.0,
+            "h": 108.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/HarvestHotspot",
+            "x": 123.5,
+            "y": -206.39999389648438,
+            "w": 126.0,
+            "h": 116.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/BoardHotspot",
+            "x": -128.0,
+            "y": -204.89999389648438,
+            "w": 112.0,
+            "h": 108.0
+        },
+        {
+            "key": "NativeCanvas/TownPage/TownObjective",
+            "x": 0.0,
+            "y": -292.0,
+            "w": 326.0,
+            "h": 36.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagHeader",
+            "x": 0.0,
+            "y": 300.0,
+            "w": 370.0,
+            "h": 48.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid",
+            "x": 0.0,
+            "y": 24.0,
+            "w": 344.0,
+            "h": 492.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagHintPlate",
+            "x": 0.0,
+            "y": -270.0,
+            "w": 320.0,
+            "h": 30.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell0",
+            "x": -78.0,
+            "y": 168.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell1",
+            "x": 78.0,
+            "y": 168.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell2",
+            "x": -78.0,
+            "y": 98.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell3",
+            "x": 78.0,
+            "y": 98.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell4",
+            "x": -78.0,
+            "y": 28.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell5",
+            "x": 78.0,
+            "y": 28.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell6",
+            "x": -78.0,
+            "y": -42.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell7",
+            "x": 78.0,
+            "y": -42.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell8",
+            "x": -78.0,
+            "y": -112.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell9",
+            "x": 78.0,
+            "y": -112.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell10",
+            "x": -78.0,
+            "y": -182.0,
+            "w": 138.0,
+            "h": 62.0
+        },
+        {
+            "key": "NativeCanvas/BagPage/BagGrid/BagCell11",
+            "x": 78.0,
+            "y": -182.0,
+            "w": 138.0,
+            "h": 62.0
+        }
+    ]
+}

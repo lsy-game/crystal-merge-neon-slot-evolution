@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 763754d325154e4ab4ce963637e4ea49, type: 3}
+  m_Name: bookcase_crystal
+  m_EditorClassIdentifier: 
+  itemId: bookcase_crystal
+  displayName: 水晶书架
+  category: bookcase
+  sizePixels: {x: 200, y: 400}
+  unlockCondition: default
+  sprite: {fileID: 21300000, guid: 6cf5b1dc7bdf2acdd5f248defe69534d, type: 3}
+  shadowSprite: {fileID: 21300000, guid: 1c8cd97751097d9c4b88482d02220ceb, type: 3}

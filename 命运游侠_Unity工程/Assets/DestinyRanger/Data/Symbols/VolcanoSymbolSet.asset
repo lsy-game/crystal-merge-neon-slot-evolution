@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a38cc5d0c6c4a6cb14861de26f7b262, type: 3}
+  m_Name: VolcanoSymbolSet
+  m_EditorClassIdentifier: 
+  sceneId: volcano
+  sword: {fileID: 21300000, guid: 5dd9d92b8d2ddb5e6762de2abe3b6f2a, type: 3}
+  staff: {fileID: 21300000, guid: 20d0f4898f66ad4521da4d05418a7d18, type: 3}
+  heart: {fileID: 21300000, guid: bb10e5951e33543f0375cbcaf83ea7b7, type: 3}
+  shield: {fileID: 21300000, guid: 11dede2e3495b72102a5f843e10770d5, type: 3}
+  skull: {fileID: 21300000, guid: c6eeba3c8adb9e0d56fa3070c9523ec6, type: 3}
+  star: {fileID: 21300000, guid: a71ac2f88f77f11bade4fbca713e440a, type: 3}
+  symbols:
+  - {fileID: 21300000, guid: 5dd9d92b8d2ddb5e6762de2abe3b6f2a, type: 3}
+  - {fileID: 21300000, guid: 20d0f4898f66ad4521da4d05418a7d18, type: 3}
+  - {fileID: 21300000, guid: bb10e5951e33543f0375cbcaf83ea7b7, type: 3}
+  - {fileID: 21300000, guid: 11dede2e3495b72102a5f843e10770d5, type: 3}
+  - {fileID: 21300000, guid: c6eeba3c8adb9e0d56fa3070c9523ec6, type: 3}
+  - {fileID: 21300000, guid: a71ac2f88f77f11bade4fbca713e440a, type: 3}
+  disabledSymbols:
+  - {fileID: 21300000, guid: 818690eb89fb1a8cd49164bfe6561bdc, type: 3}
+  - {fileID: 21300000, guid: 537f419064451408adc8c696331cc187, type: 3}
+  - {fileID: 21300000, guid: ca18cf09ae208c065623686fc4ebb518, type: 3}
+  - {fileID: 21300000, guid: 4fd27e441bc7e104a4eb89ccf48b6c76, type: 3}
+  - {fileID: 21300000, guid: 866156ddae85e0335fa0f175ecc8bd18, type: 3}
+  - {fileID: 21300000, guid: 60f479d4d9e4345660fc07f3d7ef1bf5, type: 3}
+  highlightSymbols:
+  - {fileID: 21300000, guid: 9d616b8c2980d5fa1f6dcda9adba7b3e, type: 3}
+  - {fileID: 21300000, guid: 9fbdb09abc7a0a438c6e75d7fb9d481f, type: 3}
+  - {fileID: 21300000, guid: b7679e12ced56c81d0ff1dfce9401e46, type: 3}
+  - {fileID: 21300000, guid: 4e85bfd945bfddefee058f54f6a4d925, type: 3}
+  - {fileID: 21300000, guid: 66a1c8184ce29d97913c8c9c52ce2f2e, type: 3}
+  - {fileID: 21300000, guid: 65ee9d81c6b1f7aac85a9ae290b9767d, type: 3}

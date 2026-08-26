@@ -1,0 +1,52 @@
+Unity Editor version:    2022.3.62f3c1 (1623fc0bbb97)
+Branch:                  2022.3/china_unity/release
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 26.3.1 (Build 25D2128)
+Darwin version:          25.3.0
+Architecture:            x86_64
+Running under Rosetta:   YES
+Available memory:        16384 MB
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-zhendian" at "2026-07-27T05:23:48.408624Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 55674, path: "/Applications/Unity Hub.app/Contents/Frameworks/UnityLicensingClient_V1.app/Contents/MacOS/Unity.Licensing.Client")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.17.0+aa6cfba
+  Session Id:              d4135e42c06044a0870e73d32b53b48d
+  Correlation Id:          e319ab5d439537a4ae31876966131850
+  External correlation Id: 5717723744395801994
+  Machine Id:              hwlB+zuqY5BFmNjX/rxoGaniixk=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-zhendian" (connect: 0.00s, validation: 0.01s, handshake: 0.32s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-zhendian-notifications" at "2026-07-27T05:23:48.742562Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully updated license
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Serial number assigned to: "ewogICJzdWJzR3JvdXAiIDogInVuaXR5IGVkaXRvciIsCiAgIm5hbWVzcGFjZSIgOiAidW5pdHlfZWRpdG9yIiwKICAidHlwZSIgOiAiRURJVE9SIiwKICAidGFnIiA6ICJVbml0eVBlcnNvbmFsXXXX"
+Pro License: NO
+[Licensing::Client] Successfully resolved entitlement details
+Launching external process: /Applications/Unity/Hub/Editor/2022.3.62f3c1/Unity.app/Contents/Resources/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/2022.3.62f3c1/Unity.app/Contents/MacOS/Unity
+-batchmode
+-quit
+-projectPath
+/Users/zhendian/Documents/New project/麦穗小镇_Unity工程
+-executeMethod
+WheatTown.EditorTools.WheatTownSceneBuilder.CreateBootstrapScene
+-logFile
+/Users/zhendian/Documents/New project/麦穗小镇_Unity工程/unity-create-scene.log
+Successfully changed project path to: /Users/zhendian/Documents/New project/麦穗小镇_Unity工程
+/Users/zhendian/Documents/New project/麦穗小镇_Unity工程
+It looks like another Unity instance is running with this project open.
+
+Multiple Unity instances cannot open the same project.
+
+Project: /Users/zhendian/Documents/New project/麦穗小镇_Unity工程
+Fatal Error! It looks like another Unity instance is running with this project open.
+
+Multiple Unity instances cannot open the same project.
+
+Project: /Users/zhendian/Documents/New project/麦穗小镇_Unity工程
+[Package Manager] Server::Kill -- Server was shutdown

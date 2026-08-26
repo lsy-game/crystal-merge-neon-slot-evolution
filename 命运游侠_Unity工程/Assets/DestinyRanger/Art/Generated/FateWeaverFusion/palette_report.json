@@ -1,0 +1,18 @@
+{
+  "chamber_background": "/Users/zhendian/Documents/New project/命运游侠_Unity工程/Assets/DestinyRanger/Art/Generated/fate-weaver-chamber-bg.png",
+  "chamber_palette": [
+    "#101010",
+    "#402010",
+    "#001040"
+  ],
+  "chamber_light": "upper-left warm gold, cool blue bounce on right side",
+  "forest_background": "/Users/zhendian/Documents/New project/命运游侠_Unity工程/Assets/DestinyRanger/Art/Generated/fate-weaver-battle-forest-bg.png",
+  "forest_palette": [
+    "#001020",
+    "#002050",
+    "#203040"
+  ],
+  "forest_light": "cold green top light plus diffuse environment bounce",
+  "edge_feather": "1-2 px alpha falloff, about 42% edge reduction",
+  "ao_shadow": "separate soft ellipse shadow PNGs for character, monster, and furniture grounding"
+}

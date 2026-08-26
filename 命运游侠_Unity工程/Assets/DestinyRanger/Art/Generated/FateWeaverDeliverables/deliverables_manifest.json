@@ -1,0 +1,33 @@
+{
+  "characters": [
+    "Characters/Aileen/aileen_idle_chamber_rgba.png",
+    "Characters/Aileen/aileen_idle_chamber_shadow.png"
+  ],
+  "forest_symbols_180x180": [
+    "Symbols/Forest/symbol_forest_heart_心_180x180.png",
+    "Symbols/Forest/symbol_forest_shield_盾_180x180.png",
+    "Symbols/Forest/symbol_forest_skull_骷髅_180x180.png",
+    "Symbols/Forest/symbol_forest_staff_杖_180x180.png",
+    "Symbols/Forest/symbol_forest_star_星_180x180.png",
+    "Symbols/Forest/symbol_forest_sword_剑_180x180.png"
+  ],
+  "furniture": [
+    "Furniture/Chamber/bookcase_chamber_rgba.png",
+    "Furniture/Chamber/bookcase_shadow.png",
+    "Furniture/Chamber/rug_chamber_rgba.png",
+    "Furniture/Chamber/rug_shadow.png",
+    "Furniture/Chamber/window_chamber_rgba.png",
+    "Furniture/Chamber/window_shadow.png"
+  ],
+  "ui_panels": [
+    "UI/Panels/panel_chamber_parchment_9slice_900x600_border96.png"
+  ],
+  "primary_button_states": [
+    "UI/Buttons/Primary/primary_button_disabled_280x100.png",
+    "UI/Buttons/Primary/primary_button_hover_280x100.png",
+    "UI/Buttons/Primary/primary_button_normal_280x100.png",
+    "UI/Buttons/Primary/primary_button_pressed_280x100.png"
+  ],
+  "nine_slice_border_pixels": 96,
+  "no_validation_images_generated_by_this_script": true
+}

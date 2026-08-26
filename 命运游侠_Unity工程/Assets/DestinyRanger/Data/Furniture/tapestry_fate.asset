@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 763754d325154e4ab4ce963637e4ea49, type: 3}
+  m_Name: tapestry_fate
+  m_EditorClassIdentifier: 
+  itemId: tapestry_fate
+  displayName: 命运织锦
+  category: tapestry
+  sizePixels: {x: 400, y: 300}
+  unlockCondition: default
+  sprite: {fileID: 21300000, guid: 7a28097499b226a4419f29b7ab3e3cf6, type: 3}
+  shadowSprite: {fileID: 21300000, guid: 8cb4fa6a0a7620df4ef9e43f0267107b, type: 3}

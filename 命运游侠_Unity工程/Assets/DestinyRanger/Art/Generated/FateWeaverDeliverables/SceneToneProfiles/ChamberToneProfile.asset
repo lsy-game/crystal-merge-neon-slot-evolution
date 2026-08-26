@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a4917fa2ce74d1c98582922a8d3e301, type: 3}
+  m_Name: ChamberToneProfile
+  m_EditorClassIdentifier: 
+  ambientTint: {r: 0.0627451, g: 0.0627451, b: 0.0627451, a: 1}
+  highlightTint: {r: 0.8862745, g: 0.7058824, b: 0.3372549, a: 1}
+  shadowTint: {r: 0.0, g: 0.0627451, b: 0.2509804, a: 1}
+  foregroundTintStrength: 0.12
+  uiTintStrength: 0.08
+  saturation: 0.96
+  contrast: 1.05
+  lightDirection: {x: -0.6, y: 0.8}
+  notes: "织室：左上暖金主光，右侧冷蓝反光；用于艾琳、家具、羊皮纸 UI。"

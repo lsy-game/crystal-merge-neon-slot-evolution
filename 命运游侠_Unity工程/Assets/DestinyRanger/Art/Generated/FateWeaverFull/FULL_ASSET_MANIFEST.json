@@ -1,0 +1,17 @@
+{
+  "no_validation_images_generated": true,
+  "backgrounds": 4,
+  "characters_png": 96,
+  "monsters_png": 92,
+  "slot_machine_png": 10,
+  "symbols_png": 36,
+  "ui_png": 33,
+  "furniture_png": 50,
+  "furniture_assets": 25,
+  "scene_tone_profiles": 4,
+  "audio_wav": 25,
+  "animation_clips": 31,
+  "tone_scenes": 4,
+  "symbol_catalogs": 4,
+  "audio_catalogs": 1
+}
