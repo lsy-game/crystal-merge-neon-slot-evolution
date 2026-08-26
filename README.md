@@ -1,6 +1,6 @@
 # Crystal Merge: Neon Slot Evolution
 
-一个霓虹水晶主题的休闲合成游戏项目。仓库包含完整项目备份包，也包含可在手机浏览器中打开的 WebGame 试玩版。
+一个霓虹水晶主题的休闲合成游戏项目。仓库包含完整项目备份包，也包含可在手机浏览器中打开的 WebGame 试玩版。欢迎大家试玩，也欢迎提出体验建议、画面建议和玩法修改意见。
 
 ## Online Demo
 
@@ -9,6 +9,8 @@ GitHub Pages 试玩链接：
 https://lsy-game.github.io/crystal-merge-neon-slot-evolution/
 
 第一次开启或刚更新 GitHub Pages 时，链接可能会短暂显示 `404`。这通常不是文件丢了，而是 GitHub 还在生成网页，等待 1 到 5 分钟后刷新即可。
+
+如果使用电脑端游玩，建议把浏览器窗口缩小到接近手机竖屏的宽度，类似 iPhone 17 Pro 模拟器的比例。这样画面、棋盘和按钮的显示会更接近设计效果。
 
 ## Downloads
 
@@ -31,6 +33,7 @@ WebGame 试玩压缩包：
 - 当前备份包中没有 Android `.apk`、iOS `.ipa` 或 `.aab`，所以它不是直接安装到手机的安装包。
 - 如果想让玩家最方便地体验，推荐使用 GitHub Pages 在线试玩链接。
 - 网页试玩版会默认使用接近 iPhone 17 Pro 模拟器的竖屏手机外框，普通电脑浏览器打开也会尽量保持这个比例。
+- 如果你在电脑上试玩时觉得画面比例不对，请先把浏览器窗口缩窄一些，模拟手机竖屏尺寸后再刷新页面。
 - 如果之后要发布手机安装版，Android 需要导出 `.apk`，iPhone 需要 TestFlight 或 App Store。
 
 ## 后续怎么修改
