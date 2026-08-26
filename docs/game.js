@@ -785,9 +785,12 @@
     const shortEdge = Math.min(width, height);
     const longEdge = Math.max(width, height);
     const touch = navigator.maxTouchPoints > 1;
-    const orientation = width >= height ? "landscape" : "portrait";
+    const forcePortraitShell = !touch && height >= 700;
+    const orientation = forcePortraitShell ? "portrait" : width >= height ? "landscape" : "portrait";
     let deviceClass = "desktop";
-    if (touch && longEdge >= 1024 && shortEdge >= 700) {
+    if (forcePortraitShell) {
+      deviceClass = "phone";
+    } else if (touch && longEdge >= 1024 && shortEdge >= 700) {
       deviceClass = "tablet";
     } else if (touch || width <= 760) {
       deviceClass = shortEdge <= 390 || longEdge <= 760 ? "small-phone" : "phone";
@@ -801,6 +804,7 @@
     document.body.classList.toggle("is-tablet", deviceClass === "tablet");
     document.body.classList.toggle("is-landscape", orientation === "landscape");
     document.body.classList.toggle("is-portrait", orientation === "portrait");
+    document.body.classList.toggle("force-portrait-shell", forcePortraitShell);
     syncSideHudHost(deviceClass, orientation);
   }
 

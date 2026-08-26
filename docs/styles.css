@@ -19766,3 +19766,156 @@ body.legacy-smooth .start-mode-grid button small {
     inset: 18.4svh auto auto 50dvw !important;
   }
 }
+
+/* Public web demo: keep desktop browser windows in the polished portrait shell. */
+@media (orientation: landscape) and (min-height: 700px) {
+  body.legacy-smooth.force-portrait-shell {
+    --adaptive-shell-width: min(100dvw, 540px);
+  }
+
+  body.legacy-smooth.force-portrait-shell,
+  body.legacy-smooth.force-portrait-shell .start-screen {
+    background-image:
+      linear-gradient(180deg, rgba(2, 7, 25, 0.4), rgba(4, 8, 29, 0.64)),
+      url("assets/neon-crystal-environment-portrait.png") !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .app-shell {
+    width: min(100dvw, 540px) !important;
+    max-width: 540px !important;
+    grid-template-rows: 9.6fr 8.6fr 65.8fr 16fr !important;
+    gap: clamp(5px, 1.25dvw, 8px) !important;
+    padding:
+      max(8px, var(--safe-top))
+      max(8px, var(--safe-right))
+      max(8px, calc(var(--safe-bottom) + 6px))
+      max(8px, var(--safe-left)) !important;
+    background-image:
+      linear-gradient(180deg, rgba(3, 9, 29, 0.42), rgba(3, 8, 27, 0.68)),
+      url("assets/neon-crystal-environment-portrait.png") !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .topbar,
+  body.legacy-smooth.force-portrait-shell .task-panel,
+  body.legacy-smooth.force-portrait-shell .control-panel {
+    width: min(90dvw, 420px) !important;
+    justify-self: center !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .status-grid {
+    grid-template-columns: minmax(76px, 1fr) minmax(110px, 1.16fr) minmax(112px, 1fr) !important;
+    min-height: clamp(54px, 6.7svh, 66px) !important;
+    padding: clamp(7px, 1.15svh, 10px) clamp(9px, 2.2dvw, 13px) !important;
+    gap: clamp(8px, 2dvw, 13px) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .task-panel {
+    min-height: clamp(70px, 8.6svh, 88px) !important;
+    padding: clamp(8px, 1.35svh, 12px) clamp(10px, 2.5dvw, 14px) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .task-title-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    gap: 5px 8px !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .task-title-row > div:first-child,
+  body.legacy-smooth.force-portrait-shell .task-title-actions {
+    grid-column: 1 / -1 !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .task-title-row h2 {
+    font-size: clamp(16px, 4.25dvw, 20px) !important;
+    line-height: 1.08 !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .board-section {
+    padding-top: clamp(2px, 0.45svh, 5px) !important;
+    align-content: start !important;
+    overflow: visible !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .playfield {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    place-items: start center !important;
+    gap: 0 !important;
+    padding-top: clamp(28px, 3.55svh, 36px) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .board-wrap {
+    width: min(88dvw, 410px) !important;
+    min-width: min(340px, calc(100dvw - var(--safe-left) - var(--safe-right) - 18px)) !important;
+    max-width: min(88dvw, 410px) !important;
+    justify-self: center !important;
+    align-self: start !important;
+    padding: clamp(9px, 2.25dvw, 13px) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .board {
+    gap: clamp(7px, 1.85dvw, 10px) !important;
+    padding: clamp(9px, 2.25dvw, 13px) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .left-hud {
+    position: absolute !important;
+    left: max(var(--safe-left), calc(50% - min(44dvw, 205px) + 4px)) !important;
+    top: clamp(45px, 5.9svh, 58px) !important;
+    width: clamp(50px, 12.6dvw, 60px) !important;
+    max-width: 60px !important;
+    height: auto !important;
+    display: grid !important;
+    grid-auto-rows: clamp(48px, 6.7svh, 58px) !important;
+    grid-template-columns: 1fr !important;
+    gap: clamp(9px, 1.55svh, 14px) !important;
+    padding: clamp(8px, 1.25svh, 11px) clamp(6px, 1.35dvw, 8px) !important;
+    z-index: 24 !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .side-hud.mobile-hud-root {
+    position: fixed !important;
+    inset: 18.4svh auto auto 50dvw !important;
+    width: min(56dvw, 220px) !important;
+    height: clamp(46px, 5.6svh, 52px) !important;
+    display: block !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: translateX(-50%) !important;
+    z-index: 124 !important;
+    pointer-events: none !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .side-hud.mobile-hud-root .side-combo {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+    border-radius: 14px !important;
+    background-color: #050c22 !important;
+    background-image: var(--premium-status-frame-v9) !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 100% 100% !important;
+    pointer-events: auto !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .side-hud.mobile-hud-root .rift-tube {
+    display: none !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .control-panel {
+    align-self: start !important;
+    min-height: clamp(112px, 14svh, 136px) !important;
+    grid-template-columns: 0.72fr 1.56fr 0.72fr !important;
+    gap: clamp(8px, 2dvw, 12px) !important;
+    padding: clamp(10px, 2svh, 14px) clamp(10px, 2.4dvw, 14px) !important;
+    transform: translateY(clamp(-14px, -1.6svh, -7px)) !important;
+  }
+}
