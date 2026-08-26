@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>crystal merge slot</title>
+  <link rel="stylesheet" href="styles.css?v=20260722-premium-ui-v10-2">
+</head>
+<body class="legacy-smooth">
+  <div class="backdrop-glass" aria-hidden="true"></div>
+
+  <section id="startScreen" class="start-screen" aria-label="Game start screen">
+    <div class="start-hero-art" aria-hidden="true"></div>
+    <div class="start-card">
+      <span class="start-mark" aria-hidden="true"></span>
+      <div class="start-title-block">
+        <span>Cyber Crystal Slot</span>
+        <h1>crystal merge slot</h1>
+        <p>Merge puzzle game</p>
+      </div>
+      <div class="start-mode-heading">
+        <span>Choose Your Rift</span>
+        <strong>Select a game mode</strong>
+      </div>
+      <div class="start-mode-grid" aria-label="Choose game mode">
+        <button type="button" data-start-mode="adventure">
+          <strong>Campaign Mode</strong>
+          <small>Stage objectives, chapter rewards, and steady unlocks.</small>
+        </button>
+        <button type="button" data-start-mode="endless">
+          <strong>Endless Mode</strong>
+          <small>Unlimited spins for high scores and bigger combos.</small>
+        </button>
+        <button type="button" data-start-mode="timed">
+          <strong>Time Challenge</strong>
+          <small>Two minutes to push maximum payout.</small>
+        </button>
+        <button type="button" data-start-mode="zen">
+          <strong>Zen Mode</strong>
+          <small>No cost, no targets, just relaxed merging.</small>
+        </button>
+      </div>
+      <em>This is offline entertainment only. Progress saves locally on this device.</em>
+    </div>
+  </section>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <section class="status-grid" aria-label="Player status">
+        <div class="status-left">
+          <div class="stat-card coin-card" title="Coins">
+            <span aria-hidden="true">◈</span>
+            <strong id="coinValue">0</strong>
+          </div>
+        </div>
+        <div class="status-center">
+          <div class="stat-card stage-card" title="Stage">
+            <span aria-hidden="true">◆</span>
+            <strong id="stageValue">1-1</strong>
+          </div>
+          <div class="jackpot-pool" aria-label="Grand Jackpot" title="Grand Jackpot">
+            <span aria-hidden="true">◉</span>
+            <strong id="jackpotValue">1,000</strong>
+          </div>
+        </div>
+        <div class="status-right">
+          <div class="stat-card free-card" title="Free Spins">
+            <span aria-hidden="true">↻</span>
+            <strong id="freeSpinValue">0</strong>
+          </div>
+          <div class="stat-card stardust-card" title="Stardust">
+            <span aria-hidden="true">✧</span>
+            <strong id="stardustValue">0</strong>
+          </div>
+          <button id="settingsButton" class="icon-button" type="button" aria-label="Open Settings" title="Settings">
+            <span aria-hidden="true">⚙</span>
+          </button>
+          <button id="helpButton" class="icon-button" type="button" aria-label="Open Help" title="Help">
+            <span aria-hidden="true">?</span>
+          </button>
+          <button id="utilityMenuButton" class="icon-button utility-menu-button" type="button" aria-label="Open Menu" title="Menu">
+            <span aria-hidden="true">⋯</span>
+          </button>
+          <div id="utilityMenu" class="utility-menu" hidden>
+            <button type="button" data-utility-action="settings">Settings</button>
+            <button type="button" data-utility-action="help">Help</button>
+          </div>
+        </div>
+        <div class="stat-card compact-hidden">
+          <span>Combo</span>
+          <strong id="comboValue">0</strong>
+        </div>
+      </section>
+    </header>
+
+    <section class="task-panel" aria-label="Stage objective">
+      <div class="task-title-row">
+        <div>
+          <span class="eyebrow" id="levelTypeLabel">Standard Stage</span>
+          <h2 id="taskTitle">Objective</h2>
+        </div>
+        <div class="task-title-actions">
+          <span id="taskProgressText">0 / 0</span>
+          <span id="stageSpinQuotaText" class="stage-spin-quota" title="Stage spins will deplete each normal spin, run out to fail the stage.">Stage Spins Left 0</span>
+          <strong id="rewardPreview">Reward Preview</strong>
+          <button id="challengeToggleButton" class="task-book-button challenge-toggle" type="button" aria-label="View Side Challenge">⚑</button>
+          <div class="daily-element-chip" title="Daily Element">
+            <span aria-hidden="true">✦</span>
+            <strong id="dailyElementValue">--</strong>
+          </div>
+          <button id="taskBookButton" class="task-book-button" type="button">Tasks</button>
+        </div>
+      </div>
+      <div class="mission-grid">
+        <article class="mission-card primary-mission">
+          <div class="progress-track" aria-label="Objective progress">
+            <div id="taskProgressBar" class="progress-fill"></div>
+          </div>
+          <div class="task-foot">
+            <span id="spinCostText">Spin Cost 0</span>
+          </div>
+        </article>
+        <article class="mission-card challenge-mission">
+          <div class="mission-head">
+            <span>Side Challenge</span>
+            <strong id="challengeTitle">Challenge Objective</strong>
+          </div>
+          <div class="progress-track challenge-track" aria-label="Side Challenge progress">
+            <div id="challengeProgressBar" class="progress-fill challenge-fill"></div>
+          </div>
+          <div class="task-foot">
+            <span id="challengeProgressText">0 / 0</span>
+            <span id="challengeBadge">Bonus Free Spins</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mode-panel" aria-label="Mode selector">
+      <div class="mode-tabs">
+        <button class="mode-tab" type="button" data-mode="adventure">Campaign</button>
+        <button class="mode-tab" type="button" data-mode="endless">Endless</button>
+        <button class="mode-tab" type="button" data-mode="timed">Timed</button>
+        <button class="mode-tab" type="button" data-mode="zen">Zen</button>
+      </div>
+      <div class="mode-summary">
+        <div>
+          <span id="modeKicker">Current Mode</span>
+          <strong id="modeTitle">Campaign Mode</strong>
+        </div>
+        <p id="modeDescription">Clear objectives and claim stage rewards.</p>
+        <div id="modeStats" class="mode-stats"></div>
+      </div>
+      <div id="modeLeaderboard" class="mode-leaderboard" hidden></div>
+    </section>
+
+    <section class="board-section" aria-label="Crystal board">
+      <div id="screenFlash" class="screen-flash" aria-hidden="true"></div>
+      <div id="voidBonusBadge" class="void-bonus-badge" hidden>
+        <span>VOID REALM</span>
+        <strong id="voidBonusText">READY</strong>
+      </div>
+      <div class="playfield">
+        <aside class="left-hud" aria-label="Items and Ability shortcuts">
+          <button id="topItemButton" class="side-icon-button item-entry-button" type="button" aria-label="Open Items" title="Items">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 8.5h11l1 10h-13l1-10Z"></path><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5"></path></svg>
+          </button>
+          <button id="autoMergeButton" class="side-icon-button auto-button" type="button" aria-label="Auto Merge" title="Auto Merge" hidden aria-hidden="true" tabindex="-1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 6.5A7 7 0 0 0 5 10.8"></path><path d="M17.5 6.5V3.5"></path><path d="M17.5 6.5h-3"></path><path d="M6.5 17.5A7 7 0 0 0 19 13.2"></path><path d="M6.5 17.5v3"></path><path d="M6.5 17.5h3"></path></svg>
+          </button>
+          <button id="topTalentButton" class="side-icon-button talent-entry-button" type="button" aria-label="Open Talents" title="Talents">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.2 5 5.3.5-4 3.6 1.2 5.2L12 14.6 7.3 17.3l1.2-5.2-4-3.6 5.3-.5L12 3Z"></path><path d="M12 14.6V21"></path></svg>
+          </button>
+          <div id="skillDock" class="skill-dock">
+            <button id="activeSkillButton" class="skill-button" type="button" aria-label="Use Ability" title="Ability">
+              <span id="activeSkillIcon" class="skill-icon" aria-hidden="true">↻</span>
+              <strong id="activeSkillName">Column Reroll</strong>
+              <em id="activeSkillCooldown">READY</em>
+            </button>
+            <button id="skillSwitchButton" class="skill-switch-button" type="button" aria-label="Switch Ability" title="Switch Ability">↕</button>
+            <div id="skillPanel" class="skill-panel" hidden></div>
+          </div>
+          <button id="undoButton" class="side-icon-button undo-entry-button" type="button" aria-label="Undo one merge this round" title="Undo" hidden aria-hidden="true" tabindex="-1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8H4V4"></path><path d="M4.8 8.8A8 8 0 1 1 7 19"></path></svg>
+          </button>
+        </aside>
+        <div class="board-wrap">
+          <div id="board" class="board" role="grid" aria-label="5 by 4 crystal board"></div>
+          <section class="tip-strip" aria-live="polite">
+            <span id="tipText">Spend Coins to spin, then drag adjacent matching crystals to merge 3 into 1.</span>
+          </section>
+        </div>
+        <aside class="side-hud" aria-label="Combo and Rift Energy">
+          <div class="side-combo">
+            <span>COMBO</span>
+            <strong id="sideComboValue">0</strong>
+            <em id="sideMultiplierValue">×1.00</em>
+            <em id="multiplierValue" class="metric-shadow">×1.00</em>
+            <small id="bestComboValue">BEST 0</small>
+          </div>
+          <div class="rift-tube">
+            <span aria-label="Rift Energy">◇</span>
+            <div class="rift-track">
+              <div id="sideRiftEnergyBar" class="rift-fill"></div>
+            </div>
+            <strong id="sideRiftEnergyText">0%</strong>
+            <strong id="riftEnergyText" class="metric-shadow">0 / 100</strong>
+            <div class="energy-track metric-shadow">
+              <div id="riftEnergyBar" class="energy-fill"></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="control-panel" aria-label="Controls">
+      <button id="itemButton" class="secondary-button lobby-button" type="button" aria-label="Return to mode select" title="Lobby">
+        <span aria-hidden="true">⌂</span>
+        <strong>Lobby</strong>
+      </button>
+      <span id="spinQuotaBadge" class="spin-quota-badge" aria-live="polite">0 Left</span>
+      <button id="spinButton" class="primary-button" type="button">
+        <span id="spinButtonLabel">SPIN</span>
+        <strong id="spinButtonCost">0</strong>
+      </button>
+      <button id="resetButton" class="ghost-button" type="button">
+        <span aria-hidden="true">↺</span>
+        <strong>Reset</strong>
+      </button>
+    </section>
+  </main>
+
+  <div id="floatLayer" class="float-layer" aria-hidden="true"></div>
+
+  <div id="complianceModal" class="modal-backdrop compliance-backdrop" hidden>
+    <section class="modal-card compliance-modal" role="dialog" aria-modal="true" aria-labelledby="complianceModalTitle">
+      <div class="compliance-mark" aria-hidden="true">◇</div>
+      <h2 id="complianceModalTitle">Before You Play</h2>
+      <p>This game only stores your local game progress data on your device.</p>
+      <p>Please review our Terms of Service and Privacy Policy before starting your adventure.</p>
+      <div class="compliance-links">
+        <button class="legal-text-link" type="button" data-legal-open="terms">Terms of Service</button>
+        <button class="legal-text-link" type="button" data-legal-open="privacy">Privacy Policy</button>
+      </div>
+      <label class="compliance-consent">
+        <input id="complianceConsentCheckbox" type="checkbox">
+        <span>I have read and agree to the Terms of Service and Privacy Policy.</span>
+      </label>
+      <button id="agreeComplianceButton" class="primary-button compact agree-button" type="button" disabled>Agree &amp; Play</button>
+    </section>
+  </div>
+
+  <div id="legalModal" class="modal-backdrop legal-backdrop" hidden>
+    <section class="modal-card legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+      <div class="modal-head">
+        <h2 id="legalModalTitle">Terms of Service</h2>
+        <button class="modal-close" type="button" data-close-modal="legalModal" aria-label="Close">×</button>
+      </div>
+      <div id="legalModalBody" class="legal-modal-body"></div>
+    </section>
+  </div>
+
+  <div id="itemModal" class="modal-backdrop" hidden>
+    <section class="modal-card item-modal" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+      <div class="modal-head">
+        <h2 id="itemModalTitle">Items</h2>
+        <button class="modal-close" type="button" data-close-modal="itemModal" aria-label="Close">×</button>
+      </div>
+      <div class="tool-grid">
+        <button class="tool-card" type="button" data-tool-info="swap">
+          <span class="tool-icon">◇</span>
+          <strong>Swap Cube</strong>
+          <em id="swapCount">0</em>
+        </button>
+        <button class="tool-card" type="button" data-tool-info="blast">
+          <span class="tool-icon">✺</span>
+          <strong>Purge Blast</strong>
+          <em id="blastCount">0</em>
+        </button>
+        <button class="tool-card" type="button" data-tool-info="leap">
+          <span class="tool-icon">⇧</span>
+          <strong>Tier Leap</strong>
+          <em id="leapCount">0</em>
+        </button>
+        <button class="tool-card" type="button" data-tool-info="summon">
+          <span class="tool-icon">★</span>
+          <strong>Prism Call</strong>
+          <em id="summonCount">0</em>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toolDetailModal" class="modal-backdrop" hidden>
+    <section class="modal-card tool-detail-modal" role="dialog" aria-modal="true" aria-labelledby="toolDetailTitle">
+      <div class="modal-head">
+        <h2 id="toolDetailTitle">Item Details</h2>
+        <button class="modal-close" type="button" data-close-modal="toolDetailModal" aria-label="Close">×</button>
+      </div>
+      <div class="tool-detail-body">
+        <div id="toolDetailIcon" class="tool-detail-icon" aria-hidden="true">◇</div>
+        <div class="tool-detail-copy">
+          <strong id="toolDetailName">Item Name</strong>
+          <p id="toolDetailDesc">Item effect</p>
+          <small id="toolDetailSource">Sources</small>
+          <em>Owned <b id="toolDetailCount">0</b></em>
+        </div>
+      </div>
+      <div class="tool-detail-actions">
+        <button id="toolDetailUseButton" class="primary-button compact" type="button">Use</button>
+        <button class="ghost-button compact" type="button" data-close-modal="toolDetailModal">Close</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="settingsModal" class="modal-backdrop" hidden>
+    <section class="modal-card settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="modal-head">
+        <h2 id="settingsModalTitle">Settings</h2>
+        <button class="modal-close" type="button" data-close-modal="settingsModal" aria-label="Close">×</button>
+      </div>
+      <div class="settings-section">
+        <strong>Sound Effects</strong>
+        <label class="settings-toggle compact-toggle">
+          <span>Sound Effects</span>
+          <input id="soundToggle" type="checkbox">
+        </label>
+        <label class="settings-range">
+          <span>Effects Volume</span>
+          <input id="volumeSlider" type="range" min="0" max="100" value="58">
+          <em id="volumeValue">58%</em>
+        </label>
+      </div>
+      <label class="settings-toggle">
+        <span>Auto Merge</span>
+        <input id="autoMergeToggle" type="checkbox">
+      </label>
+      <div class="settings-section legal-settings-section">
+        <strong>Legal</strong>
+        <div class="legal-link-row">
+          <button class="ghost-button compact legal-link-button" type="button" data-legal-open="terms">Terms of Service</button>
+          <button class="ghost-button compact legal-link-button" type="button" data-legal-open="privacy">Privacy Policy</button>
+        </div>
+      </div>
+      <div class="settings-section save-danger-section">
+        <strong>Save Data</strong>
+        <p>Abandon your current local save and start over from the beginning.</p>
+        <button id="resetDataButton" class="danger-button" type="button">Abandon Save</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="helpModal" class="modal-backdrop" hidden>
+    <section class="modal-card help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+      <div class="modal-head">
+        <h2 id="helpModalTitle">Help</h2>
+        <button class="modal-close" type="button" data-close-modal="helpModal" aria-label="Close">×</button>
+      </div>
+      <div class="help-tabs" role="tablist" aria-label="Help content">
+        <button id="helpRulesTab" class="help-tab active" type="button" data-help-tab="rules">How to Play</button>
+        <button id="helpCodexTab" class="help-tab" type="button" data-help-tab="codex">Crystal Codex</button>
+      </div>
+      <div id="helpRulesPanel" class="help-panel active">
+        <div class="help-list">
+          <p><strong>Spin</strong><span>Pick a mode, then tap SPIN to roll the board.</span></p>
+          <p><strong>Stage Spins</strong><span>Stage spins will deplete each normal spin, run out to fail the stage.</span></p>
+          <p><strong>Merge</strong><span>Drag adjacent crystals of the same tier. Groups of 3 or more merge upward.</span></p>
+          <p><strong>Rift</strong><span>Spins and merges charge Rift Energy. A full meter boosts the next spin.</span></p>
+          <p><strong>Ability</strong><span>Use the Ability button during the merge phase. Cooldowns tick down with spins.</span></p>
+        </div>
+        <div class="help-legal-actions">
+          <button class="ghost-button compact legal-link-button" type="button" data-legal-open="terms">Terms of Service</button>
+          <button class="ghost-button compact legal-link-button" type="button" data-legal-open="privacy">Privacy Policy</button>
+        </div>
+      </div>
+      <div id="helpCodexPanel" class="help-panel">
+        <div id="gemCodexList" class="gem-codex-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="talentModal" class="modal-backdrop" hidden>
+    <section class="modal-card talent-modal" role="dialog" aria-modal="true" aria-labelledby="talentModalTitle">
+      <div class="modal-head">
+        <h2 id="talentModalTitle">Permanent Talents</h2>
+        <button class="modal-close" type="button" data-close-modal="talentModal" aria-label="Close">×</button>
+      </div>
+      <div class="talent-wallet">
+        <span>Available Stardust</span>
+        <strong id="talentStardustValue">0</strong>
+      </div>
+      <div id="talentTree" class="talent-tree" aria-label="Talent nodes"></div>
+    </section>
+  </div>
+
+  <div id="taskBookModal" class="modal-backdrop" hidden>
+    <section class="modal-card task-book-modal" role="dialog" aria-modal="true" aria-labelledby="taskBookTitle">
+      <div class="modal-head">
+        <h2 id="taskBookTitle">Tasks &amp; Achievements</h2>
+        <button class="modal-close" type="button" data-close-modal="taskBookModal" aria-label="Close">×</button>
+      </div>
+      <div class="task-book-summary">
+        <span id="taskRefreshText">Task refresh time</span>
+      </div>
+      <div class="task-book-section">
+        <div class="task-book-section-head">
+          <strong>Daily Tasks</strong>
+          <span>Refreshes daily at midnight</span>
+        </div>
+        <div id="dailyTaskList" class="task-list"></div>
+      </div>
+      <div class="task-book-section">
+        <div class="task-book-section-head">
+          <strong>Weekly Task</strong>
+          <span>Refreshes every Monday</span>
+        </div>
+        <div id="weeklyTaskList" class="task-list"></div>
+      </div>
+      <div class="task-book-section">
+        <div class="task-book-section-head">
+          <strong>Achievement Codex</strong>
+          <span>20 permanent achievements</span>
+        </div>
+        <div id="achievementCodex" class="achievement-codex"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="rewardModal" class="modal-backdrop" hidden>
+    <section class="modal-card reward-modal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
+      <div class="reward-glow" aria-hidden="true"></div>
+      <h2 id="rewardModalTitle">Stage Complete</h2>
+      <p id="rewardModalText">Rewards claimed.</p>
+      <button id="rewardConfirmButton" class="primary-button compact" type="button">OK</button>
+    </section>
+  </div>
+
+  <div id="stageFailModal" class="modal-backdrop pressure-backdrop" hidden>
+    <section class="modal-card pressure-modal" role="dialog" aria-modal="true" aria-labelledby="stageFailTitle">
+      <div class="reward-glow danger-glow" aria-hidden="true"></div>
+      <h2 id="stageFailTitle">Stage Failed</h2>
+      <p>Your stage spin quota has run out. Choose a way to continue or restart this stage.</p>
+      <div class="pressure-actions">
+        <button id="watchAdSpinsButton" class="primary-button compact" type="button">Watch Ad For +10 Spins</button>
+        <button id="restartStageButton" class="ghost-button compact" type="button">Restart Stage</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="coinRescueModal" class="modal-backdrop pressure-backdrop" hidden>
+    <section class="modal-card pressure-modal" role="dialog" aria-modal="true" aria-labelledby="coinRescueTitle">
+      <div class="reward-glow" aria-hidden="true"></div>
+      <h2 id="coinRescueTitle">Not Enough Coins</h2>
+      <p id="coinRescueText">You need more Coins to continue spinning this stage.</p>
+      <div class="pressure-actions">
+        <button id="watchAdCoinsButton" class="primary-button compact" type="button">Watch Ad For Coins</button>
+        <button id="exchangeStardustButton" class="ghost-button compact" type="button">Exchange Stardust</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="jackpotModal" class="modal-backdrop jackpot-backdrop" hidden>
+    <section class="modal-card reward-modal jackpot-modal" role="dialog" aria-modal="true" aria-labelledby="jackpotModalTitle">
+      <div class="jackpot-glow" aria-hidden="true"></div>
+      <h2 id="jackpotModalTitle">JACKPOT BREAK</h2>
+      <p id="jackpotModalText">Grand Jackpot paid out.</p>
+      <button id="jackpotConfirmButton" class="primary-button compact" type="button">OK</button>
+    </section>
+  </div>
+
+  <div id="tutorialOverlay" class="tutorial-overlay" hidden>
+    <div class="tutorial-shade tutorial-shade-top" aria-hidden="true"></div>
+    <div class="tutorial-shade tutorial-shade-left" aria-hidden="true"></div>
+    <div class="tutorial-shade tutorial-shade-right" aria-hidden="true"></div>
+    <div class="tutorial-shade tutorial-shade-bottom" aria-hidden="true"></div>
+    <div class="tutorial-target-ring" aria-hidden="true"></div>
+    <section class="tutorial-card" role="dialog" aria-labelledby="tutorialTitle">
+      <span id="tutorialStepLabel">1 / 4</span>
+      <h2 id="tutorialTitle">Spin the Board</h2>
+      <p id="tutorialText">Tap SPIN to roll crystals and enter the merge phase.</p>
+      <div class="tutorial-actions">
+        <button id="tutorialSkipButton" class="ghost-button compact" type="button">Skip</button>
+        <button id="tutorialNextButton" class="primary-button compact" type="button">Next</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="game.js?v=20260722-premium-ui-v10-2"></script>
+</body>
+</html>
