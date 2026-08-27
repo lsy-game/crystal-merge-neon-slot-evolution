@@ -785,7 +785,7 @@
     const shortEdge = Math.min(width, height);
     const longEdge = Math.max(width, height);
     const touch = navigator.maxTouchPoints > 1;
-    const forcePortraitShell = !touch && height >= 700;
+    const forcePortraitShell = !touch && width > height && height >= 520;
     const orientation = forcePortraitShell ? "portrait" : width >= height ? "landscape" : "portrait";
     let deviceClass = "desktop";
     if (forcePortraitShell) {
