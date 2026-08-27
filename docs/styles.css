@@ -19768,7 +19768,7 @@ body.legacy-smooth .start-mode-grid button small {
 }
 
 /* Public web demo: keep desktop browser windows in the polished portrait shell. */
-@media (orientation: landscape) and (min-height: 700px) {
+@media (orientation: landscape) and (min-height: 520px) {
   body.legacy-smooth.force-portrait-shell {
     --iphone17-pro-shell-width: min(100dvw, calc(var(--app-viewport-height, 100svh) * 0.46), 430px);
     --adaptive-shell-width: var(--iphone17-pro-shell-width);
@@ -19951,7 +19951,7 @@ body.legacy-smooth .start-mode-grid button small {
 
 /* Public web demo desktop lock:
    show the playable game as a true 1242 x 2688 portrait canvas on wide desktop browsers. */
-@media (orientation: landscape) and (min-height: 700px) {
+@media (orientation: landscape) and (min-height: 520px) {
   body.legacy-smooth.force-portrait-shell {
     --iphone17-pro-aspect: 1242 / 2688;
     --iphone17-pro-shell-height: min(100svh, calc(100dvw * 2688 / 1242));
