@@ -19954,7 +19954,8 @@ body.legacy-smooth .start-mode-grid button small {
 @media (orientation: landscape) and (min-height: 520px) {
   body.legacy-smooth.force-portrait-shell {
     --iphone17-pro-aspect: 1242 / 2688;
-    --iphone17-pro-shell-height: min(100svh, calc(100dvw * 2688 / 1242));
+    --desktop-reference-height: min(944px, 100svh);
+    --iphone17-pro-shell-height: min(var(--desktop-reference-height), calc(100dvw * 2688 / 1242));
     --iphone17-pro-shell-width: calc(var(--iphone17-pro-shell-height) * 1242 / 2688);
     min-height: 100svh !important;
     overflow: hidden !important;
