@@ -19948,3 +19948,55 @@ body.legacy-smooth .start-mode-grid button small {
     transform: translateY(clamp(-14px, -1.6svh, -7px)) !important;
   }
 }
+
+/* Public web demo desktop lock:
+   show the playable game as a true 1242 x 2688 portrait canvas on wide desktop browsers. */
+@media (orientation: landscape) and (min-height: 700px) {
+  body.legacy-smooth.force-portrait-shell {
+    --iphone17-pro-aspect: 1242 / 2688;
+    --iphone17-pro-shell-height: min(100svh, calc(100dvw * 2688 / 1242));
+    --iphone17-pro-shell-width: calc(var(--iphone17-pro-shell-height) * 1242 / 2688);
+    min-height: 100svh !important;
+    overflow: hidden !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .backdrop-glass {
+    background:
+      radial-gradient(circle at 50% 10%, rgba(78, 220, 255, 0.18), transparent 30%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.38), transparent 18% 82%, rgba(0, 0, 0, 0.38)) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .app-shell {
+    width: var(--iphone17-pro-shell-width) !important;
+    min-width: var(--iphone17-pro-shell-width) !important;
+    max-width: var(--iphone17-pro-shell-width) !important;
+    height: var(--iphone17-pro-shell-height) !important;
+    min-height: var(--iphone17-pro-shell-height) !important;
+    max-height: var(--iphone17-pro-shell-height) !important;
+    aspect-ratio: var(--iphone17-pro-aspect) !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+    contain: layout paint !important;
+    border-left: 1px solid rgba(78, 220, 255, 0.14) !important;
+    border-right: 1px solid rgba(167, 139, 250, 0.16) !important;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 26px 70px rgba(0, 0, 0, 0.42) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .topbar,
+  body.legacy-smooth.force-portrait-shell .task-panel,
+  body.legacy-smooth.force-portrait-shell .control-panel {
+    width: calc(var(--iphone17-pro-shell-width) * 0.92) !important;
+    max-width: calc(var(--iphone17-pro-shell-width) * 0.92) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .board-wrap {
+    width: calc(var(--iphone17-pro-shell-width) * 0.84) !important;
+    max-width: calc(var(--iphone17-pro-shell-width) * 0.84) !important;
+  }
+
+  body.legacy-smooth.force-portrait-shell .side-hud.mobile-hud-root {
+    width: calc(var(--iphone17-pro-shell-width) * 0.52) !important;
+  }
+}
