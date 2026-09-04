@@ -1,0 +1,9 @@
+Target character for image-to-3D / Modly / Hunyuan3D iteration:
+- cute anime young woman, full body, game-ready proportions, not chibi
+- warm brown short bob hair, side braids, small half bun at back crown, soft bangs
+- large warm brown eyes, gentle small smile
+- white and pastel pink zip hoodie with real hood volume, drawstrings, ribbed cuffs and hem
+- navy skort / pleated skirt-shorts, bare legs, white socks with pink stripes
+- pink and white chunky sneakers, beige crossbody bag with raised strap and small pouch
+- A-pose or relaxed T-pose preferred; arms separated from torso; legs separated; clean white background
+- output target: single character mesh for Blender cleanup, then Humanoid/VRM rigging in Unity

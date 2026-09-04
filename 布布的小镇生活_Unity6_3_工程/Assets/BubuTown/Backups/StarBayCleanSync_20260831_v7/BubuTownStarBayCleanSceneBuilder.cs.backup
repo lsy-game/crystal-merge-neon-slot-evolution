@@ -1,0 +1,2692 @@
+using System.IO;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace BubuTown.EditorTools
+{
+    public static class BubuTownStarBayCleanSceneBuilder
+    {
+        private const string ScenePath = "Assets/Scenes/StarBayCleanPrototype.unity";
+        private const string MaterialFolder = "Assets/BubuTown/Materials/StarBayClean";
+        private const bool UseOptionalExternalBuildingModels = false;
+        private const bool UseOptionalExternalBackdropPrefabs = false;
+        private const bool UseLegacyOverlappingFacadePasses = false;
+
+        [MenuItem("BubuTown/Create StarBay Clean Seaside Scene")]
+        public static void CreateStarBayCleanSeasideScene()
+        {
+            EnsureMaterials();
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            scene.name = "StarBayCleanPrototype";
+
+            var root = new GameObject("StarBay_Clean_Seaside_Prototype");
+            CreateLighting(root.transform);
+            CreateStreet(root.transform);
+            CreateStreetSurfaceDetails(root.transform);
+            CreateShopRow(root.transform);
+            CreateOceanEnd(root.transform);
+            CreateStreetLife(root.transform);
+            CreateReferenceStreetMoodLayer(root.transform);
+            CreateReferenceCleanFacadePass(root.transform);
+            CreateReferenceHeroStorefrontPass(root.transform);
+            CreateReferenceStreetLevelPolish(root.transform);
+            CreateStreetAirDetails(root.transform);
+            CreateCompositionShadows(root.transform);
+            CreateSunAndSeaPolish(root.transform);
+            CreatePlayerScaleMarker(root.transform);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
+            EditorSceneManager.SaveScene(scene, ScenePath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[StarBay] Clean seaside scene created: " + ScenePath);
+        }
+
+        [MenuItem("BubuTown/Capture StarBay Clean Seaside Preview")]
+        public static void CaptureStarBayCleanSeasidePreview()
+        {
+            const string projectPreviewPath = "Assets/BubuTown/Docs/StarBayCleanSeasidePreview_v1.png";
+            const string desktopPreviewPath = "/Users/zhendian/Desktop/星湾镇_干净海边主街_Unity预览_v1.png";
+
+            if (!File.Exists(ScenePath))
+            {
+                CreateStarBayCleanSeasideScene();
+            }
+
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var cameraObject = GameObject.Find("StarBay_Clean_Seaside_Prototype/ThirdPerson_Reference_Camera");
+            if (cameraObject == null)
+            {
+                throw new System.Exception("[StarBay] Missing preview camera.");
+            }
+
+            var camera = cameraObject.GetComponent<Camera>();
+            var renderTexture = new RenderTexture(1600, 1000, 24);
+            renderTexture.antiAliasing = 4;
+            camera.targetTexture = renderTexture;
+            camera.Render();
+
+            RenderTexture.active = renderTexture;
+            var image = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+            image.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            image.Apply();
+
+            Directory.CreateDirectory(Path.GetDirectoryName(projectPreviewPath));
+            File.WriteAllBytes(projectPreviewPath, image.EncodeToPNG());
+            Directory.CreateDirectory(Path.GetDirectoryName(desktopPreviewPath));
+            File.Copy(projectPreviewPath, desktopPreviewPath, true);
+
+            RenderTexture.active = null;
+            camera.targetTexture = null;
+            UnityEngine.Object.DestroyImmediate(renderTexture);
+            UnityEngine.Object.DestroyImmediate(image);
+            AssetDatabase.ImportAsset(projectPreviewPath);
+            Debug.Log("[StarBay] Clean seaside preview captured: " + desktopPreviewPath);
+        }
+
+        [MenuItem("BubuTown/Capture StarBay Clean Review Sheet")]
+        public static void CaptureStarBayCleanReviewSheet()
+        {
+            const string projectPreviewPath = "Assets/BubuTown/Docs/StarBayCleanReviewSheet_v1.png";
+            const string desktopPreviewPath = "/Users/zhendian/Desktop/星湾镇_海边商业街_多角度预览_v1.png";
+
+            if (!File.Exists(ScenePath))
+            {
+                CreateStarBayCleanSeasideScene();
+            }
+
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var sheet = new Texture2D(1600, 1000, TextureFormat.RGB24, false);
+            Fill(sheet, new Color(0.9f, 0.92f, 0.93f));
+            Blit(sheet, RenderReviewView("Main_ThirdPerson", new Vector3(0f, 1.78f, -11.4f), new Vector3(0f, 0.78f, 40.5f), 37f), 0, 500);
+            Blit(sheet, RenderReviewView("Left_Storefront_Close", new Vector3(-2.4f, 1.78f, -10.0f), new Vector3(-8.1f, 1.9f, -6.1f), 39f), 800, 500);
+            Blit(sheet, RenderReviewView("Right_Convenience_Close", new Vector3(2.4f, 1.78f, -9.2f), new Vector3(8.1f, 1.86f, -4.4f), 39f), 0, 0);
+            Blit(sheet, RenderReviewView("Ocean_Promenade", new Vector3(0f, 2.05f, 25.5f), new Vector3(0f, 0.95f, 48.5f), 42f), 800, 0);
+            sheet.Apply();
+
+            Directory.CreateDirectory(Path.GetDirectoryName(projectPreviewPath));
+            File.WriteAllBytes(projectPreviewPath, sheet.EncodeToPNG());
+            Directory.CreateDirectory(Path.GetDirectoryName(desktopPreviewPath));
+            File.Copy(projectPreviewPath, desktopPreviewPath, true);
+            UnityEngine.Object.DestroyImmediate(sheet);
+            AssetDatabase.ImportAsset(projectPreviewPath);
+            Debug.Log("[StarBay] Review sheet captured: " + desktopPreviewPath);
+        }
+
+        [MenuItem("BubuTown/Capture StarBay Ocean Entrance Preview")]
+        public static void CaptureStarBayOceanEntrancePreview()
+        {
+            const string projectPreviewPath = "Assets/BubuTown/Docs/StarBayOceanEntrancePreview_v1.png";
+            const string desktopPreviewPath = "/Users/zhendian/Desktop/星湾镇_海边入口_近景预览_v1.png";
+
+            if (!File.Exists(ScenePath))
+            {
+                CreateStarBayCleanSeasideScene();
+            }
+
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            var image = RenderReviewView("Ocean_Entrance_Close", new Vector3(0f, 1.85f, 31.2f), new Vector3(0f, 0.85f, 49.5f), 39f);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(projectPreviewPath));
+            File.WriteAllBytes(projectPreviewPath, image.EncodeToPNG());
+            Directory.CreateDirectory(Path.GetDirectoryName(desktopPreviewPath));
+            File.Copy(projectPreviewPath, desktopPreviewPath, true);
+            UnityEngine.Object.DestroyImmediate(image);
+            AssetDatabase.ImportAsset(projectPreviewPath);
+            Debug.Log("[StarBay] Ocean entrance preview captured: " + desktopPreviewPath);
+        }
+
+        private static void CreateLighting(Transform root)
+        {
+            var sunObject = new GameObject("Warm_Morning_Sun");
+            sunObject.transform.SetParent(root, false);
+            sunObject.transform.rotation = Quaternion.Euler(44f, -32f, 0f);
+            var sun = sunObject.AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.intensity = 1.12f;
+            sun.color = new Color(1f, 0.91f, 0.78f);
+            sun.shadows = LightShadows.Soft;
+            sun.shadowStrength = 0.32f;
+
+            var cameraObject = new GameObject("ThirdPerson_Reference_Camera");
+            cameraObject.transform.SetParent(root, false);
+            cameraObject.transform.position = new Vector3(0f, 1.78f, -11.4f);
+            cameraObject.transform.rotation = Quaternion.LookRotation(new Vector3(0f, 0.78f, 40.5f) - cameraObject.transform.position, Vector3.up);
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.fieldOfView = 37f;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(0.66f, 0.82f, 0.96f);
+            cameraObject.tag = "MainCamera";
+
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.56f, 0.62f, 0.68f);
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = new Color(0.70f, 0.84f, 0.96f);
+            RenderSettings.fogStartDistance = 35f;
+            RenderSettings.fogEndDistance = 82f;
+        }
+
+        private static Texture2D RenderReviewView(string name, Vector3 position, Vector3 target, float fieldOfView)
+        {
+            var cameraObject = new GameObject("Review_Camera_" + name);
+            cameraObject.transform.position = position;
+            cameraObject.transform.rotation = Quaternion.LookRotation(target - position, Vector3.up);
+            var camera = cameraObject.AddComponent<Camera>();
+            camera.fieldOfView = fieldOfView;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(0.66f, 0.82f, 0.96f);
+
+            var renderTexture = new RenderTexture(800, 500, 24);
+            renderTexture.antiAliasing = 4;
+            camera.targetTexture = renderTexture;
+            camera.Render();
+
+            RenderTexture.active = renderTexture;
+            var image = new Texture2D(800, 500, TextureFormat.RGB24, false);
+            image.ReadPixels(new Rect(0, 0, 800, 500), 0, 0);
+            image.Apply();
+
+            RenderTexture.active = null;
+            camera.targetTexture = null;
+            UnityEngine.Object.DestroyImmediate(renderTexture);
+            UnityEngine.Object.DestroyImmediate(cameraObject);
+            return image;
+        }
+
+        private static void CreateStreet(Transform root)
+        {
+            Cube(root, "Warm_Gray_Stone_Paver_Street", new Vector3(0f, -0.02f, 15f), new Vector3(11.6f, 0.08f, 62f), "Paver");
+            Cube(root, "Left_Sidewalk", new Vector3(-7.35f, 0.04f, 15f), new Vector3(2.9f, 0.12f, 62f), "Sidewalk");
+            Cube(root, "Right_Sidewalk", new Vector3(7.35f, 0.04f, 15f), new Vector3(2.9f, 0.12f, 62f), "Sidewalk");
+            Cube(root, "Left_Low_Curb", new Vector3(-5.86f, 0.16f, 15f), new Vector3(0.16f, 0.22f, 62f), "Curb");
+            Cube(root, "Right_Low_Curb", new Vector3(5.86f, 0.16f, 15f), new Vector3(0.16f, 0.22f, 62f), "Curb");
+
+            for (var i = 0; i < 17; i++)
+            {
+                Cube(root, "Paver_Cross_Joint_" + i, new Vector3(0f, 0.045f, -15f + i * 3.7f), new Vector3(10.85f, 0.014f, 0.035f), "Joint");
+            }
+
+            for (var i = -3; i <= 3; i++)
+            {
+                Cube(root, "Paver_Long_Joint_" + (i + 3), new Vector3(i * 1.62f, 0.048f, 15f), new Vector3(0.02f, 0.014f, 61f), "JointSoft");
+            }
+
+            for (var i = 0; i < 18; i++)
+            {
+                var row = i / 3;
+                var col = i % 3;
+                var x = -4.1f + col * 4.1f + (row % 2 == 0 ? 0.32f : -0.28f);
+                var z = -10.5f + row * 6.3f;
+                Cube(root, "Subtle_Paver_Tone_Block_" + i, new Vector3(x, 0.054f, z), new Vector3(2.35f, 0.012f, 2.2f), i % 2 == 0 ? "PaverLight" : "PaverWarm");
+            }
+
+            for (var i = 0; i < 24; i++)
+            {
+                var z = -13.2f + i * 2.35f;
+                Cube(root, "Fine_Paver_Front_Joint_" + i, new Vector3(0f, 0.061f, z), new Vector3(10.9f, 0.008f, 0.018f), "JointSoft");
+            }
+        }
+
+        private static void CreateStreetSurfaceDetails(Transform root)
+        {
+            for (var i = 0; i < 7; i++)
+            {
+                var z = -10.5f + i * 7.6f;
+                Cube(root, "Left_Curb_Drain_Grate_" + i, new Vector3(-5.55f, 0.18f, z), new Vector3(0.12f, 0.025f, 0.62f), "DrainDark");
+                Cube(root, "Right_Curb_Drain_Grate_" + i, new Vector3(5.55f, 0.18f, z + 2.8f), new Vector3(0.12f, 0.025f, 0.62f), "DrainDark");
+                for (var slot = 0; slot < 4; slot++)
+                {
+                    Cube(root, "Left_Drain_Slot_" + i + "_" + slot, new Vector3(-5.55f, 0.197f, z - 0.22f + slot * 0.14f), new Vector3(0.13f, 0.008f, 0.025f), "Metal");
+                    Cube(root, "Right_Drain_Slot_" + i + "_" + slot, new Vector3(5.55f, 0.197f, z + 2.58f + slot * 0.14f), new Vector3(0.13f, 0.008f, 0.025f), "Metal");
+                }
+            }
+
+            for (var i = 0; i < 3; i++)
+            {
+                var cover = Cylinder(root, "Round_Utility_Cover_" + i, new Vector3(i % 2 == 0 ? -2.1f : 1.9f, 0.06f, 2.5f + i * 13f), new Vector3(0.28f, 0.014f, 0.28f), "DrainDark");
+                cover.transform.localRotation = Quaternion.Euler(0f, i * 23f, 0f);
+                Cylinder(root, "Round_Utility_Cover_Rim_" + i, cover.transform.localPosition + new Vector3(0f, 0.016f, 0f), new Vector3(0.31f, 0.004f, 0.31f), "Metal");
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                var z = -5.5f + i * 9.6f;
+                Cube(root, "Sidewalk_Tactile_Tile_Left_" + i, new Vector3(-5.05f, 0.112f, z), new Vector3(0.44f, 0.014f, 0.38f), "TactileYellow");
+                Cube(root, "Sidewalk_Tactile_Tile_Right_" + i, new Vector3(5.05f, 0.112f, z + 1.8f), new Vector3(0.44f, 0.014f, 0.38f), "TactileYellow");
+            }
+        }
+
+        private static void CreateShopRow(Transform root)
+        {
+            Shop(root, "StarBay_Cake_Shop", "星湾甜点屋", new Vector3(-10.65f, 0f, -5.6f), -90f, "Pink", "building-l.glb", true);
+            Shop(root, "StarBay_Cafe_Flower", "星湾咖啡花店", new Vector3(-10.65f, 0f, 15.8f), -90f, "Green", "building-k.glb", false);
+            Shop(root, "StarBay_Convenience", "星湾便利", new Vector3(10.65f, 0f, -3.8f), 90f, "Blue", "building-m.glb", false);
+            Shop(root, "StarBay_Home_Cinema", "海风家居影院", new Vector3(10.65f, 0f, 18.5f), 90f, "Yellow", "building-n.glb", false);
+            if (UseLegacyOverlappingFacadePasses)
+            {
+                StorefrontSlice(root, "Foreground_Left_Bakery_Window_Slice", "橱窗甜点", new Vector3(-9.92f, 0f, -13.2f), -90f, "Pink", true);
+                StorefrontSlice(root, "Foreground_Right_Convenience_Window_Slice", "星湾便利", new Vector3(9.92f, 0f, -12.2f), 90f, "Blue", false);
+                CreateReferenceForegroundDepth(root);
+                CreateStreetFacingFacadeSkins(root);
+                CreateModernStreetArchitecturePolish(root);
+            }
+            CreateUpperStreetSilhouetteLayer(root);
+            if (UseOptionalExternalBackdropPrefabs)
+            {
+                CreateControlledAssetBackdrops(root);
+            }
+            CreateStreetEndLayeredDepth(root);
+        }
+
+        private static void CreateModernStreetArchitecturePolish(Transform root)
+        {
+            for (var side = -1; side <= 1; side += 2)
+            {
+                var x = side * 6.57f;
+                for (var bay = 0; bay < 6; bay++)
+                {
+                    var z = -13.0f + bay * 8.1f;
+                    var accent = bay % 3 == 0 ? "Blue" : (bay % 3 == 1 ? "Green" : "Pink");
+
+                    Cube(root, "Street_Modern_Recess_Shadow_" + side + "_" + bay, new Vector3(x - side * 0.02f, 2.4f, z), new Vector3(0.045f, 3.85f, 2.45f), "FacadeSoftShadow");
+                    Cube(root, "Street_Modern_Vertical_Frame_A_" + side + "_" + bay, new Vector3(x - side * 0.22f, 3.05f, z - 1.18f), new Vector3(0.055f, 4.65f, 0.075f), "WhiteFrame");
+                    Cube(root, "Street_Modern_Vertical_Frame_B_" + side + "_" + bay, new Vector3(x - side * 0.22f, 3.05f, z + 1.18f), new Vector3(0.055f, 4.65f, 0.075f), "WhiteFrame");
+                    Cube(root, "Street_Modern_Shop_Transom_" + side + "_" + bay, new Vector3(x - side * 0.28f, 2.58f, z), new Vector3(0.04f, 0.18f, 2.16f), "WarmLight");
+                    Cube(root, "Street_Modern_Sign_Thin_Edge_" + side + "_" + bay, new Vector3(x - side * 0.31f, 3.59f, z), new Vector3(0.04f, 0.08f, 2.2f), "SignDark");
+
+                    for (var floor = 0; floor < 2; floor++)
+                    {
+                        var y = 4.02f + floor * 0.78f;
+                        Cube(root, "Street_Modern_Balcony_Glass_" + side + "_" + bay + "_" + floor, new Vector3(x - side * 0.39f, y - 0.16f, z), new Vector3(0.045f, 0.32f, 2.04f), "Glass");
+                        Cube(root, "Street_Modern_Balcony_Top_Rail_" + side + "_" + bay + "_" + floor, new Vector3(x - side * 0.44f, y + 0.04f, z), new Vector3(0.045f, 0.045f, 2.12f), "Metal");
+                        Cube(root, "Street_Modern_Window_Curtain_A_" + side + "_" + bay + "_" + floor, new Vector3(x - side * 0.18f, y + 0.24f, z - 0.48f), new Vector3(0.035f, 0.48f, 0.12f), floor % 2 == 0 ? "CurtainWarm" : "CurtainCool");
+                        Cube(root, "Street_Modern_Window_Curtain_B_" + side + "_" + bay + "_" + floor, new Vector3(x - side * 0.18f, y + 0.24f, z + 0.48f), new Vector3(0.035f, 0.48f, 0.12f), floor % 2 == 0 ? "CurtainCool" : "CurtainWarm");
+                    }
+
+                    if (bay % 2 == 0)
+                    {
+                        Cube(root, "Street_Modern_Aircon_Unit_" + side + "_" + bay, new Vector3(x - side * 0.48f, 5.85f, z + 1.42f), new Vector3(0.32f, 0.26f, 0.5f), "WhiteFrame");
+                        for (var stripe = 0; stripe < 5; stripe++)
+                        {
+                            Cube(root, "Street_Modern_Aircon_Slit_" + side + "_" + bay + "_" + stripe, new Vector3(x - side * 0.67f, 5.77f + stripe * 0.04f, z + 1.42f), new Vector3(0.02f, 0.012f, 0.34f), "Metal");
+                        }
+                    }
+
+                    if (bay % 3 != 1)
+                    {
+                        Cube(root, "Street_Modern_Slim_Blade_Sign_" + side + "_" + bay, new Vector3(x - side * 0.58f, 2.15f, z - 1.52f), new Vector3(0.12f, 1.05f, 0.28f), accent);
+                        Cube(root, "Street_Modern_Blade_Sign_Light_" + side + "_" + bay, new Vector3(x - side * 0.66f, 2.15f, z - 1.52f), new Vector3(0.035f, 0.82f, 0.18f), "WarmLight");
+                    }
+                }
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                var z = -8.2f + i * 9.6f;
+                Cube(root, "Street_Ground_Long_Shadow_Left_" + i, new Vector3(-4.15f, 0.071f, z), new Vector3(2.8f, 0.012f, 0.56f), "ShadowSoft").transform.localRotation = Quaternion.Euler(0f, -15f, 0f);
+                Cube(root, "Street_Ground_Long_Shadow_Right_" + i, new Vector3(4.35f, 0.071f, z + 2.7f), new Vector3(2.55f, 0.012f, 0.52f), "ShadowSoft").transform.localRotation = Quaternion.Euler(0f, -15f, 0f);
+            }
+        }
+
+        private static void CreateReferenceStreetMoodLayer(Transform root)
+        {
+            SlopedAwning(root, "Reference_Left_Foreground_Soft_Awning_Canopy", new Vector3(-5.74f, 3.38f, -15.3f), new Vector3(1.32f, 0.28f, 5.7f), "AwningSalmon").transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            Cube(root, "Reference_Left_Foreground_Awning_Shadow", new Vector3(-5.35f, 2.98f, -15.3f), new Vector3(0.08f, 0.12f, 5.58f), "ShadowSoft");
+            Cube(root, "Reference_Left_Foreground_Window_Warmth", new Vector3(-5.64f, 1.55f, -15.25f), new Vector3(0.08f, 1.76f, 3.85f), "InteriorWarm");
+            Cube(root, "Reference_Left_Foreground_Window_Glass", new Vector3(-5.54f, 1.55f, -15.25f), new Vector3(0.055f, 1.82f, 3.78f), "Glass");
+            Quad(root, "Reference_Left_Foreground_Bakery_Decal", new Vector3(-5.45f, 1.72f, -15.25f), new Vector3(3.86f, 2.18f, 1f), new Vector3(0f, 90f, 0f), "StorefrontBakeryDecal");
+            for (var i = 0; i < 5; i++)
+            {
+                var z = -16.75f + i * 0.76f;
+                Cube(root, "Reference_Left_Foreground_Pastry_Shelf_" + i, new Vector3(-5.48f, 0.95f + (i % 2) * 0.34f, z), new Vector3(0.05f, 0.055f, 0.46f), "Wood");
+                Cylinder(root, "Reference_Left_Foreground_Pastry_" + i, new Vector3(-5.43f, 1.04f + (i % 2) * 0.34f, z), new Vector3(0.06f, 0.035f, 0.10f), i % 2 == 0 ? "Cream" : "Pink");
+            }
+
+            SlopedAwning(root, "Reference_Left_Bakery_Salmon_Awning_Main", new Vector3(-6.08f, 3.12f, -12.2f), new Vector3(0.92f, 0.24f, 4.8f), "AwningSalmon").transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            Cube(root, "Reference_Left_Bakery_Awning_Front_Lip", new Vector3(-5.62f, 2.88f, -12.2f), new Vector3(0.16f, 0.34f, 4.75f), "AwningSalmon");
+            for (var i = 0; i < 6; i++)
+            {
+                Cube(root, "Reference_Left_Bakery_Awning_Rib_" + i, new Vector3(-5.54f, 2.7f, -14.25f + i * 0.82f), new Vector3(0.10f, 0.36f, 0.035f), i % 2 == 0 ? "AwningSalmon" : "Cream");
+            }
+
+            Cube(root, "Reference_Left_Bakery_Wood_Bench", new Vector3(-5.92f, 0.48f, -10.35f), new Vector3(0.42f, 0.18f, 1.7f), "Wood");
+            Cube(root, "Reference_Left_Bakery_Bench_Back", new Vector3(-6.12f, 0.82f, -10.35f), new Vector3(0.18f, 0.48f, 1.72f), "Wood");
+            Cube(root, "Reference_Left_Bakery_Standing_Menu", new Vector3(-5.55f, 0.82f, -8.72f), new Vector3(0.08f, 1.05f, 0.68f), "SignDark");
+            Cube(root, "Reference_Left_Bakery_Menu_Face", new Vector3(-5.50f, 0.84f, -8.72f), new Vector3(0.035f, 0.86f, 0.52f), "Cream");
+            for (var i = 0; i < 3; i++)
+            {
+                Cube(root, "Reference_Left_Bakery_Menu_Line_" + i, new Vector3(-5.47f, 0.98f - i * 0.16f, -8.72f), new Vector3(0.025f, 0.026f, 0.32f - i * 0.05f), "AwningSalmon");
+            }
+
+            Cube(root, "Reference_Right_Convenience_Blue_Header", new Vector3(5.95f, 3.22f, -11.45f), new Vector3(0.13f, 0.28f, 4.65f), "Blue");
+            Cube(root, "Reference_Right_Convenience_Green_Stripe", new Vector3(5.86f, 3.03f, -11.45f), new Vector3(0.10f, 0.12f, 4.55f), "Green");
+            Cube(root, "Reference_Right_Convenience_White_Stripe", new Vector3(5.83f, 3.15f, -11.45f), new Vector3(0.08f, 0.07f, 4.35f), "WhiteFrame");
+            Cube(root, "Reference_Right_Foreground_Convenience_Blue_Header", new Vector3(5.96f, 3.44f, -16.0f), new Vector3(0.14f, 0.32f, 4.9f), "Blue");
+            Cube(root, "Reference_Right_Foreground_Convenience_Green_Stripe", new Vector3(5.86f, 3.20f, -16.0f), new Vector3(0.11f, 0.13f, 4.72f), "Green");
+            Cube(root, "Reference_Right_Foreground_Clean_Glass", new Vector3(5.58f, 1.62f, -16.0f), new Vector3(0.06f, 2.08f, 3.45f), "Glass");
+            Cube(root, "Reference_Right_Foreground_Dark_Interior", new Vector3(5.66f, 1.46f, -16.0f), new Vector3(0.045f, 1.7f, 3.24f), "ShopInteriorDeep");
+            Quad(root, "Reference_Right_Foreground_Convenience_Decal", new Vector3(5.45f, 1.72f, -16.0f), new Vector3(3.42f, 2.16f, 1f), new Vector3(0f, -90f, 0f), "StorefrontConvenienceDecal");
+            Cube(root, "Reference_Right_Foreground_Counter_Line", new Vector3(5.48f, 0.93f, -16.0f), new Vector3(0.08f, 0.10f, 2.84f), "Wood");
+            Cube(root, "Reference_Right_Convenience_Glass_Double_Door", new Vector3(5.67f, 1.36f, -10.4f), new Vector3(0.09f, 2.18f, 1.15f), "DarkGlass");
+            Cube(root, "Reference_Right_Convenience_Door_Line", new Vector3(5.60f, 1.36f, -10.4f), new Vector3(0.035f, 2.08f, 0.035f), "WhiteFrame");
+            for (var i = 0; i < 5; i++)
+            {
+                Cube(root, "Reference_Right_Convenience_Color_Goods_" + i, new Vector3(5.55f, 0.76f, -12.95f + i * 0.42f), new Vector3(0.22f, 0.32f, 0.24f), i % 2 == 0 ? "Blue" : "Green");
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                var x = -4.8f + i * 2.4f;
+                Cube(root, "Reference_Ocean_Opening_Bright_Paver_" + i, new Vector3(x, 0.075f, 34.5f + i * 0.28f), new Vector3(1.82f, 0.012f, 2.1f), i % 2 == 0 ? "PaverLight" : "Sidewalk");
+            }
+
+            Cube(root, "Reference_Ocean_Skyline_Soft_Blue_Band", new Vector3(0f, 1.0f, 53.6f), new Vector3(36f, 0.08f, 0.08f), "SeaDepthSoft");
+            Cube(root, "Reference_Distant_Sea_Glint_Long", new Vector3(-1.8f, 0.07f, 49.8f), new Vector3(20f, 0.014f, 0.08f), "OceanGlint");
+            Cube(root, "Reference_Distant_Sea_Glint_Thin_A", new Vector3(4.5f, 0.08f, 47.2f), new Vector3(10.5f, 0.012f, 0.06f), "OceanGlint");
+            Cube(root, "Reference_Distant_Sea_Glint_Thin_B", new Vector3(-7.5f, 0.08f, 51.2f), new Vector3(12f, 0.012f, 0.06f), "OceanGlint");
+            Cube(root, "Reference_Small_Sailboat_Hull", new Vector3(7.1f, 0.34f, 51.2f), new Vector3(0.72f, 0.08f, 0.16f), "Wood");
+            SlopedAwning(root, "Reference_Small_Sailboat_Sail", new Vector3(7.0f, 0.72f, 51.2f), new Vector3(0.06f, 0.75f, 0.48f), "WhiteFrame").transform.localRotation = Quaternion.Euler(0f, 0f, -18f);
+        }
+
+        private static void CreateReferenceCleanFacadePass(Transform root)
+        {
+            var accents = new[] { "Pink", "Green", "Blue", "Blue", "Yellow", "Green" };
+            var labels = new[] { "星湾甜点屋", "海风咖啡", "星湾花店", "星湾便利", "海风影院", "星湾家居" };
+            for (var side = -1; side <= 1; side += 2)
+            {
+                for (var bay = 0; bay < 6; bay++)
+                {
+                    var z = -8.4f + bay * 8.25f + (side > 0 ? 0.75f : 0f);
+                    var accent = side < 0 ? accents[bay] : accents[(bay + 3) % accents.Length];
+                    var label = side < 0 ? labels[bay] : labels[(bay + 3) % labels.Length];
+                    CleanSeasideShopFront(root, side, bay, z, label, accent);
+                }
+            }
+        }
+
+        private static void CleanSeasideShopFront(Transform root, int side, int bay, float z, string displayName, string accent)
+        {
+            var x = side * 6.16f;
+            var face = side * 5.94f;
+            var shopWidth = bay == 0 ? 6.15f : 5.72f;
+            var wallMaterial = bay % 2 == 0 ? "WallCleanLight" : "WallCleanCool";
+
+            Cube(root, "CleanFacade_Wall_Plane_" + side + "_" + bay, new Vector3(x, 3.25f, z), new Vector3(0.10f, 5.85f, shopWidth), wallMaterial);
+            Quad(root, "CleanFacade_Upper_Apartment_Graphic_" + side + "_" + bay, new Vector3(face - side * 0.20f, 4.78f, z), new Vector3(shopWidth - 0.28f, 2.72f, 1f), new Vector3(0f, side < 0 ? 90f : -90f, 0f), bay % 2 == 0 ? "UpperFacadeWarmGraphic" : "UpperFacadeCoolGraphic");
+            Cube(root, "CleanFacade_SecondFloor_Line_" + side + "_" + bay, new Vector3(face, 3.18f, z), new Vector3(0.06f, 0.10f, shopWidth - 0.15f), "Concrete");
+            Cube(root, "CleanFacade_Roof_Cap_" + side + "_" + bay, new Vector3(face, 6.28f, z), new Vector3(0.08f, 0.22f, shopWidth + 0.18f), "WallTrim");
+
+            Cube(root, "CleanFacade_Store_Interior_" + side + "_" + bay, new Vector3(face - side * 0.03f, 1.48f, z - 0.18f), new Vector3(0.05f, 2.12f, shopWidth - 1.28f), "ShopInteriorDeep");
+            Cube(root, "CleanFacade_Store_Glass_" + side + "_" + bay, new Vector3(face - side * 0.12f, 1.55f, z - 0.2f), new Vector3(0.06f, 2.20f, shopWidth - 1.4f), "Glass");
+            Cube(root, "CleanFacade_Door_Glass_" + side + "_" + bay, new Vector3(face - side * 0.15f, 1.22f, z + shopWidth * 0.34f), new Vector3(0.07f, 1.95f, 0.72f), "DarkGlass");
+            Cube(root, "CleanFacade_Door_Handle_" + side + "_" + bay, new Vector3(face - side * 0.24f, 1.24f, z + shopWidth * 0.46f), new Vector3(0.04f, 0.28f, 0.035f), "WarmLight");
+
+            for (var mullion = 0; mullion < 4; mullion++)
+            {
+                var lineZ = z - shopWidth * 0.36f + mullion * (shopWidth * 0.22f);
+                Cube(root, "CleanFacade_Glass_Mullion_" + side + "_" + bay + "_" + mullion, new Vector3(face - side * 0.24f, 1.56f, lineZ), new Vector3(0.035f, 2.12f, 0.045f), "WhiteFrame");
+            }
+
+            Cube(root, "CleanFacade_Glass_Top_Frame_" + side + "_" + bay, new Vector3(face - side * 0.23f, 2.63f, z - 0.2f), new Vector3(0.04f, 0.055f, shopWidth - 1.48f), "WhiteFrame");
+            Cube(root, "CleanFacade_Glass_Bottom_Frame_" + side + "_" + bay, new Vector3(face - side * 0.23f, 0.55f, z - 0.2f), new Vector3(0.04f, 0.055f, shopWidth - 1.48f), "WhiteFrame");
+            Cube(root, "CleanFacade_Door_Frame_Top_" + side + "_" + bay, new Vector3(face - side * 0.25f, 2.22f, z + shopWidth * 0.34f), new Vector3(0.04f, 0.055f, 0.86f), "WhiteFrame");
+            Cube(root, "CleanFacade_Door_Frame_Side_" + side + "_" + bay, new Vector3(face - side * 0.25f, 1.22f, z + shopWidth * 0.04f), new Vector3(0.04f, 1.96f, 0.045f), "WhiteFrame");
+
+            for (var shelf = 0; shelf < 2; shelf++)
+            {
+                var y = 1.02f + shelf * 0.48f;
+                Cube(root, "CleanFacade_Readable_Display_Shelf_" + side + "_" + bay + "_" + shelf, new Vector3(face - side * 0.27f, y, z - shopWidth * 0.08f), new Vector3(0.04f, 0.055f, shopWidth * 0.42f), "Wood");
+                for (var item = 0; item < 5; item++)
+                {
+                    var itemZ = z - shopWidth * 0.26f + item * (shopWidth * 0.105f);
+                    var itemMat = item % 3 == 0 ? accent : (item % 3 == 1 ? "Cream" : "WarmLight");
+                    Cube(root, "CleanFacade_Display_Item_" + side + "_" + bay + "_" + shelf + "_" + item, new Vector3(face - side * 0.31f, y + 0.16f, itemZ), new Vector3(0.07f, 0.23f, 0.12f), itemMat);
+                }
+            }
+
+            Cube(root, "CleanFacade_Awning_Main_" + side + "_" + bay, new Vector3(face - side * 0.36f, 2.86f, z - 0.18f), new Vector3(0.66f, 0.18f, shopWidth - 1.1f), accent);
+            Cube(root, "CleanFacade_Awning_Shadow_" + side + "_" + bay, new Vector3(face - side * 0.34f, 2.68f, z - 0.18f), new Vector3(0.54f, 0.045f, shopWidth - 1.25f), "ShadowSoft");
+            Cube(root, "CleanFacade_Sign_Backplate_" + side + "_" + bay, new Vector3(face - side * 0.17f, 3.36f, z - 0.18f), new Vector3(0.055f, 0.34f, shopWidth - 2.25f), accent);
+            Cube(root, "CleanFacade_Sign_Light_Line_" + side + "_" + bay, new Vector3(face - side * 0.22f, 3.50f, z - 0.18f), new Vector3(0.035f, 0.045f, shopWidth - 2.55f), "WarmLight");
+            SideLabel(root, "CleanFacade_Label_" + side + "_" + bay, displayName, new Vector3(face - side * 0.28f, 3.40f, z - 0.18f), 0.23f, side);
+
+            for (var i = 0; i < 3; i++)
+            {
+                var windowZ = z - 1.75f + i * 1.62f;
+                Cube(root, "CleanFacade_Upper_Window_Frame_" + side + "_" + bay + "_" + i, new Vector3(face - side * 0.08f, 4.72f, windowZ), new Vector3(0.06f, 0.80f, 0.88f), "WhiteFrame");
+                Cube(root, "CleanFacade_Upper_Window_Glass_" + side + "_" + bay + "_" + i, new Vector3(face - side * 0.14f, 4.72f, windowZ), new Vector3(0.045f, 0.58f, 0.66f), "Glass");
+                Cube(root, "CleanFacade_Window_Sill_" + side + "_" + bay + "_" + i, new Vector3(face - side * 0.18f, 4.25f, windowZ), new Vector3(0.08f, 0.05f, 0.96f), "Concrete");
+            }
+
+            if (accent == "Blue")
+            {
+                Cube(root, "CleanFacade_Convenience_Green_Band_" + side + "_" + bay, new Vector3(face - side * 0.24f, 3.18f, z - 0.18f), new Vector3(0.04f, 0.08f, shopWidth - 1.35f), "Green");
+                Cube(root, "CleanFacade_Convenience_White_Band_" + side + "_" + bay, new Vector3(face - side * 0.27f, 3.28f, z - 0.18f), new Vector3(0.035f, 0.052f, shopWidth - 1.55f), "WhiteFrame");
+            }
+
+            if (bay % 2 == 0)
+            {
+                Cube(root, "CleanFacade_Soft_Balcony_Glass_" + side + "_" + bay, new Vector3(face - side * 0.24f, 5.33f, z), new Vector3(0.04f, 0.34f, shopWidth - 1.15f), "Glass");
+            }
+        }
+
+        private static void CreateReferenceHeroStorefrontPass(Transform root)
+        {
+            HeroBakeryStorefront(root, -1, -4.9f);
+            HeroConvenienceStorefront(root, 1, -4.7f);
+            AddReferenceStreetDepthCues(root);
+        }
+
+        private static void HeroBakeryStorefront(Transform root, int side, float z)
+        {
+            var face = side * 4.98f;
+            var heroFace = face - side * 0.34f;
+            Cube(root, "HeroBakery_Clean_Cream_Wall_Mask", new Vector3(heroFace + side * 0.02f, 1.92f, z - 0.1f), new Vector3(0.07f, 2.95f, 6.2f), "BakeryWallWarm");
+            Cube(root, "HeroBakery_Warm_Interior_Back", new Vector3(heroFace - side * 0.04f, 1.56f, z), new Vector3(0.045f, 2.16f, 5.05f), "BakeryInteriorWarm");
+            Cube(root, "HeroBakery_Clear_Glass", new Vector3(heroFace - side * 0.08f, 1.62f, z), new Vector3(0.04f, 2.18f, 4.85f), "BakeryWindowSoft");
+            Quad(root, "HeroBakery_Readable_Illustrated_Storefront", new Vector3(heroFace - side * 0.15f, 1.83f, z), new Vector3(5.25f, 2.86f, 1f), new Vector3(0f, 90f, 0f), "HeroBakeryGraphic");
+            Cube(root, "HeroBakery_Door", new Vector3(heroFace - side * 0.11f, 1.20f, z - 2.08f), new Vector3(0.05f, 1.92f, 0.78f), "DarkGlass");
+
+            Cube(root, "HeroBakery_Salmon_Awning", new Vector3(heroFace - side * 0.18f, 3.04f, z), new Vector3(0.92f, 0.22f, 5.9f), "AwningSalmon");
+            Cube(root, "HeroBakery_Awning_Front_Lip", new Vector3(heroFace - side * 0.48f, 2.84f, z), new Vector3(0.16f, 0.36f, 5.82f), "AwningSalmon");
+            Cube(root, "HeroBakery_Awning_Under_Shadow", new Vector3(heroFace - side * 0.18f, 2.75f, z), new Vector3(0.74f, 0.045f, 5.65f), "ShadowSoft");
+            for (var i = 0; i < 7; i++)
+            {
+                Cube(root, "HeroBakery_Awning_Cream_Stripe_" + i, new Vector3(heroFace - side * 0.51f, 2.87f, z - 2.42f + i * 0.82f), new Vector3(0.12f, 0.33f, 0.32f), i % 2 == 0 ? "Cream" : "AwningSalmon");
+            }
+
+            Cube(root, "HeroBakery_Sign_Back", new Vector3(heroFace - side * 0.1f, 3.42f, z), new Vector3(0.045f, 0.36f, 4.1f), "AwningSalmon");
+            Cube(root, "HeroBakery_Sign_Warm_Line", new Vector3(heroFace - side * 0.15f, 3.56f, z), new Vector3(0.03f, 0.045f, 3.72f), "WarmLight");
+            SideLabel(root, "HeroBakery_Readable_Label", "星湾甜点屋", new Vector3(heroFace - side * 0.22f, 3.43f, z), 0.25f, side);
+
+            for (var i = 0; i < 4; i++)
+            {
+                var shelfZ = z - 1.32f + i * 0.82f;
+                Cube(root, "HeroBakery_Wood_Shelf_" + i, new Vector3(heroFace - side * 0.16f, 1.00f + (i % 2) * 0.38f, shelfZ), new Vector3(0.04f, 0.06f, 0.56f), "Wood");
+                Cylinder(root, "HeroBakery_Pastry_Dome_" + i, new Vector3(heroFace - side * 0.24f, 1.12f + (i % 2) * 0.38f, shelfZ), new Vector3(0.09f, 0.045f, 0.12f), i % 2 == 0 ? "Cream" : "Pink");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var lineZ = z - 2.0f + i * 1.26f;
+                Cube(root, "HeroBakery_Glass_Mullion_" + i, new Vector3(heroFace - side * 0.18f, 1.58f, lineZ), new Vector3(0.03f, 2.05f, 0.045f), "WhiteFrame");
+            }
+            Cube(root, "HeroBakery_Glass_Base_Frame", new Vector3(heroFace - side * 0.18f, 0.55f, z), new Vector3(0.035f, 0.055f, 4.65f), "WhiteFrame");
+            Cube(root, "HeroBakery_Glass_Top_Frame", new Vector3(heroFace - side * 0.18f, 2.62f, z), new Vector3(0.035f, 0.055f, 4.65f), "WhiteFrame");
+
+            Cube(root, "HeroBakery_Bench_Seat", new Vector3(heroFace - side * 0.60f, 0.44f, z + 2.72f), new Vector3(0.42f, 0.16f, 1.50f), "Wood");
+            Cube(root, "HeroBakery_Bench_Back", new Vector3(heroFace - side * 0.78f, 0.78f, z + 2.72f), new Vector3(0.16f, 0.42f, 1.46f), "Wood");
+            Cube(root, "HeroBakery_Menu_Board", new Vector3(heroFace - side * 0.50f, 0.88f, z + 1.35f), new Vector3(0.08f, 1.05f, 0.60f), "Cream");
+            Cube(root, "HeroBakery_Menu_Header", new Vector3(heroFace - side * 0.55f, 1.17f, z + 1.35f), new Vector3(0.035f, 0.09f, 0.42f), "AwningSalmon");
+            for (var i = 0; i < 3; i++)
+            {
+                Cube(root, "HeroBakery_Menu_Line_" + i, new Vector3(heroFace - side * 0.56f, 0.96f - i * 0.14f, z + 1.35f), new Vector3(0.03f, 0.025f, 0.32f - i * 0.04f), "Pink");
+            }
+        }
+
+        private static void HeroConvenienceStorefront(Transform root, int side, float z)
+        {
+            var face = side * 4.98f;
+            var heroFace = face - side * 0.34f;
+            Cube(root, "HeroConvenience_Clean_Wall_Mask", new Vector3(heroFace + side * 0.02f, 1.92f, z - 0.05f), new Vector3(0.07f, 2.95f, 6.0f), "ConvenienceWallCool");
+            Cube(root, "HeroConvenience_Interior_Dark_Back", new Vector3(heroFace - side * 0.04f, 1.52f, z), new Vector3(0.045f, 2.08f, 4.85f), "ShopInteriorDeep");
+            Cube(root, "HeroConvenience_Clear_Glass", new Vector3(heroFace - side * 0.08f, 1.62f, z), new Vector3(0.04f, 2.14f, 4.65f), "ConvenienceWindowSoft");
+            Quad(root, "HeroConvenience_Readable_Illustrated_Storefront", new Vector3(heroFace - side * 0.15f, 1.82f, z), new Vector3(5.05f, 2.82f, 1f), new Vector3(0f, -90f, 0f), "HeroConvenienceGraphic");
+            Cube(root, "HeroConvenience_Blue_Header", new Vector3(heroFace - side * 0.12f, 3.34f, z), new Vector3(0.055f, 0.32f, 5.25f), "Blue");
+            Cube(root, "HeroConvenience_Green_Stripe", new Vector3(heroFace - side * 0.17f, 3.13f, z), new Vector3(0.04f, 0.13f, 5.08f), "Green");
+            Cube(root, "HeroConvenience_White_Stripe", new Vector3(heroFace - side * 0.20f, 3.24f, z), new Vector3(0.032f, 0.055f, 4.8f), "WhiteFrame");
+            SideLabel(root, "HeroConvenience_Readable_Label", "星湾便利", new Vector3(heroFace - side * 0.25f, 3.36f, z), 0.24f, side);
+
+            Cube(root, "HeroConvenience_Door_Left", new Vector3(heroFace - side * 0.12f, 1.20f, z - 1.85f), new Vector3(0.055f, 1.95f, 0.78f), "DarkGlass");
+            Cube(root, "HeroConvenience_Door_Right", new Vector3(heroFace - side * 0.12f, 1.20f, z - 1.10f), new Vector3(0.055f, 1.95f, 0.72f), "DarkGlass");
+            Cube(root, "HeroConvenience_Door_Center_Line", new Vector3(heroFace - side * 0.19f, 1.20f, z - 1.47f), new Vector3(0.035f, 1.95f, 0.035f), "WhiteFrame");
+
+            for (var i = 0; i < 5; i++)
+            {
+                var shelfZ = z - 0.35f + i * 0.62f;
+                Cube(root, "HeroConvenience_Wood_Shelf_" + i, new Vector3(heroFace - side * 0.20f, 0.96f + (i % 2) * 0.44f, shelfZ), new Vector3(0.04f, 0.055f, 0.48f), "Wood");
+                Cube(root, "HeroConvenience_Product_Box_A_" + i, new Vector3(heroFace - side * 0.28f, 1.14f + (i % 2) * 0.44f, shelfZ - 0.12f), new Vector3(0.06f, 0.24f, 0.11f), i % 2 == 0 ? "Blue" : "Green");
+                Cube(root, "HeroConvenience_Product_Box_B_" + i, new Vector3(heroFace - side * 0.28f, 1.12f + (i % 2) * 0.44f, shelfZ + 0.12f), new Vector3(0.06f, 0.20f, 0.10f), i % 2 == 0 ? "Cream" : "WarmLight");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var lineZ = z - 1.92f + i * 1.22f;
+                Cube(root, "HeroConvenience_Glass_Mullion_" + i, new Vector3(heroFace - side * 0.18f, 1.58f, lineZ), new Vector3(0.03f, 2.05f, 0.045f), "WhiteFrame");
+            }
+            Cube(root, "HeroConvenience_Glass_Base_Frame", new Vector3(heroFace - side * 0.18f, 0.55f, z), new Vector3(0.035f, 0.055f, 4.45f), "WhiteFrame");
+            Cube(root, "HeroConvenience_Glass_Top_Frame", new Vector3(heroFace - side * 0.18f, 2.62f, z), new Vector3(0.035f, 0.055f, 4.45f), "WhiteFrame");
+
+            Cube(root, "HeroConvenience_Crate_Blue", new Vector3(heroFace - side * 0.55f, 0.32f, z + 2.55f), new Vector3(0.34f, 0.30f, 0.46f), "Blue");
+            Cube(root, "HeroConvenience_Crate_Green", new Vector3(heroFace - side * 0.55f, 0.32f, z + 3.08f), new Vector3(0.34f, 0.30f, 0.44f), "Green");
+            Cylinder(root, "HeroConvenience_Potted_Tree_Pot", new Vector3(heroFace - side * 0.54f, 0.32f, z - 2.65f), new Vector3(0.16f, 0.32f, 0.16f), "Concrete");
+            Sphere(root, "HeroConvenience_Potted_Tree_Leaf", new Vector3(heroFace - side * 0.54f, 0.78f, z - 2.65f), new Vector3(0.28f, 0.24f, 0.28f), "PlantDark");
+        }
+
+        private static void AddReferenceStreetDepthCues(Transform root)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                var z = 1.5f + i * 11.0f;
+                Cylinder(root, "Reference_Utility_Pole_Center_Left_" + i, new Vector3(-5.15f, 2.25f, z), new Vector3(0.045f, 2.25f, 0.045f), "Wood");
+                Cylinder(root, "Reference_Utility_Pole_Center_Right_" + i, new Vector3(5.15f, 2.25f, z + 4.0f), new Vector3(0.045f, 2.25f, 0.045f), "Wood");
+                Cube(root, "Reference_Utility_Pole_Arm_Left_" + i, new Vector3(-5.15f, 4.32f, z), new Vector3(0.06f, 0.055f, 1.25f), "Wood");
+                Cube(root, "Reference_Utility_Pole_Arm_Right_" + i, new Vector3(5.15f, 4.32f, z + 4.0f), new Vector3(0.06f, 0.055f, 1.25f), "Wood");
+            }
+
+            for (var i = 0; i < 2; i++)
+            {
+                Cube(root, "Reference_Overhead_Wire_Left_" + i, new Vector3(-5.12f, 4.72f - i * 0.18f, 18.5f), new Vector3(0.012f, 0.012f, 30f), "WallShadow");
+                Cube(root, "Reference_Overhead_Wire_Right_" + i, new Vector3(5.12f, 4.72f - i * 0.18f, 20.5f), new Vector3(0.012f, 0.012f, 28f), "WallShadow");
+            }
+
+            Palm(root, "Reference_Visible_Ocean_Palm_Left", new Vector3(-6.9f, 0f, 35.8f));
+            Palm(root, "Reference_Visible_Ocean_Palm_Right", new Vector3(6.9f, 0f, 35.2f));
+        }
+
+        private static void CreateReferenceStreetLevelPolish(Transform root)
+        {
+            HeroStorefrontDepthPolish(root, "Bakery", -1, -4.9f, "AwningSalmon", "Pink", true);
+            HeroStorefrontDepthPolish(root, "Convenience", 1, -4.7f, "Blue", "Green", false);
+            CreateReferenceResidentialFacadePolish(root);
+            CreateReferenceSeasideApproachPolish(root);
+        }
+
+        private static void HeroStorefrontDepthPolish(Transform root, string prefix, int side, float z, string primary, string secondary, bool bakery)
+        {
+            var face = side * 4.98f;
+            var heroFace = face - side * 0.34f;
+            var streetX = heroFace - side * 0.58f;
+            var doorZ = bakery ? z - 2.08f : z - 1.48f;
+
+            Cube(root, prefix + "_Recessed_Door_Shadow_Box", new Vector3(heroFace - side * 0.22f, 1.36f, doorZ), new Vector3(0.09f, 2.28f, 1.08f), "WindowFrameShadow");
+            Cube(root, prefix + "_Door_Left_Thick_Frame", new Vector3(heroFace - side * 0.30f, 1.38f, doorZ - 0.48f), new Vector3(0.10f, 2.22f, 0.08f), "WhiteFrame");
+            Cube(root, prefix + "_Door_Right_Thick_Frame", new Vector3(heroFace - side * 0.30f, 1.38f, doorZ + 0.48f), new Vector3(0.10f, 2.22f, 0.08f), "WhiteFrame");
+            Cube(root, prefix + "_Door_Header_Thick_Frame", new Vector3(heroFace - side * 0.30f, 2.48f, doorZ), new Vector3(0.10f, 0.10f, 1.1f), "WhiteFrame");
+            Cube(root, prefix + "_Door_Threshold_Step", new Vector3(streetX, 0.12f, doorZ), new Vector3(0.72f, 0.10f, 1.22f), "StepStone");
+            Cube(root, prefix + "_Door_Mat_Detail", new Vector3(streetX - side * 0.02f, 0.19f, doorZ), new Vector3(0.52f, 0.025f, 0.84f), primary);
+            Cube(root, prefix + "_Door_Pull_Handle", new Vector3(heroFace - side * 0.38f, 1.34f, doorZ + 0.23f), new Vector3(0.035f, 0.46f, 0.035f), "Metal");
+
+            Cube(root, prefix + "_Window_Left_Return", new Vector3(heroFace - side * 0.29f, 1.62f, z - 2.46f), new Vector3(0.18f, 2.08f, 0.08f), "WindowFrameShadow");
+            Cube(root, prefix + "_Window_Right_Return", new Vector3(heroFace - side * 0.29f, 1.62f, z + 2.46f), new Vector3(0.18f, 2.08f, 0.08f), "WindowFrameShadow");
+            Cube(root, prefix + "_Window_Deep_Bottom_Sill", new Vector3(heroFace - side * 0.34f, 0.50f, z), new Vector3(0.22f, 0.12f, 5.05f), "StepStone");
+            Cube(root, prefix + "_Window_Deep_Top_Sill", new Vector3(heroFace - side * 0.34f, 2.70f, z), new Vector3(0.18f, 0.10f, 5.05f), "WhiteFrame");
+            Cube(root, prefix + "_Interior_Ceiling_Warm_Line", new Vector3(heroFace - side * 0.42f, 2.42f, z), new Vector3(0.035f, 0.055f, 4.55f), "WarmLight");
+
+            for (var i = 0; i < 5; i++)
+            {
+                var lightZ = z - 2.25f + i * 1.12f;
+                Cylinder(root, prefix + "_Awning_Round_Downlight_" + i, new Vector3(heroFace - side * 0.50f, 2.68f, lightZ), new Vector3(0.075f, 0.018f, 0.075f), "BulbGlow");
+            }
+
+            for (var i = 0; i < 3; i++)
+            {
+                var braceZ = z - 2.26f + i * 2.26f;
+                Cube(root, prefix + "_Awning_Wall_Bracket_" + i, new Vector3(heroFace - side * 0.34f, 2.82f, braceZ), new Vector3(0.48f, 0.045f, 0.045f), "DoorFrameDark").transform.localRotation = Quaternion.Euler(0f, 0f, side * 18f);
+                Cube(root, prefix + "_Awning_Front_Bracket_" + i, new Vector3(heroFace - side * 0.61f, 2.68f, braceZ), new Vector3(0.05f, 0.28f, 0.05f), "DoorFrameDark");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var itemZ = z - 1.56f + i * 1.02f;
+                var y = bakery ? 1.38f + (i % 2) * 0.36f : 1.04f + (i % 2) * 0.34f;
+                if (bakery)
+                {
+                    Cylinder(root, prefix + "_Window_Cake_Plate_" + i, new Vector3(heroFace - side * 0.48f, y, itemZ), new Vector3(0.15f, 0.035f, 0.15f), "Cream");
+                    Sphere(root, prefix + "_Window_Cake_Top_" + i, new Vector3(heroFace - side * 0.48f, y + 0.10f, itemZ), new Vector3(0.10f, 0.06f, 0.10f), i % 2 == 0 ? "FlowerPink" : "FlowerYellow");
+                }
+                else
+                {
+                    Cube(root, prefix + "_Window_Product_Label_" + i, new Vector3(heroFace - side * 0.49f, y, itemZ), new Vector3(0.055f, 0.24f, 0.38f), i % 2 == 0 ? secondary : "FlowerYellow");
+                    Cube(root, prefix + "_Window_Product_Base_" + i, new Vector3(heroFace - side * 0.49f, y - 0.18f, itemZ), new Vector3(0.06f, 0.08f, 0.45f), "Cream");
+                }
+            }
+
+            FineFlowerPlanter(root, prefix + "_Entry_Flower_Box_A", new Vector3(streetX, 0f, z + 2.95f), primary, secondary);
+            FineFlowerPlanter(root, prefix + "_Entry_Flower_Box_B", new Vector3(streetX, 0f, z - 2.95f), secondary, primary);
+        }
+
+        private static void CreateReferenceResidentialFacadePolish(Transform root)
+        {
+            for (var side = -1; side <= 1; side += 2)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    var z = -12.4f + i * 10.8f + (side > 0 ? 2.2f : 0f);
+                    var x = side * 6.68f;
+                    Cube(root, "Reference_Apartment_Recess_Shadow_" + side + "_" + i, new Vector3(x, 4.46f, z), new Vector3(0.05f, 1.44f, 2.18f), "FacadeSoftShadow");
+                    Cube(root, "Reference_Apartment_Long_Window_Frame_" + side + "_" + i, new Vector3(x - side * 0.08f, 4.48f, z), new Vector3(0.075f, 1.02f, 1.72f), "WhiteFrame");
+                    Cube(root, "Reference_Apartment_Long_Window_Glass_" + side + "_" + i, new Vector3(x - side * 0.13f, 4.48f, z), new Vector3(0.05f, 0.82f, 1.42f), "Glass");
+                    Cube(root, "Reference_Apartment_Curtain_A_" + side + "_" + i, new Vector3(x - side * 0.18f, 4.48f, z - 0.40f), new Vector3(0.035f, 0.74f, 0.18f), i % 2 == 0 ? "CurtainWarm" : "CurtainCool");
+                    Cube(root, "Reference_Apartment_Curtain_B_" + side + "_" + i, new Vector3(x - side * 0.18f, 4.48f, z + 0.40f), new Vector3(0.035f, 0.74f, 0.18f), i % 2 == 0 ? "CurtainWarm" : "CurtainCool");
+                    Cube(root, "Reference_Apartment_Mini_Balcony_Slab_" + side + "_" + i, new Vector3(x - side * 0.38f, 3.78f, z), new Vector3(0.55f, 0.10f, 1.80f), "StepStone");
+                    Cube(root, "Reference_Apartment_Mini_Balcony_Rail_" + side + "_" + i, new Vector3(x - side * 0.65f, 4.12f, z), new Vector3(0.055f, 0.54f, 1.68f), "Glass");
+                    Cube(root, "Reference_Apartment_AC_Unit_" + side + "_" + i, new Vector3(x - side * 0.28f, 5.36f, z + 1.18f), new Vector3(0.28f, 0.24f, 0.56f), "WhiteFrame");
+                    Cube(root, "Reference_Apartment_AC_Vent_" + side + "_" + i, new Vector3(x - side * 0.44f, 5.36f, z + 1.18f), new Vector3(0.035f, 0.12f, 0.42f), "DoorFrameDark");
+                }
+            }
+        }
+
+        private static void CreateReferenceSeasideApproachPolish(Transform root)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                var z = 28.2f + i * 2.3f;
+                Cube(root, "Seaside_Approach_Low_Rail_Left_" + i, new Vector3(-3.7f, 0.74f, z), new Vector3(0.10f, 0.72f, 0.08f), "WhiteFrame");
+                Cube(root, "Seaside_Approach_Low_Rail_Right_" + i, new Vector3(3.7f, 0.74f, z), new Vector3(0.10f, 0.72f, 0.08f), "WhiteFrame");
+                Cube(root, "Seaside_Approach_Rail_Top_Left_" + i, new Vector3(-3.7f, 1.12f, z + 0.95f), new Vector3(0.08f, 0.07f, 2.05f), "WhiteFrame");
+                Cube(root, "Seaside_Approach_Rail_Top_Right_" + i, new Vector3(3.7f, 1.12f, z + 0.95f), new Vector3(0.08f, 0.07f, 2.05f), "WhiteFrame");
+            }
+
+            Cube(root, "Seaside_End_Clear_View_Frame_Left", new Vector3(-5.25f, 1.58f, 36.2f), new Vector3(0.18f, 2.65f, 0.22f), "WallCleanLight");
+            Cube(root, "Seaside_End_Clear_View_Frame_Right", new Vector3(5.25f, 1.58f, 36.2f), new Vector3(0.18f, 2.65f, 0.22f), "WallCleanCool");
+            Cube(root, "Seaside_Promenade_Bright_Tile_Band", new Vector3(0f, 0.075f, 35.2f), new Vector3(7.0f, 0.018f, 1.2f), "PaverLight");
+        }
+
+        private static void CreateUpperStreetSilhouetteLayer(Transform root)
+        {
+            UpperStreetSilhouette(root, "Left_Close_Upper_Silhouette", -1, -12.8f, "Pink");
+            UpperStreetSilhouette(root, "Left_Mid_Upper_Silhouette", -1, 5.4f, "Green");
+            UpperStreetSilhouette(root, "Left_Far_Upper_Silhouette", -1, 22.0f, "Blue");
+            UpperStreetSilhouette(root, "Right_Close_Upper_Silhouette", 1, -11.8f, "Blue");
+            UpperStreetSilhouette(root, "Right_Mid_Upper_Silhouette", 1, 6.4f, "Blue");
+            UpperStreetSilhouette(root, "Right_Far_Upper_Silhouette", 1, 23.0f, "Green");
+        }
+
+        private static void UpperStreetSilhouette(Transform root, string name, int side, float z, string accent)
+        {
+            var layer = new GameObject(name);
+            layer.transform.SetParent(root, false);
+
+            var x = side * 7.08f;
+            Cube(layer.transform, "Upper_Connector_Wall", new Vector3(x, 5.72f, z), new Vector3(0.12f, 2.55f, 5.6f), "WallSlight");
+            Cube(layer.transform, "Upper_Fourth_Floor_Wall", new Vector3(x - side * 0.02f, 6.38f, z), new Vector3(0.16f, 1.25f, 5.6f), "WallSlight");
+            Cube(layer.transform, "Upper_Roof_Parapet", new Vector3(x - side * 0.05f, 7.12f, z), new Vector3(0.18f, 0.24f, 5.75f), "WallTrim");
+            Cube(layer.transform, "Upper_Roof_Glass_Rail", new Vector3(x - side * 0.34f, 7.38f, z), new Vector3(0.055f, 0.5f, 5.05f), "Glass");
+            Cube(layer.transform, "Upper_Thin_Shadow_Under_Crown", new Vector3(x - side * 0.12f, 5.76f, z), new Vector3(0.08f, 0.055f, 5.52f), "ShadowSoft");
+
+            for (var i = 0; i < 4; i++)
+            {
+                var wz = z - 2.0f + i * 1.35f;
+                Cube(layer.transform, "Upper_Small_Window_Frame_" + i, new Vector3(x - side * 0.12f, 6.42f, wz), new Vector3(0.075f, 0.62f, 0.78f), "WhiteFrame");
+                Cube(layer.transform, "Upper_Small_Window_Glass_" + i, new Vector3(x - side * 0.17f, 6.42f, wz), new Vector3(0.055f, 0.46f, 0.58f), "Glass");
+                Cube(layer.transform, "Upper_Small_Window_Sill_" + i, new Vector3(x - side * 0.19f, 6.05f, wz), new Vector3(0.08f, 0.045f, 0.84f), "Concrete");
+            }
+
+            Cube(layer.transform, "Upper_Accent_Rooftop_Box", new Vector3(x - side * 0.24f, 7.42f, z - 1.85f), new Vector3(0.3f, 0.35f, 0.72f), accent);
+            Cube(layer.transform, "Upper_White_Rooftop_Unit", new Vector3(x - side * 0.22f, 7.32f, z + 1.6f), new Vector3(0.34f, 0.26f, 0.62f), "WhiteFrame");
+            for (var i = 0; i < 3; i++)
+            {
+                Cube(layer.transform, "Upper_Rooftop_Unit_Vent_" + i, new Vector3(x - side * 0.42f, 7.28f + i * 0.05f, z + 1.6f), new Vector3(0.02f, 0.014f, 0.42f), "Metal");
+            }
+        }
+
+        private static void CreateControlledAssetBackdrops(Transform root)
+        {
+            PlaceThemedPrefab(root, "CartoonCity_Backdrop_Left_Terrace", "Assets/ithappy/Cartoon_City_Free/Prefabs/Buildings/Eco_Building_Terrace.prefab", new Vector3(-17.5f, 0f, 9f), new Vector3(0f, 58f, 0f), Vector3.one * 0.11f, "Green");
+            PlaceThemedPrefab(root, "CartoonCity_Backdrop_Right_Grid", "Assets/ithappy/Cartoon_City_Free/Prefabs/Buildings/Eco_Building_Grid.prefab", new Vector3(17.5f, 0f, 13f), new Vector3(0f, -58f, 0f), Vector3.one * 0.11f, "Blue");
+            PlaceThemedPrefab(root, "CartoonCity_Far_Left_Slope", "Assets/ithappy/Cartoon_City_Free/Prefabs/Buildings/Eco_Building_Slope.prefab", new Vector3(-18.5f, 0f, 29f), new Vector3(0f, 46f, 0f), Vector3.one * 0.095f, "Yellow");
+            PlaceThemedPrefab(root, "CartoonCity_Far_Right_Terrace", "Assets/ithappy/Cartoon_City_Free/Prefabs/Buildings/Eco_Building_Terrace.prefab", new Vector3(18.5f, 0f, 30.5f), new Vector3(0f, -46f, 0f), Vector3.one * 0.095f, "Pink");
+        }
+
+        private static void CreateStreetFacingFacadeSkins(Transform root)
+        {
+            StreetFacingFacadeSkin(root, "Left_Close_Bakery_Street_Skin", "星湾甜点屋", -1, -12.9f, "Pink", true);
+            StreetFacingFacadeSkin(root, "Left_Mid_Cafe_Street_Skin", "海风咖啡", -1, 5.2f, "Green", false);
+            StreetFacingFacadeSkin(root, "Left_Far_Gallery_Street_Skin", "星湾花店", -1, 22.4f, "Blue", false);
+            StreetFacingFacadeSkin(root, "Right_Close_Convenience_Street_Skin", "星湾便利", 1, -11.9f, "Blue", false);
+            StreetFacingFacadeSkin(root, "Right_Mid_Cinema_Street_Skin", "海风影院", 1, 6.4f, "Blue", false);
+            StreetFacingFacadeSkin(root, "Right_Far_Flower_Street_Skin", "星湾家居", 1, 23.2f, "Green", false);
+        }
+
+        private static void StreetFacingFacadeSkin(Transform root, string name, string displayName, int side, float z, string accent, bool bakery)
+        {
+            var skin = new GameObject(name);
+            skin.transform.SetParent(root, false);
+
+            var x = side * 6.72f;
+            Cube(skin.transform, "StreetSkin_Warm_Wall_Panel", new Vector3(x, 2.65f, z), new Vector3(0.08f, 4.8f, 6.2f), "Wall");
+            Cube(skin.transform, "StreetSkin_Ground_Shadow_Return", new Vector3(x - side * 0.04f, 1.62f, z), new Vector3(0.07f, 2.72f, 5.8f), "ShopInteriorDeep");
+            Cube(skin.transform, "StreetSkin_Storefront_Glass", new Vector3(x - side * 0.08f, 1.62f, z - 0.55f), new Vector3(0.08f, 2.18f, 3.8f), "Glass");
+            Cube(skin.transform, "StreetSkin_Door", new Vector3(x - side * 0.1f, 1.18f, z + 2.0f), new Vector3(0.09f, 1.96f, 0.75f), "DarkGlass");
+            Cube(skin.transform, "StreetSkin_Display_Base", new Vector3(x - side * 0.12f, 0.62f, z - 0.55f), new Vector3(0.12f, 0.22f, 3.55f), "Wood");
+            Cube(skin.transform, "StreetSkin_Second_Floor_Slab", new Vector3(x - side * 0.04f, 3.05f, z), new Vector3(0.12f, 0.16f, 6.35f), "Concrete");
+            Cube(skin.transform, "StreetSkin_Awning", new Vector3(x - side * 0.32f, 2.88f, z - 0.55f), new Vector3(0.52f, 0.16f, 4.1f), accent);
+            Cube(skin.transform, "StreetSkin_Sign_Band", new Vector3(x - side * 0.12f, 3.36f, z - 0.42f), new Vector3(0.08f, 0.38f, 3.7f), accent);
+            Cube(skin.transform, "StreetSkin_Sign_Highlight", new Vector3(x - side * 0.15f, 3.51f, z - 0.42f), new Vector3(0.045f, 0.055f, 3.42f), "WarmLight");
+            SideLabel(skin.transform, "StreetSkin_Readable_Label", displayName, new Vector3(x - side * 0.19f, 3.42f, z - 0.42f), 0.24f, side);
+            for (var i = 0; i < 4; i++)
+            {
+                Cube(skin.transform, "StreetSkin_Awning_Support_" + i, new Vector3(x - side * 0.44f, 2.57f, z - 2.0f + i * 1.05f), new Vector3(0.055f, 0.64f, 0.045f), "Metal").transform.localRotation = Quaternion.Euler(0f, 0f, side * 13f);
+            }
+            if (bakery)
+            {
+                Cube(skin.transform, "StreetSkin_Bakery_Soft_Pink_Awning_Face", new Vector3(x - side * 0.39f, 2.78f, z - 0.55f), new Vector3(0.055f, 0.18f, 4.05f), "Pink");
+                Cube(skin.transform, "StreetSkin_Bakery_Cream_Awning_Edge", new Vector3(x - side * 0.42f, 2.68f, z - 0.55f), new Vector3(0.04f, 0.08f, 3.9f), "Cream");
+            }
+            else if (accent == "Blue")
+            {
+                Cube(skin.transform, "StreetSkin_Convenience_Green_Brand_Stripe", new Vector3(x - side * 0.17f, 3.24f, z - 0.42f), new Vector3(0.04f, 0.11f, 3.55f), "Green");
+                Cube(skin.transform, "StreetSkin_Convenience_White_Brand_Stripe", new Vector3(x - side * 0.19f, 3.42f, z - 0.42f), new Vector3(0.035f, 0.06f, 3.34f), "WhiteFrame");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var itemZ = z - 1.95f + i * 0.88f;
+                Cube(skin.transform, "StreetSkin_Glass_Mullion_" + i, new Vector3(x - side * 0.14f, 1.62f, itemZ), new Vector3(0.08f, 2.18f, 0.045f), "WhiteFrame");
+                Cube(skin.transform, "StreetSkin_Display_Object_" + i, new Vector3(x - side * 0.2f, 1.0f, itemZ + 0.26f), new Vector3(0.18f, 0.34f, 0.22f), i % 2 == 0 ? accent : "Cream");
+            }
+
+            for (var row = 0; row < 2; row++)
+            {
+                for (var i = 0; i < 3; i++)
+                {
+                    var wz = z - 1.9f + i * 1.85f;
+                    var wy = 4.12f + row * 0.98f;
+                    Cube(skin.transform, "StreetSkin_Apartment_Frame_" + row + "_" + i, new Vector3(x - side * 0.08f, wy, wz), new Vector3(0.075f, 0.72f, 1.05f), "WhiteFrame");
+                    Cube(skin.transform, "StreetSkin_Apartment_Glass_" + row + "_" + i, new Vector3(x - side * 0.13f, wy, wz), new Vector3(0.06f, 0.54f, 0.82f), "Glass");
+                    Cube(skin.transform, "StreetSkin_Sill_" + row + "_" + i, new Vector3(x - side * 0.15f, wy - 0.43f, wz), new Vector3(0.1f, 0.06f, 1.1f), "Concrete");
+                }
+            }
+
+            Cube(skin.transform, "StreetSkin_Balcony_Slab", new Vector3(x - side * 0.22f, 3.76f, z), new Vector3(0.36f, 0.10f, 5.15f), "Concrete");
+            Cube(skin.transform, "StreetSkin_Balcony_Rail", new Vector3(x - side * 0.42f, 4.06f, z), new Vector3(0.06f, 0.42f, 5.0f), "Metal");
+            for (var i = 0; i < 6; i++)
+            {
+                Cube(skin.transform, "StreetSkin_Balcony_Post_" + i, new Vector3(x - side * 0.43f, 4.08f, z - 2.35f + i * 0.94f), new Vector3(0.065f, 0.42f, 0.04f), "Metal");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                Cube(skin.transform, "StreetSkin_Subtle_Floor_Line_" + i, new Vector3(x - side * 0.07f, 3.18f + i * 0.68f, z), new Vector3(0.045f, 0.025f, 5.45f), "WallShadow");
+            }
+
+            Cube(skin.transform, "StreetSkin_Vertical_Light_Box", new Vector3(x - side * 0.24f, 2.15f, z - 2.85f), new Vector3(0.18f, 1.55f, 0.22f), accent);
+            Cube(skin.transform, "StreetSkin_Downlight_Line", new Vector3(x - side * 0.36f, 2.62f, z - 0.55f), new Vector3(0.04f, 0.055f, 3.5f), "WarmLight");
+            Cube(skin.transform, "StreetSkin_Door_Handle", new Vector3(x - side * 0.19f, 1.2f, z + 2.3f), new Vector3(0.04f, 0.28f, 0.045f), "WarmLight");
+            Cube(skin.transform, "StreetSkin_Recessed_Door_Mat", new Vector3(x - side * 0.48f, 0.08f, z + 2.0f), new Vector3(0.48f, 0.025f, 0.92f), bakery ? "Pink" : accent);
+
+            if (bakery)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    Cylinder(skin.transform, "StreetSkin_Bakery_Cake_" + i, new Vector3(x - side * 0.25f, 1.16f, z - 1.65f + i * 0.55f), new Vector3(0.13f, 0.045f, 0.13f), i % 2 == 0 ? "Pink" : "Cream");
+                }
+            }
+        }
+
+        private static void CreateReferenceForegroundDepth(Transform root)
+        {
+            SeasideForegroundBlock(root, "Reference_Left_Pastry_Commercial_Block", "星湾甜点屋", new Vector3(-10.85f, 0f, -17.0f), -90f, "Pink", true);
+            SeasideForegroundBlock(root, "Reference_Right_Convenience_Commercial_Block", "星湾便利", new Vector3(10.85f, 0f, -16.0f), 90f, "Blue", false);
+        }
+
+        private static void SeasideForegroundBlock(Transform root, string name, string displayName, Vector3 position, float yaw, string accent, bool bakery)
+        {
+            var block = new GameObject(name);
+            block.transform.SetParent(root, false);
+            block.transform.localPosition = position;
+            block.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+
+            Cube(block.transform, "Close_Ground_Commercial_Shell", new Vector3(0f, 1.72f, 0f), new Vector3(8.8f, 3.1f, 4.65f), "Wall");
+            Cube(block.transform, "Close_Upper_Apartment_Shell", new Vector3(0f, 4.72f, 0.08f), new Vector3(8.35f, 2.75f, 4.25f), "WallSlight");
+            Cube(block.transform, "Close_Roof_Cap", new Vector3(0f, 6.28f, 0.08f), new Vector3(8.65f, 0.28f, 4.45f), "WallTrim");
+            Cube(block.transform, "Close_Shadow_Under_Roof", new Vector3(0f, 6.1f, -2.06f), new Vector3(8.6f, 0.05f, 0.14f), "ShadowSoft");
+            Cube(block.transform, "Close_Stone_Kickplate", new Vector3(0f, 0.38f, -2.38f), new Vector3(8.75f, 0.34f, 0.18f), "StoneBase");
+
+            Cube(block.transform, "Close_Main_Glass_Left", new Vector3(-1.85f, 1.6f, -2.44f), new Vector3(2.7f, 2.35f, 0.11f), "Glass");
+            Cube(block.transform, "Close_Main_Glass_Right", new Vector3(1.62f, 1.6f, -2.44f), new Vector3(2.95f, 2.35f, 0.11f), "Glass");
+            Cube(block.transform, "Close_Glass_Interior_Shadow_Left", new Vector3(-1.85f, 1.58f, -2.36f), new Vector3(2.45f, 2.08f, 0.05f), "ShopInteriorDeep");
+            Cube(block.transform, "Close_Glass_Interior_Shadow_Right", new Vector3(1.62f, 1.58f, -2.36f), new Vector3(2.68f, 2.08f, 0.05f), "ShopInteriorDeep");
+            Cube(block.transform, "Close_Door", new Vector3(-3.6f, 1.25f, -2.54f), new Vector3(0.8f, 2.05f, 0.12f), "DarkGlass");
+            Cube(block.transform, "Close_Interior_Glow", new Vector3(0.25f, 1.55f, -2.0f), new Vector3(5.7f, 2.05f, 0.08f), "InteriorWarm");
+            Cube(block.transform, "Close_Glass_Frame_Top", new Vector3(0f, 2.82f, -2.52f), new Vector3(7.25f, 0.08f, 0.07f), "WhiteFrame");
+            Cube(block.transform, "Close_Glass_Frame_Bottom", new Vector3(0f, 0.55f, -2.52f), new Vector3(7.25f, 0.08f, 0.07f), "WhiteFrame");
+            Quad(block.transform, "Close_Storefront_Illustrated_Decal", new Vector3(0.12f, 1.64f, -2.62f), new Vector3(6.95f, 2.28f, 1f), new Vector3(0f, 180f, 0f), bakery ? "StorefrontBakeryDecal" : "StorefrontConvenienceDecal");
+            for (var i = 0; i < 5; i++)
+            {
+                var x = -3.1f + i * 1.55f;
+                Cube(block.transform, "Close_Glass_Mullion_" + i, new Vector3(x, 1.65f, -2.58f), new Vector3(0.06f, 2.35f, 0.07f), "WhiteFrame");
+                Cube(block.transform, "Close_Display_Shelf_" + i, new Vector3(x + 0.18f, 1.15f, -2.62f), new Vector3(0.8f, 0.06f, 0.12f), "Wood");
+                Cube(block.transform, "Close_Interior_Product_Row_" + i, new Vector3(x + 0.18f, 1.38f, -2.68f), new Vector3(0.14f, 0.28f, 0.12f), i % 2 == 0 ? accent : "Cream");
+            }
+
+            Cube(block.transform, "Close_Glass_Reflection_Long_A", new Vector3(2.35f, 1.92f, -2.66f), new Vector3(0.06f, 1.4f, 0.035f), "GlassHighlight").transform.localRotation = Quaternion.Euler(0f, 0f, -27f);
+            Cube(block.transform, "Close_Glass_Reflection_Long_B", new Vector3(-0.8f, 1.86f, -2.66f), new Vector3(0.055f, 1.15f, 0.035f), "GlassHighlight").transform.localRotation = Quaternion.Euler(0f, 0f, -27f);
+
+            SlopedAwning(block.transform, "Close_Deep_Sloped_Awning", new Vector3(0f, 3.05f, -2.95f), new Vector3(8.35f, 0.24f, 1.05f), accent);
+            Cube(block.transform, "Close_Awning_Underside_Shadow", new Vector3(0f, 2.86f, -2.95f), new Vector3(8.05f, 0.045f, 0.85f), "ShadowSoft");
+            Cube(block.transform, "Close_Sign_Backplate", new Vector3(0f, 3.52f, -2.46f), new Vector3(4.95f, 0.44f, 0.10f), accent);
+            Label(block.transform, "Close_Readable_Shop_Label", displayName, new Vector3(0f, 3.56f, -2.56f), 0.32f);
+            for (var i = 0; i < 7; i++)
+            {
+                var x = -3.55f + i * 1.18f;
+                SlopedAwning(block.transform, "Close_Awning_Stripe_" + i, new Vector3(x, 3.08f, -3.28f), new Vector3(0.34f, 0.07f, 0.58f), i % 2 == 0 ? accent : "Cream");
+            }
+
+            Cube(block.transform, "Close_Second_Floor_Balcony", new Vector3(0f, 4.05f, -2.35f), new Vector3(7.5f, 0.13f, 0.5f), "Concrete");
+            Cube(block.transform, "Close_Balcony_Glass_Rail", new Vector3(0f, 4.38f, -2.58f), new Vector3(7.3f, 0.44f, 0.065f), "Glass");
+            for (var i = 0; i < 5; i++)
+            {
+                var x = -3.1f + i * 1.55f;
+                Cube(block.transform, "Close_Upper_Window_Frame_" + i, new Vector3(x, 5.07f, -2.16f), new Vector3(1.0f, 0.82f, 0.07f), "WhiteFrame");
+                Cube(block.transform, "Close_Upper_Window_Glass_" + i, new Vector3(x, 5.07f, -2.22f), new Vector3(0.78f, 0.62f, 0.06f), "Glass");
+                Cube(block.transform, "Close_Window_Sill_" + i, new Vector3(x, 4.58f, -2.26f), new Vector3(1.05f, 0.06f, 0.12f), "Concrete");
+            }
+
+            Cube(block.transform, "Close_Vertical_Blade_Sign", new Vector3(-4.62f, 2.4f, -2.55f), new Vector3(0.12f, 1.5f, 0.42f), accent);
+            Cube(block.transform, "Close_Side_Reveal_A", new Vector3(-4.48f, 3.1f, -0.2f), new Vector3(0.18f, 5.7f, 4.25f), "WallTrim");
+            Cube(block.transform, "Close_Side_Reveal_B", new Vector3(4.48f, 3.1f, -0.2f), new Vector3(0.18f, 5.7f, 4.25f), "WallTrim");
+            Planter(block.transform, "Close_Front_Planter_A", new Vector3(-2.85f, 0f, -3.02f));
+            Planter(block.transform, "Close_Front_Planter_B", new Vector3(2.92f, 0f, -3.02f));
+            AddForegroundSideFaceDetails(block.transform, accent);
+            Quad(block.transform, "Close_Storefront_Outer_Readable_Decal", new Vector3(0.2f, 1.7f, -2.98f), new Vector3(6.15f, 1.82f, 1f), new Vector3(0f, 180f, 0f), bakery ? "StorefrontBakeryDecal" : "StorefrontConvenienceDecal");
+
+            if (bakery)
+            {
+                Cube(block.transform, "Close_Bakery_Wooden_Display", new Vector3(1.45f, 0.9f, -2.9f), new Vector3(3.0f, 0.2f, 0.55f), "Wood");
+                for (var i = 0; i < 6; i++)
+                {
+                    Cylinder(block.transform, "Close_Bakery_Treat_" + i, new Vector3(0.25f + i * 0.45f, 1.08f, -2.94f), new Vector3(0.12f, 0.05f, 0.12f), i % 2 == 0 ? "Pink" : "Cream");
+                }
+            }
+            else
+            {
+                Cube(block.transform, "Close_Convenience_Green_Stripe", new Vector3(0f, 3.32f, -2.62f), new Vector3(4.75f, 0.12f, 0.06f), "Green");
+                Cube(block.transform, "Close_Convenience_White_Stripe", new Vector3(0f, 3.42f, -2.64f), new Vector3(4.55f, 0.065f, 0.05f), "WhiteFrame");
+                for (var i = 0; i < 5; i++)
+                {
+                    Cube(block.transform, "Close_Convenience_Product_" + i, new Vector3(0.55f + i * 0.42f, 1.02f, -2.95f), new Vector3(0.22f, 0.34f, 0.18f), i % 2 == 0 ? "Blue" : "Green");
+                }
+            }
+        }
+
+        private static void AddForegroundSideFaceDetails(Transform block, string accent)
+        {
+            for (var side = -1; side <= 1; side += 2)
+            {
+                Cube(block, "Side_Commercial_Glass_" + side, new Vector3(side * 4.58f, 1.56f, -1.15f), new Vector3(0.07f, 2.18f, 2.25f), "Glass");
+                Cube(block, "Side_Commercial_Glass_Frame_" + side, new Vector3(side * 4.63f, 1.56f, -1.15f), new Vector3(0.055f, 2.38f, 2.48f), "WhiteFrame");
+                Cube(block, "Side_Sign_Color_Band_" + side, new Vector3(side * 4.66f, 3.32f, -1.15f), new Vector3(0.075f, 0.28f, 2.62f), accent);
+                Cube(block, "Side_Awning_Short_" + side, new Vector3(side * 4.69f, 2.92f, -1.15f), new Vector3(0.12f, 0.16f, 2.45f), accent);
+
+                for (var floor = 0; floor < 2; floor++)
+                {
+                    for (var i = 0; i < 3; i++)
+                    {
+                        var y = 4.55f + floor * 0.92f;
+                        var z = -1.45f + i * 1.05f;
+                        Cube(block, "Side_Apartment_Window_Frame_" + side + "_" + floor + "_" + i, new Vector3(side * 4.63f, y, z), new Vector3(0.055f, 0.66f, 0.68f), "WhiteFrame");
+                        Cube(block, "Side_Apartment_Window_Glass_" + side + "_" + floor + "_" + i, new Vector3(side * 4.68f, y, z), new Vector3(0.045f, 0.49f, 0.48f), "Glass");
+                        Cube(block, "Side_Apartment_Sill_" + side + "_" + floor + "_" + i, new Vector3(side * 4.69f, y - 0.39f, z), new Vector3(0.08f, 0.055f, 0.72f), "Concrete");
+                    }
+                }
+
+                Cube(block, "Side_Aircon_Main_" + side, new Vector3(side * 4.72f, 5.78f, 1.3f), new Vector3(0.34f, 0.32f, 0.56f), "WhiteFrame");
+                for (var i = 0; i < 5; i++)
+                {
+                    Cube(block, "Side_Aircon_Slit_" + side + "_" + i, new Vector3(side * 4.94f, 5.69f + i * 0.04f, 1.3f), new Vector3(0.02f, 0.012f, 0.38f), "Metal");
+                }
+            }
+        }
+
+        private static void Shop(Transform root, string name, string displayName, Vector3 position, float yaw, string accent, string kenneyFile, bool bakery)
+        {
+            var shop = new GameObject(name);
+            shop.transform.SetParent(root, false);
+            shop.transform.localPosition = position;
+            shop.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+
+            if (UseOptionalExternalBuildingModels)
+            {
+                PlaceKenney(shop.transform, "Kenney_Commercial_Building", "Assets/AssetStoreImported/ModernCity/Kenney/Commercial/Models/GLB format/" + kenneyFile, Vector3.zero, Vector3.zero, Vector3.one * 1.35f);
+            }
+
+            Cube(shop.transform, "MixedUse_Ground_Floor_Block", new Vector3(0f, 1.68f, 0f), new Vector3(8.95f, 3.05f, 6.55f), "Wall");
+            Cube(shop.transform, "MixedUse_Upper_Apartment_Block", new Vector3(0f, 4.55f, 0.12f), new Vector3(8.55f, 2.75f, 6.05f), "WallSlight");
+            Cube(shop.transform, "MixedUse_Top_Setback_Block", new Vector3(0f, 6.08f, 0.34f), new Vector3(7.75f, 0.88f, 5.25f), "Wall");
+            Cube(shop.transform, "Ground_Second_Floor_Slab", new Vector3(0f, 3.26f, -0.18f), new Vector3(9.15f, 0.16f, 6.75f), "Concrete");
+            Cube(shop.transform, "Third_Floor_Slim_Slab", new Vector3(0f, 5.55f, -0.1f), new Vector3(8.5f, 0.12f, 6.0f), "Concrete");
+            Cube(shop.transform, "Deep_Glass_Storefront", new Vector3(0f, 1.58f, -3.62f), new Vector3(7.55f, 2.45f, 0.12f), "Glass");
+            Cube(shop.transform, "Generated_Facade_Texture_Panel", new Vector3(0f, 2.0f, -4.0f), new Vector3(7.8f, 2.85f, 0.045f), "Facade" + accent);
+            Cube(shop.transform, "Second_Floor_Window_Band", new Vector3(0f, 4.55f, -3.72f), new Vector3(6.85f, 0.82f, 0.10f), "DarkGlass");
+            Cube(shop.transform, "Third_Floor_Window_Band", new Vector3(0f, 5.94f, -3.52f), new Vector3(5.85f, 0.66f, 0.10f), "Glass");
+            SlopedAwning(shop.transform, "Main_Sloped_Awning", new Vector3(0f, 3.05f, -4.28f), new Vector3(7.65f, 0.22f, 0.88f), accent);
+            Cube(shop.transform, "Awning_Back_Mount", new Vector3(0f, 3.1f, -3.9f), new Vector3(7.78f, 0.12f, 0.10f), "WallTrim");
+            Cube(shop.transform, "Shop_Sign_Band", new Vector3(0f, 3.45f, -3.9f), new Vector3(5.1f, 0.38f, 0.10f), accent);
+            Cube(shop.transform, "Warm_Display_Light", new Vector3(0f, 2.62f, -3.94f), new Vector3(7.2f, 0.06f, 0.06f), "WarmLight");
+            Cube(shop.transform, "Recessed_Door", new Vector3(-3.0f, 1.32f, -3.92f), new Vector3(1.05f, 2.12f, 0.12f), "DarkGlass");
+            Cube(shop.transform, "Display_Platform", new Vector3(1.28f, 0.56f, -3.92f), new Vector3(3.55f, 0.28f, 0.58f), "Wood");
+
+            for (var i = 0; i < 4; i++)
+            {
+                Cube(shop.transform, "Window_Mullion_" + i, new Vector3(-3.1f + i * 2.05f, 4.55f, -3.82f), new Vector3(0.06f, 0.88f, 0.06f), "Metal");
+            }
+
+            if (bakery)
+            {
+                Cylinder(shop.transform, "Cake_Display_A", new Vector3(0.6f, 1.02f, -4.42f), new Vector3(0.52f, 0.12f, 0.52f), "Pink");
+                Cylinder(shop.transform, "Cake_Display_B", new Vector3(1.7f, 1.02f, -4.42f), new Vector3(0.46f, 0.12f, 0.46f), "Yellow");
+            }
+            else
+            {
+                Cube(shop.transform, "Product_Shelf_A", new Vector3(0.9f, 1.06f, -4.4f), new Vector3(2.65f, 0.12f, 0.18f), "Wood");
+                Cube(shop.transform, "Product_Shelf_B", new Vector3(0.9f, 1.46f, -4.4f), new Vector3(2.3f, 0.12f, 0.18f), "Wood");
+            }
+
+            Label(shop.transform, "Readable_Label", displayName, new Vector3(0f, 3.66f, -4.0f), 0.30f);
+            AddShopFacadeDetails(shop.transform, accent, bakery);
+            AddFacadeDepthDetails(shop.transform, accent);
+            AddShopIdentityProps(shop.transform, accent, bakery);
+            AddReferenceStyleShopPolish(shop.transform, accent, bakery);
+            AddSideElevationDetails(shop.transform, accent);
+        }
+
+        private static void AddShopFacadeDetails(Transform shop, string accent, bool bakery)
+        {
+            Cube(shop, "Stone_Base_Kickplate", new Vector3(0f, 0.42f, -3.98f), new Vector3(8.8f, 0.34f, 0.22f), "StoneBase");
+            Cube(shop, "Left_Facade_Pilaster", new Vector3(-4.38f, 2.45f, -3.9f), new Vector3(0.22f, 3.85f, 0.28f), "WallTrim");
+            Cube(shop, "Right_Facade_Pilaster", new Vector3(4.38f, 2.45f, -3.9f), new Vector3(0.22f, 3.85f, 0.28f), "WallTrim");
+            Cube(shop, "Second_Floor_Balcony_Slab", new Vector3(0f, 4.0f, -4.12f), new Vector3(6.75f, 0.12f, 0.54f), "Concrete");
+            Cube(shop, "Second_Floor_Balcony_Rail", new Vector3(0f, 4.36f, -4.38f), new Vector3(6.75f, 0.38f, 0.06f), "Metal");
+            for (var i = 0; i < 6; i++)
+            {
+                Cube(shop, "Balcony_Rail_Post_" + i, new Vector3(-3.1f + i * 1.24f, 4.34f, -4.38f), new Vector3(0.055f, 0.42f, 0.055f), "Metal");
+            }
+
+            Cube(shop, "Roof_Parapet_Front", new Vector3(0f, 6.58f, -3.36f), new Vector3(7.9f, 0.22f, 0.24f), "WallTrim");
+            Cube(shop, "Rooftop_Glass_Rail", new Vector3(0f, 6.9f, -3.55f), new Vector3(7.2f, 0.42f, 0.06f), "Glass");
+            Planter(shop, "Balcony_Flower_Box_Left", new Vector3(-2.25f, 4.0f, -4.36f));
+            Planter(shop, "Balcony_Flower_Box_Right", new Vector3(2.25f, 4.0f, -4.36f));
+            Cube(shop, "Small_Round_Hanging_Sign", new Vector3(-4.55f, 2.42f, -4.04f), new Vector3(0.10f, 0.58f, 0.58f), accent);
+            Cube(shop, "Door_Handle", new Vector3(-2.56f, 1.38f, -4.12f), new Vector3(0.06f, 0.38f, 0.06f), "WarmLight");
+            Cube(shop, "Interior_Back_Warm_Wall", new Vector3(1.05f, 1.62f, -2.62f), new Vector3(4.6f, 2.05f, 0.10f), "InteriorWarm");
+            Cube(shop, "Interior_Ceiling_Light_A", new Vector3(-1.5f, 2.66f, -3.0f), new Vector3(0.9f, 0.05f, 0.05f), "WarmLight");
+            Cube(shop, "Interior_Ceiling_Light_B", new Vector3(1.8f, 2.66f, -3.0f), new Vector3(0.9f, 0.05f, 0.05f), "WarmLight");
+
+            if (bakery)
+            {
+                for (var i = 0; i < 3; i++)
+                {
+                    Cylinder(shop, "Bakery_Cake_Tray_" + i, new Vector3(0.2f + i * 0.9f, 1.34f, -4.42f), new Vector3(0.24f, 0.06f, 0.24f), i % 2 == 0 ? "Pink" : "Cream");
+                    Sphere(shop, "Bakery_Cream_Dot_" + i, new Vector3(0.2f + i * 0.9f, 1.48f, -4.42f), new Vector3(0.09f, 0.06f, 0.09f), "Cream");
+                }
+                Cube(shop, "Bakery_Window_Wood_Display_Frame", new Vector3(1.25f, 1.42f, -4.18f), new Vector3(3.35f, 0.82f, 0.06f), "Wood");
+            }
+            else
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    Cube(shop, "Shop_Product_Block_" + i, new Vector3(-0.1f + i * 0.48f, 1.6f, -4.14f), new Vector3(0.20f, 0.24f, 0.14f), i % 3 == 0 ? "Blue" : (i % 3 == 1 ? "Green" : "Yellow"));
+                }
+                Cube(shop, "Poster_Lit_Frame", new Vector3(3.56f, 1.6f, -3.96f), new Vector3(0.52f, 1.08f, 0.06f), accent);
+            }
+
+            AddModernShopMicroDetails(shop, accent, bakery);
+        }
+
+        private static void AddModernShopMicroDetails(Transform shop, string accent, bool bakery)
+        {
+            for (var i = 0; i < 5; i++)
+            {
+                var x = -3.2f + i * 1.6f;
+                Cube(shop, "Apartment_Window_Sill_" + i, new Vector3(x, 5.28f, -3.72f), new Vector3(0.94f, 0.065f, 0.12f), "Concrete");
+                Cube(shop, "Apartment_Upper_Sill_" + i, new Vector3(x, 6.24f, -3.56f), new Vector3(0.78f, 0.055f, 0.1f), "Concrete");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var x = -2.25f + i * 1.5f;
+                Cube(shop, "Storefront_Pane_Bottom_Glow_" + i, new Vector3(x, 0.78f, -4.08f), new Vector3(0.94f, 0.045f, 0.05f), "WarmLight");
+                Cube(shop, "Interior_Shelf_Line_" + i, new Vector3(x, 1.28f, -3.98f), new Vector3(0.82f, 0.055f, 0.08f), "Wood");
+            }
+
+            Cube(shop, "Slim_Address_Plate", new Vector3(-3.92f, 2.55f, -4.03f), new Vector3(0.36f, 0.18f, 0.035f), "Metal");
+            Cube(shop, "Entrance_Threshold", new Vector3(-3.0f, 0.22f, -4.16f), new Vector3(1.25f, 0.08f, 0.5f), "Concrete");
+            Cube(shop, "Canopy_Under_Shadow", new Vector3(0f, 2.9f, -4.32f), new Vector3(7.45f, 0.035f, 0.72f), "ShadowSoft");
+
+            if (accent == "Blue")
+            {
+                Cube(shop, "Convenience_Green_Sign_Stripe", new Vector3(0f, 3.23f, -4.02f), new Vector3(4.9f, 0.10f, 0.08f), "Green");
+                Cube(shop, "Convenience_Clean_White_Stripe", new Vector3(0f, 3.34f, -4.04f), new Vector3(4.7f, 0.065f, 0.06f), "WhiteFrame");
+            }
+
+            if (bakery)
+            {
+                Cube(shop, "Bakery_Display_Warm_Rim", new Vector3(1.28f, 0.98f, -4.22f), new Vector3(3.3f, 0.08f, 0.08f), "WarmLight");
+                Cube(shop, "Bakery_Side_Menu_Panel", new Vector3(-4.05f, 1.7f, -4.04f), new Vector3(0.44f, 0.9f, 0.055f), "Cream");
+            }
+        }
+
+        private static void AddFacadeDepthDetails(Transform shop, string accent)
+        {
+            for (var i = 0; i < 6; i++)
+            {
+                var x = -3.55f + i * 1.42f;
+                Cube(shop, "Upper_Wall_Vertical_Seam_" + i, new Vector3(x, 5.45f, -3.64f), new Vector3(0.025f, 1.75f, 0.035f), "WallShadow");
+            }
+
+            for (var i = 0; i < 3; i++)
+            {
+                var y = 4.03f + i * 0.72f;
+                Cube(shop, "Subtle_Horizontal_Wall_Seam_" + i, new Vector3(0f, y, -3.66f), new Vector3(7.35f, 0.025f, 0.035f), "WallShadow");
+            }
+
+            Cube(shop, "Storefront_Recess_Ceiling", new Vector3(0f, 2.95f, -3.58f), new Vector3(7.45f, 0.12f, 0.48f), "InteriorWarm");
+            Cube(shop, "Storefront_Left_Recess_Return", new Vector3(-3.9f, 1.67f, -3.82f), new Vector3(0.16f, 2.55f, 0.42f), "WallTrim");
+            Cube(shop, "Storefront_Right_Recess_Return", new Vector3(3.9f, 1.67f, -3.82f), new Vector3(0.16f, 2.55f, 0.42f), "WallTrim");
+
+            for (var i = 0; i < 5; i++)
+            {
+                var x = -3.05f + i * 1.55f;
+                Sphere(shop, "Warm_Downlight_" + i, new Vector3(x, 2.84f, -4.08f), new Vector3(0.08f, 0.025f, 0.08f), "WarmLight");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var x = -2.85f + i * 1.9f;
+                Cube(shop, "Upper_Window_Left_Depth_" + i, new Vector3(x - 0.55f, 5.78f, -3.63f), new Vector3(0.055f, 0.82f, 0.16f), "WallTrim");
+                Cube(shop, "Upper_Window_Right_Depth_" + i, new Vector3(x + 0.55f, 5.78f, -3.63f), new Vector3(0.055f, 0.82f, 0.16f), "WallTrim");
+                Cube(shop, "Upper_Window_Top_Depth_" + i, new Vector3(x, 6.21f, -3.63f), new Vector3(1.14f, 0.055f, 0.16f), "WallTrim");
+            }
+
+            Cube(shop, "Accent_Corner_Blade_Left", new Vector3(-4.38f, 3.26f, -4.12f), new Vector3(0.1f, 0.92f, 0.08f), accent);
+            Cube(shop, "Accent_Corner_Blade_Right", new Vector3(4.38f, 3.26f, -4.12f), new Vector3(0.1f, 0.92f, 0.08f), accent);
+        }
+
+        private static void AddShopIdentityProps(Transform shop, string accent, bool bakery)
+        {
+            if (bakery)
+            {
+                Cube(shop, "Bakery_Glass_Display_Case", new Vector3(1.28f, 1.12f, -4.28f), new Vector3(3.4f, 0.56f, 0.06f), "Glass");
+                Cube(shop, "Bakery_Case_Top_Gold_Line", new Vector3(1.28f, 1.42f, -4.32f), new Vector3(3.25f, 0.045f, 0.045f), "WarmLight");
+                for (var i = 0; i < 4; i++)
+                {
+                    Cylinder(shop, "Bakery_Tart_Row_" + i, new Vector3(0.06f + i * 0.58f, 1.16f, -4.36f), new Vector3(0.13f, 0.04f, 0.13f), i % 2 == 0 ? "Cream" : "Pink");
+                }
+                Cube(shop, "Bakery_Chalkboard_Menu", new Vector3(-3.72f, 1.28f, -4.2f), new Vector3(0.36f, 0.56f, 0.04f), "SignDark");
+                Cube(shop, "Bakery_Chalk_Line_A", new Vector3(-3.72f, 1.4f, -4.24f), new Vector3(0.24f, 0.026f, 0.028f), "Cream");
+                Cube(shop, "Bakery_Chalk_Line_B", new Vector3(-3.72f, 1.26f, -4.24f), new Vector3(0.2f, 0.024f, 0.028f), "Cream");
+                return;
+            }
+
+            if (accent == "Blue")
+            {
+                Cube(shop, "Convenience_Cold_Case", new Vector3(3.08f, 1.2f, -4.18f), new Vector3(0.72f, 1.65f, 0.08f), "DarkGlass");
+                Cube(shop, "Convenience_Cold_Case_Light", new Vector3(3.08f, 2.05f, -4.25f), new Vector3(0.58f, 0.055f, 0.035f), "WarmLight");
+                for (var i = 0; i < 4; i++)
+                {
+                    Cube(shop, "Convenience_Bottle_Row_" + i, new Vector3(2.84f + i * 0.16f, 1.28f, -4.28f), new Vector3(0.06f, 0.22f, 0.045f), i % 2 == 0 ? "Blue" : "Green");
+                }
+            }
+            else if (accent == "Green")
+            {
+                for (var i = 0; i < 4; i++)
+                {
+                    var x = -1.1f + i * 0.55f;
+                    Cylinder(shop, "Flower_Bucket_" + i, new Vector3(x, 0.82f, -4.28f), new Vector3(0.13f, 0.28f, 0.13f), "Metal");
+                    Sphere(shop, "Flower_Bunch_" + i, new Vector3(x, 1.18f, -4.28f), new Vector3(0.18f, 0.16f, 0.18f), i % 2 == 0 ? "Pink" : "Cream");
+                }
+                Cube(shop, "Cafe_Menu_Warm_Board", new Vector3(3.35f, 1.44f, -4.18f), new Vector3(0.52f, 1.0f, 0.055f), "Wood");
+            }
+            else
+            {
+                Cube(shop, "Cinema_Poster_Case_A", new Vector3(-3.42f, 1.55f, -4.17f), new Vector3(0.38f, 0.92f, 0.05f), "DarkGlass");
+                Cube(shop, "Cinema_Poster_Case_B", new Vector3(3.42f, 1.55f, -4.17f), new Vector3(0.38f, 0.92f, 0.05f), "DarkGlass");
+                Cube(shop, "Cinema_Poster_Glow_A", new Vector3(-3.48f, 2.2f, -4.22f), new Vector3(0.32f, 0.045f, 0.035f), "WarmLight");
+                Cube(shop, "Cinema_Poster_Glow_B", new Vector3(3.48f, 2.2f, -4.22f), new Vector3(0.32f, 0.045f, 0.035f), "WarmLight");
+            }
+        }
+
+        private static void AddReferenceStyleShopPolish(Transform shop, string accent, bool bakery)
+        {
+            for (var i = 0; i < 6; i++)
+            {
+                var x = -3.15f + i * 1.26f;
+                SlopedAwning(shop, "Awning_Stripe_" + i, new Vector3(x, 3.08f, -4.56f), new Vector3(0.38f, 0.08f, 0.56f), i % 2 == 0 ? accent : "Cream");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var x = -2.85f + i * 1.9f;
+                Cube(shop, "Upper_Window_Frame_" + i, new Vector3(x, 5.78f, -3.68f), new Vector3(1.12f, 0.84f, 0.06f), "WhiteFrame");
+                Cube(shop, "Upper_Window_Glass_" + i, new Vector3(x, 5.78f, -3.73f), new Vector3(0.92f, 0.66f, 0.05f), "Glass");
+                Cube(shop, "Upper_Window_Curtain_" + i, new Vector3(x - 0.2f, 5.78f, -3.77f), new Vector3(0.07f, 0.58f, 0.035f), bakery ? "Pink" : "Cream");
+            }
+
+            for (var i = 0; i < 3; i++)
+            {
+                Cube(shop, "Ground_Storefront_Frame_" + i, new Vector3(-0.82f + i * 1.86f, 1.84f, -4.14f), new Vector3(0.08f, 2.55f, 0.08f), "WhiteFrame");
+            }
+
+            Cube(shop, "Storefront_Top_Frame", new Vector3(0.86f, 2.82f, -4.02f), new Vector3(5.35f, 0.08f, 0.06f), "WhiteFrame");
+            Cube(shop, "Storefront_Bottom_Frame", new Vector3(0.86f, 0.54f, -4.02f), new Vector3(5.35f, 0.08f, 0.06f), "WhiteFrame");
+            Cube(shop, "Glass_Reflection_Diagonal_A", new Vector3(2.55f, 2.0f, -4.08f), new Vector3(0.06f, 1.0f, 0.035f), "GlassHighlight").transform.localRotation = Quaternion.Euler(0f, 0f, -26f);
+            Cube(shop, "Glass_Reflection_Diagonal_B", new Vector3(3.18f, 1.62f, -4.08f), new Vector3(0.05f, 0.68f, 0.035f), "GlassHighlight").transform.localRotation = Quaternion.Euler(0f, 0f, -26f);
+
+            Cube(shop, "Side_Reveal_Left", new Vector3(-4.55f, 3.0f, -0.35f), new Vector3(0.14f, 5.6f, 6.2f), "WallTrim");
+            Cube(shop, "Side_Reveal_Right", new Vector3(4.55f, 3.0f, -0.35f), new Vector3(0.14f, 5.6f, 6.2f), "WallTrim");
+            Cube(shop, "Thin_Roof_Shadow_Line", new Vector3(0f, 6.48f, -3.66f), new Vector3(7.65f, 0.06f, 0.06f), "ShadowSoft");
+
+            for (var i = 0; i < 3; i++)
+            {
+                var x = -2.25f + i * 2.25f;
+                Cube(shop, "Facade_Potted_Green_" + i, new Vector3(x, 0.82f, -4.52f), new Vector3(0.34f, 0.44f, 0.34f), "Concrete");
+                Sphere(shop, "Facade_Potted_Leaf_" + i, new Vector3(x, 1.16f, -4.52f), new Vector3(0.36f, 0.28f, 0.36f), "PlantDark");
+            }
+
+            if (bakery)
+            {
+                Cube(shop, "Bakery_Warm_Counter_Back", new Vector3(1.5f, 1.08f, -3.05f), new Vector3(3.65f, 0.64f, 0.12f), "Cream");
+                Cube(shop, "Bakery_Pink_Side_Awning_End", new Vector3(-4.42f, 3.28f, -4.92f), new Vector3(0.16f, 0.52f, 1.1f), "Pink");
+            }
+            else
+            {
+                Cube(shop, "Modern_Poster_Light_Strip", new Vector3(3.72f, 2.54f, -4.18f), new Vector3(0.46f, 0.06f, 0.06f), "WarmLight");
+                Cube(shop, "Sidewalk_Product_Stand", new Vector3(4.58f, 0.92f, -4.8f), new Vector3(0.52f, 1.15f, 0.36f), accent);
+            }
+        }
+
+        private static void AddSideElevationDetails(Transform shop, string accent)
+        {
+            for (var side = -1; side <= 1; side += 2)
+            {
+                Cube(shop, "Side_Wall_Subtle_Panel_" + side, new Vector3(side * 4.62f, 3.12f, -0.25f), new Vector3(0.05f, 4.9f, 6.0f), "WallSlight");
+                for (var i = 0; i < 3; i++)
+                {
+                    var z = -2.2f + i * 1.95f;
+                    Cube(shop, "Side_Window_Frame_" + side + "_" + i, new Vector3(side * 4.68f, 4.55f, z), new Vector3(0.06f, 0.78f, 0.96f), "WhiteFrame");
+                    Cube(shop, "Side_Window_Glass_" + side + "_" + i, new Vector3(side * 4.72f, 4.55f, z), new Vector3(0.04f, 0.58f, 0.72f), "Glass");
+                    Cube(shop, "Side_Window_Shadow_Sill_" + side + "_" + i, new Vector3(side * 4.71f, 4.04f, z), new Vector3(0.08f, 0.06f, 1.02f), "ShadowSoft");
+                }
+
+                Cube(shop, "Side_Ground_Display_Window_" + side, new Vector3(side * 4.7f, 1.55f, -1.2f), new Vector3(0.055f, 1.45f, 2.05f), "Glass");
+                Cube(shop, "Side_Service_Door_" + side, new Vector3(side * 4.72f, 1.16f, 2.15f), new Vector3(0.07f, 1.85f, 0.78f), "DarkGlass");
+                Cube(shop, "Side_Accent_Band_" + side, new Vector3(side * 4.74f, 3.16f, -1.2f), new Vector3(0.075f, 0.14f, 2.25f), accent);
+                Cube(shop, "Side_Aircon_Box_" + side, new Vector3(side * 4.76f, 5.35f, 1.55f), new Vector3(0.36f, 0.3f, 0.62f), "WhiteFrame");
+                for (var stripe = 0; stripe < 4; stripe++)
+                {
+                    Cube(shop, "Side_Aircon_Vent_" + side + "_" + stripe, new Vector3(side * 4.96f, 5.31f + stripe * 0.05f, 1.55f), new Vector3(0.025f, 0.014f, 0.42f), "Metal");
+                }
+            }
+        }
+
+        private static void StorefrontSlice(Transform root, string name, string displayName, Vector3 position, float yaw, string accent, bool bakery)
+        {
+            var slice = new GameObject(name);
+            slice.transform.SetParent(root, false);
+            slice.transform.localPosition = position;
+            slice.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+
+            Cube(slice.transform, "Foreground_Ground_Floor_Wall", new Vector3(0f, 1.68f, 0f), new Vector3(7.25f, 3.0f, 1.05f), "Wall");
+            Cube(slice.transform, "Foreground_Upper_Apartment_Wall", new Vector3(0f, 4.36f, 0.06f), new Vector3(7.0f, 2.15f, 0.98f), "WallSlight");
+            Cube(slice.transform, "Foreground_Generated_Facade_Texture", new Vector3(0f, 2.05f, -0.79f), new Vector3(6.9f, 2.9f, 0.04f), "Facade" + accent);
+            Cube(slice.transform, "Foreground_Glass_Bay_A", new Vector3(-1.72f, 1.48f, -0.62f), new Vector3(2.18f, 2.35f, 0.08f), "Glass");
+            Cube(slice.transform, "Foreground_Glass_Bay_B", new Vector3(1.46f, 1.48f, -0.62f), new Vector3(2.65f, 2.35f, 0.08f), "Glass");
+            Cube(slice.transform, "Foreground_Door", new Vector3(-3.0f, 1.24f, -0.7f), new Vector3(0.82f, 2.12f, 0.1f), "DarkGlass");
+            SlopedAwning(slice.transform, "Foreground_Sloped_Awning", new Vector3(0f, 3.05f, -1.12f), new Vector3(6.8f, 0.20f, 0.82f), accent);
+            Cube(slice.transform, "Foreground_Awning_Back_Mount", new Vector3(0f, 3.1f, -0.72f), new Vector3(6.9f, 0.1f, 0.08f), "WallTrim");
+            Cube(slice.transform, "Foreground_Sign_Backplate", new Vector3(0f, 3.46f, -0.72f), new Vector3(4.35f, 0.38f, 0.08f), accent);
+            Cube(slice.transform, "Foreground_Sign_Drop_Shadow", new Vector3(0f, 3.38f, -0.68f), new Vector3(4.5f, 0.09f, 0.06f), "ShadowSoft");
+            Label(slice.transform, "Foreground_Readable_Label", displayName, new Vector3(0f, 3.48f, -0.8f), 0.30f);
+
+            for (var i = 0; i < 6; i++)
+            {
+                var x = -2.95f + i * 1.18f;
+                SlopedAwning(slice.transform, "Foreground_Awning_Stripe_" + i, new Vector3(x, 3.08f, -1.39f), new Vector3(0.34f, 0.07f, 0.5f), i % 2 == 0 ? accent : "Cream");
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var x = -2.45f + i * 1.55f;
+                Cube(slice.transform, "Foreground_Upper_Window_" + i, new Vector3(x, 4.7f, -0.66f), new Vector3(0.82f, 0.66f, 0.07f), "Glass");
+                Cube(slice.transform, "Foreground_Upper_Frame_" + i, new Vector3(x, 4.7f, -0.72f), new Vector3(0.98f, 0.82f, 0.045f), "WhiteFrame");
+                Cube(slice.transform, "Foreground_Upper_Sill_" + i, new Vector3(x, 4.24f, -0.73f), new Vector3(0.94f, 0.055f, 0.08f), "Concrete");
+            }
+
+            Cube(slice.transform, "Foreground_Interior_Warm_Back", new Vector3(0.28f, 1.5f, -0.1f), new Vector3(4.45f, 1.95f, 0.07f), "InteriorWarm");
+            Cube(slice.transform, "Foreground_Glass_Reflection_A", new Vector3(2.45f, 1.82f, -0.76f), new Vector3(0.06f, 1.05f, 0.035f), "GlassHighlight").transform.localRotation = Quaternion.Euler(0f, 0f, -24f);
+            Cube(slice.transform, "Foreground_Glass_Reflection_B", new Vector3(-1.62f, 1.78f, -0.76f), new Vector3(0.06f, 0.92f, 0.035f), "GlassHighlight").transform.localRotation = Quaternion.Euler(0f, 0f, -24f);
+            Cube(slice.transform, "Foreground_Stone_Base", new Vector3(0f, 0.32f, -0.72f), new Vector3(7.0f, 0.24f, 0.13f), "StoneBase");
+            Cube(slice.transform, "Foreground_Door_Threshold", new Vector3(-3f, 0.18f, -0.98f), new Vector3(0.98f, 0.055f, 0.42f), "Concrete");
+            Planter(slice.transform, "Foreground_Planter_A", new Vector3(-2.1f, 0f, -0.96f));
+            Planter(slice.transform, "Foreground_Planter_B", new Vector3(2.45f, 0f, -0.96f));
+
+            if (bakery)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    Cylinder(slice.transform, "Foreground_Cake_" + i, new Vector3(-0.6f + i * 0.52f, 0.95f, -0.95f), new Vector3(0.18f, 0.07f, 0.18f), i % 2 == 0 ? "Pink" : "Cream");
+                }
+            }
+            else
+            {
+                Cube(slice.transform, "Foreground_Green_Convenience_Band", new Vector3(0f, 3.26f, -0.82f), new Vector3(4.35f, 0.10f, 0.06f), "Green");
+                Cube(slice.transform, "Foreground_White_Convenience_Band", new Vector3(0f, 3.36f, -0.84f), new Vector3(4.1f, 0.055f, 0.05f), "WhiteFrame");
+                for (var i = 0; i < 4; i++)
+                {
+                    Cube(slice.transform, "Foreground_Product_Color_Block_" + i, new Vector3(0.2f + i * 0.48f, 1.0f, -0.96f), new Vector3(0.25f, 0.35f, 0.18f), i % 2 == 0 ? "Blue" : "Green");
+                }
+            }
+        }
+
+        private static void CreateStreetEndLayeredDepth(Transform root)
+        {
+            Shop(root, "StarBay_Back_Left_Shop_Silhouette", "海边小铺", new Vector3(-10.65f, 0f, 33.8f), -90f, "Blue", "low-detail-building-b.glb", false);
+            Shop(root, "StarBay_Back_Right_Shop_Silhouette", "观海小店", new Vector3(10.65f, 0f, 34.9f), 90f, "Green", "low-detail-building-c.glb", false);
+        }
+
+        private static void CreateOceanEnd(Transform root)
+        {
+            Cube(root, "Ocean_Horizon", new Vector3(0f, -0.05f, 54f), new Vector3(76f, 0.08f, 30f), "Ocean");
+            Cube(root, "Ocean_Deep_Far_Band", new Vector3(0f, -0.02f, 63f), new Vector3(76f, 0.04f, 7.5f), "OceanDeep");
+            Cube(root, "Ocean_Sunlit_Far_Band", new Vector3(0f, 0.01f, 56.5f), new Vector3(76f, 0.035f, 2.8f), "OceanLight");
+            Cube(root, "Ocean_Street_End_Aqua_Window", new Vector3(0f, 0.18f, 43.2f), new Vector3(18f, 0.05f, 1.2f), "OceanLight");
+            Cube(root, "Ocean_Horizon_Bright_Line", new Vector3(0f, 0.68f, 52.5f), new Vector3(52f, 0.055f, 0.08f), "SeaFoam");
+            Cube(root, "Open_Sea_View_Soft_Aqua_Band", new Vector3(0f, 0.82f, 49.2f), new Vector3(39f, 0.72f, 0.08f), "OceanViewAqua");
+            Cube(root, "Open_Sea_View_Deep_Blue_Band", new Vector3(0f, 0.54f, 50.4f), new Vector3(42f, 0.36f, 0.08f), "OceanDistanceBlue");
+            Cube(root, "Open_Sea_View_Horizon_Light", new Vector3(0f, 1.18f, 51.0f), new Vector3(42f, 0.08f, 0.08f), "OceanGlint");
+            Cube(root, "Beach_Sand_Edge", new Vector3(0f, 0f, 42.2f), new Vector3(48f, 0.08f, 4.4f), "Sand");
+            Cube(root, "Beach_Wet_Sand_Band", new Vector3(0f, 0.02f, 44.0f), new Vector3(46f, 0.04f, 1.1f), "WetSand");
+            Cube(root, "Promenade_Sea_Wall", new Vector3(0f, 0.25f, 40.8f), new Vector3(19f, 0.40f, 0.26f), "Concrete");
+            Cube(root, "Promenade_Glass_Railing", new Vector3(0f, 0.66f, 41.4f), new Vector3(16f, 0.78f, 0.10f), "Glass");
+            Cube(root, "Promenade_Warm_Stone_Walk", new Vector3(0f, 0.035f, 40.35f), new Vector3(18f, 0.08f, 2.0f), "Sidewalk");
+            Cube(root, "Ocean_Foam_Line", new Vector3(0f, 0.025f, 44.1f), new Vector3(34f, 0.035f, 0.28f), "SeaFoam");
+            Cube(root, "Ocean_Foam_Line_Near", new Vector3(-1f, 0.03f, 43.35f), new Vector3(28f, 0.03f, 0.16f), "SeaFoam");
+            Cube(root, "Ocean_Foam_Line_Far", new Vector3(1.6f, 0.03f, 45.05f), new Vector3(32f, 0.03f, 0.14f), "SeaFoam");
+            for (var i = 0; i < 8; i++)
+            {
+                var z = 45.2f + i * 2.75f;
+                var width = 18f + i * 4.5f;
+                Cube(root, "Ocean_Soft_Glint_Line_" + i, new Vector3((i % 2 == 0 ? -1.4f : 1.2f), 0.035f, z), new Vector3(width, 0.018f, 0.08f), "OceanGlint");
+            }
+            Cube(root, "Promenade_Top_Rail", new Vector3(0f, 1.08f, 41.22f), new Vector3(16.2f, 0.06f, 0.06f), "WhiteFrame");
+            Cube(root, "Promenade_Bottom_Rail", new Vector3(0f, 0.46f, 41.2f), new Vector3(16.2f, 0.045f, 0.045f), "WhiteFrame");
+            for (var i = 0; i < 9; i++)
+            {
+                Cube(root, "Promenade_Railing_Post_" + i, new Vector3(-7.5f + i * 1.9f, 0.72f, 41.25f), new Vector3(0.06f, 0.70f, 0.06f), "WhiteFrame");
+            }
+            for (var i = 0; i < 5; i++)
+            {
+                var x = -6.8f + i * 3.4f;
+                Cube(root, "Promenade_Glass_Panel_Join_" + i, new Vector3(x, 0.83f, 41.32f), new Vector3(0.04f, 0.66f, 0.06f), "GlassHighlight");
+            }
+            Palm(root, "Ocean_End_Palm_Left", new Vector3(-8.2f, 0f, 38.4f));
+            Palm(root, "Ocean_End_Palm_Right", new Vector3(8.2f, 0f, 39.2f));
+            BeachUmbrella(root, "Beach_Umbrella_Left", new Vector3(-10.5f, 0.12f, 45.4f), "Pink");
+            BeachUmbrella(root, "Beach_Umbrella_Right", new Vector3(10.8f, 0.12f, 46.2f), "Blue");
+            BeachLounger(root, "Beach_Lounger_Left", new Vector3(-7.8f, 0.1f, 45.7f), 12f);
+            BeachLounger(root, "Beach_Lounger_Right", new Vector3(7.4f, 0.1f, 46.6f), -12f);
+            Cylinder(root, "Small_Sea_Lighthouse", new Vector3(10.8f, 1.62f, 49.0f), new Vector3(0.36f, 1.62f, 0.36f), "Wall");
+            Cube(root, "Lighthouse_Red_Cap", new Vector3(10.8f, 3.34f, 49.0f), new Vector3(0.72f, 0.18f, 0.72f), "Red");
+            Cube(root, "Distant_Island_Left", new Vector3(-13f, 1.06f, 63f), new Vector3(11f, 0.42f, 1.2f), "IslandSoft");
+            Cube(root, "Distant_Island_Right", new Vector3(15f, 0.96f, 62f), new Vector3(8f, 0.36f, 1.2f), "IslandSoft");
+            Cube(root, "Distant_Coastline_Left", new Vector3(-25f, 0.72f, 66.5f), new Vector3(18f, 0.22f, 0.8f), "DistantCoastSoft");
+            Cube(root, "Distant_Coastline_Right", new Vector3(27f, 0.68f, 66f), new Vector3(16f, 0.20f, 0.7f), "DistantCoastSoft");
+            Cube(root, "Soft_Distant_Coastline_Center", new Vector3(0f, 0.64f, 68.0f), new Vector3(18f, 0.16f, 0.65f), "DistantCoastSoft");
+            Cube(root, "Horizon_Haze_Band", new Vector3(0f, 1.18f, 60f), new Vector3(70f, 0.08f, 0.08f), "GlassHighlight");
+        }
+
+        private static void CreateStreetLife(Transform root)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                var z = -8f + i * 11f;
+                Planter(root, "Left_Planter_" + i, new Vector3(-6.55f, 0f, z));
+                Planter(root, "Right_Planter_" + i, new Vector3(6.55f, 0f, z + 3f));
+            }
+
+            for (var i = 0; i < 3; i++)
+            {
+                Palm(root, "Palm_Left_" + i, new Vector3(-8.9f, 0f, 1.5f + i * 13f));
+                Palm(root, "Palm_Right_" + i, new Vector3(8.9f, 0f, 7.5f + i * 13f));
+            }
+
+            Bench(root, "Cake_Shop_Bench", new Vector3(-7.25f, 0.35f, -8.4f), 90f);
+            Bench(root, "Ocean_View_Bench", new Vector3(-4.6f, 0.35f, 37.5f), 0f);
+            Cube(root, "Cake_Menu_A_Frame", new Vector3(-5.95f, 0.72f, -5.2f), new Vector3(0.10f, 0.98f, 0.62f), "Pink");
+            Cube(root, "Cafe_Menu_A_Frame", new Vector3(-5.95f, 0.72f, 16.8f), new Vector3(0.10f, 0.98f, 0.62f), "Green");
+            Cube(root, "Cake_Shop_Welcome_Mat", new Vector3(-6.45f, 0.07f, -5.7f), new Vector3(1.15f, 0.025f, 0.68f), "Pink");
+            Cube(root, "Convenience_Welcome_Mat", new Vector3(6.45f, 0.07f, -4.0f), new Vector3(1.15f, 0.025f, 0.68f), "Blue");
+            Cube(root, "Cafe_Terrace_Deck", new Vector3(-6.05f, 0.13f, 18.4f), new Vector3(1.28f, 0.055f, 3.6f), "Wood");
+            for (var i = 0; i < 2; i++)
+            {
+                Cylinder(root, "Cafe_Terrace_Table_" + i, new Vector3(-5.95f, 0.48f, 17.2f + i * 2.1f), new Vector3(0.32f, 0.08f, 0.32f), "Wood");
+                Cube(root, "Cafe_Terrace_Chair_A_" + i, new Vector3(-5.48f, 0.42f, 17.2f + i * 2.1f), new Vector3(0.26f, 0.34f, 0.26f), "Yellow");
+                Cube(root, "Cafe_Terrace_Chair_B_" + i, new Vector3(-6.42f, 0.42f, 17.2f + i * 2.1f), new Vector3(0.26f, 0.34f, 0.26f), "Green");
+            }
+            CafeUmbrella(root, "Cafe_Terrace_Umbrella", new Vector3(-5.98f, 0f, 18.2f));
+            PlaceKenney(root, "Kenney_Parasol_Cafe_A", "Assets/AssetStoreImported/ModernCity/Kenney/Commercial/Models/GLB format/detail-parasol-a.glb", new Vector3(-6.18f, 0.08f, 20.3f), new Vector3(0f, 18f, 0f), Vector3.one * 0.95f);
+            PlaceKenney(root, "Kenney_Planter_Left_Close", "Assets/AssetStoreImported/ModernCity/Kenney/Suburban/Models/GLB format/planter.glb", new Vector3(-6.18f, 0.05f, -1.8f), new Vector3(0f, 90f, 0f), Vector3.one * 1.2f);
+            PlaceKenney(root, "Kenney_Planter_Right_Close", "Assets/AssetStoreImported/ModernCity/Kenney/Suburban/Models/GLB format/planter.glb", new Vector3(6.18f, 0.05f, -0.8f), new Vector3(0f, -90f, 0f), Vector3.one * 1.2f);
+            Bicycle(root, "Early_Game_Bicycle_Preview", new Vector3(5.92f, 0f, 7.5f), -18f);
+            Bicycle(root, "Bike_Dock_Display_Bicycle", new Vector3(-6.2f, 0f, 25.5f), 18f);
+            Cube(root, "Bike_Dock_Rail", new Vector3(-6.22f, 0.42f, 25.5f), new Vector3(0.1f, 0.16f, 1.35f), "Metal");
+            Cube(root, "Ocean_Wayfinding_Sign_Post", new Vector3(5.15f, 1.0f, 33.6f), new Vector3(0.12f, 1.75f, 0.12f), "Wood");
+            Cube(root, "Ocean_Wayfinding_Sign_Board", new Vector3(5.15f, 1.88f, 33.6f), new Vector3(1.25f, 0.34f, 0.1f), "Blue");
+            Label(root, "Ocean_Wayfinding_Label", "海边", new Vector3(5.15f, 1.9f, 33.51f), 0.22f);
+
+            PlaceKenney(root, "Kenney_Light_Left", "Assets/AssetStoreImported/ModernCity/Kenney/Roads/Models/GLB format/light-curved.glb", new Vector3(-5.65f, 0.2f, 9f), new Vector3(0f, 0f, 0f), Vector3.one * 1.1f);
+            PlaceKenney(root, "Kenney_Light_Right", "Assets/AssetStoreImported/ModernCity/Kenney/Roads/Models/GLB format/light-curved.glb", new Vector3(5.65f, 0.2f, 20f), new Vector3(0f, 180f, 0f), Vector3.one * 1.1f);
+            PlaceKenney(root, "Kenney_Light_Left_Close", "Assets/AssetStoreImported/ModernCity/Kenney/Roads/Models/GLB format/light-square.glb", new Vector3(-5.55f, 0.05f, -7.0f), new Vector3(0f, 10f, 0f), Vector3.one * 0.95f);
+            PlaceKenney(root, "Kenney_Light_Right_Close", "Assets/AssetStoreImported/ModernCity/Kenney/Roads/Models/GLB format/light-square.glb", new Vector3(5.55f, 0.05f, -5.5f), new Vector3(0f, 170f, 0f), Vector3.one * 0.95f);
+            PlaceKenney(root, "Kenney_Electricity_Pole_Left", "Assets/AssetStoreImported/ModernCity/Kenney/Roads/Models/GLB format/electricity-pole.glb", new Vector3(-5.45f, 0.2f, 28f), new Vector3(0f, 0f, 0f), Vector3.one * 1.1f);
+            PlaceKenney(root, "Kenney_Electricity_Pole_Right", "Assets/AssetStoreImported/ModernCity/Kenney/Roads/Models/GLB format/electricity-pole.glb", new Vector3(5.45f, 0.2f, 31f), new Vector3(0f, 180f, 0f), Vector3.one * 1.1f);
+
+            for (var i = 0; i < 3; i++)
+            {
+                Cube(root, "Utility_Wire_Left_" + i, new Vector3(-5.45f, 5.15f - i * 0.26f, 18.5f), new Vector3(0.03f, 0.03f, 21.5f), "Metal");
+                Cube(root, "Utility_Wire_Right_" + i, new Vector3(5.45f, 5.15f - i * 0.26f, 20.5f), new Vector3(0.03f, 0.03f, 20.0f), "Metal");
+            }
+
+            for (var i = 0; i < 8; i++)
+            {
+                var z = -10f + i * 6.2f;
+                Cylinder(root, "Street_Bollard_Left_" + i, new Vector3(-5.45f, 0.36f, z), new Vector3(0.065f, 0.36f, 0.065f), "Metal");
+                Cylinder(root, "Street_Bollard_Right_" + i, new Vector3(5.45f, 0.36f, z + 2.4f), new Vector3(0.065f, 0.36f, 0.065f), "Metal");
+            }
+
+            CreateStorefrontLifeLayer(root);
+            AddDailyStreetProps(root);
+        }
+
+        private static void CreateStorefrontLifeLayer(Transform root)
+        {
+            SidewalkDisplayCluster(root, "Bakery_Close_Display_Cluster", -1, -12.4f, "Pink", true);
+            SidewalkDisplayCluster(root, "Cafe_Flower_Display_Cluster", -1, 5.4f, "Green", false);
+            SidewalkDisplayCluster(root, "Convenience_Close_Display_Cluster", 1, -11.3f, "Blue", false);
+            SidewalkDisplayCluster(root, "Cinema_Home_Display_Cluster", 1, 6.8f, "Yellow", false);
+
+            VendingMachine(root, "Convenience_Drink_Vending_Machine", new Vector3(5.72f, 0f, -8.6f), -1, "Blue");
+            VendingMachine(root, "Ocean_Drink_Vending_Machine", new Vector3(-5.72f, 0f, 31.8f), 1, "Green");
+            DirectoryKiosk(root, "StarBay_Street_Directory_Kiosk", new Vector3(-5.45f, 0f, 33.2f), "Blue");
+
+            for (var i = 0; i < 4; i++)
+            {
+                var z = -8.8f + i * 10.8f;
+                Cube(root, "Thin_Palm_Planter_Shadow_Left_" + i, new Vector3(-5.02f, 0.065f, z), new Vector3(1.85f, 0.012f, 0.28f), "ShadowSoft").transform.localRotation = Quaternion.Euler(0f, -24f, 0f);
+                Cube(root, "Thin_Palm_Planter_Shadow_Right_" + i, new Vector3(5.02f, 0.065f, z + 3.0f), new Vector3(1.85f, 0.012f, 0.28f), "ShadowSoft").transform.localRotation = Quaternion.Euler(0f, -24f, 0f);
+            }
+        }
+
+        private static void SidewalkDisplayCluster(Transform root, string name, int side, float z, string accent, bool bakery)
+        {
+            var cluster = new GameObject(name);
+            cluster.transform.SetParent(root, false);
+
+            var x = side * 5.88f;
+            Cube(cluster.transform, "A_Frame_Board_Back", new Vector3(x, 0.78f, z - 1.28f), new Vector3(0.11f, 1.05f, 0.68f), "SignDark");
+            Cube(cluster.transform, "A_Frame_Board_Face", new Vector3(x - side * 0.06f, 0.82f, z - 1.28f), new Vector3(0.045f, 0.84f, 0.52f), accent);
+            Cube(cluster.transform, "A_Frame_Chalk_Line_A", new Vector3(x - side * 0.09f, 0.98f, z - 1.28f), new Vector3(0.03f, 0.035f, 0.34f), "Cream");
+            Cube(cluster.transform, "A_Frame_Chalk_Line_B", new Vector3(x - side * 0.09f, 0.78f, z - 1.28f), new Vector3(0.03f, 0.028f, 0.26f), "Cream");
+
+            Cube(cluster.transform, "Low_Display_Table", new Vector3(x, 0.48f, z + 0.35f), new Vector3(0.42f, 0.16f, 1.45f), "Wood");
+            Cube(cluster.transform, "Table_Front_Apron", new Vector3(x - side * 0.18f, 0.38f, z + 0.35f), new Vector3(0.08f, 0.22f, 1.36f), accent);
+
+            for (var i = 0; i < 4; i++)
+            {
+                var itemZ = z - 0.24f + i * 0.38f;
+                if (bakery)
+                {
+                    Cylinder(cluster.transform, "Tiny_Cake_Display_" + i, new Vector3(x - side * 0.25f, 0.64f, itemZ), new Vector3(0.11f, 0.04f, 0.11f), i % 2 == 0 ? "Pink" : "Cream");
+                    Sphere(cluster.transform, "Tiny_Cake_Cream_" + i, new Vector3(x - side * 0.25f, 0.72f, itemZ), new Vector3(0.045f, 0.03f, 0.045f), "Cream");
+                }
+                else
+                {
+                    Cube(cluster.transform, "Small_Product_Box_" + i, new Vector3(x - side * 0.22f, 0.66f, itemZ), new Vector3(0.18f, 0.25f, 0.18f), i % 2 == 0 ? accent : "Cream");
+                }
+            }
+
+            Cylinder(cluster.transform, "Potted_Green_Tall_Pot", new Vector3(x, 0.34f, z + 1.35f), new Vector3(0.16f, 0.32f, 0.16f), "Concrete");
+            Sphere(cluster.transform, "Potted_Green_Round_Leaf", new Vector3(x, 0.78f, z + 1.35f), new Vector3(0.28f, 0.24f, 0.28f), "PlantDark");
+        }
+
+        private static void VendingMachine(Transform root, string name, Vector3 position, int faceSide, string accent)
+        {
+            var machine = new GameObject(name);
+            machine.transform.SetParent(root, false);
+            machine.transform.localPosition = position;
+
+            Cube(machine.transform, "Body", new Vector3(0f, 1.05f, 0f), new Vector3(0.5f, 1.9f, 0.78f), accent);
+            Cube(machine.transform, "Glass_Door", new Vector3(-faceSide * 0.27f, 1.12f, 0f), new Vector3(0.08f, 1.38f, 0.52f), "DarkGlass");
+            Cube(machine.transform, "Light_Header", new Vector3(-faceSide * 0.31f, 1.88f, 0f), new Vector3(0.035f, 0.18f, 0.58f), "WarmLight");
+            for (var i = 0; i < 4; i++)
+            {
+                Cube(machine.transform, "Drink_Row_" + i, new Vector3(-faceSide * 0.35f, 0.72f + i * 0.25f, -0.16f + (i % 2) * 0.32f), new Vector3(0.035f, 0.16f, 0.08f), i % 2 == 0 ? "Cream" : "Green");
+            }
+            Cube(machine.transform, "Button_Panel", new Vector3(-faceSide * 0.32f, 1.14f, 0.36f), new Vector3(0.04f, 0.55f, 0.12f), "SignDark");
+        }
+
+        private static void DirectoryKiosk(Transform root, string name, Vector3 position, string accent)
+        {
+            var kiosk = new GameObject(name);
+            kiosk.transform.SetParent(root, false);
+            kiosk.transform.localPosition = position;
+
+            Cube(kiosk.transform, "Post", new Vector3(0f, 0.82f, 0f), new Vector3(0.12f, 1.55f, 0.12f), "Metal");
+            Cube(kiosk.transform, "Map_Backboard", new Vector3(0f, 1.72f, 0f), new Vector3(0.18f, 1.05f, 1.24f), "SignDark");
+            Cube(kiosk.transform, "Map_Face", new Vector3(0.1f, 1.72f, 0f), new Vector3(0.045f, 0.86f, 1.02f), "Glass");
+            Cube(kiosk.transform, "Map_Sea_Block", new Vector3(0.13f, 1.82f, -0.24f), new Vector3(0.035f, 0.2f, 0.42f), "OceanLight");
+            Cube(kiosk.transform, "Map_Street_Line", new Vector3(0.14f, 1.6f, 0.12f), new Vector3(0.03f, 0.055f, 0.58f), accent);
+            Cube(kiosk.transform, "Map_Pin", new Vector3(0.15f, 1.72f, 0.28f), new Vector3(0.035f, 0.12f, 0.12f), "Red");
+        }
+
+        private static void AddDailyStreetProps(Transform root)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                var z = -6f + i * 12.4f;
+                Cube(root, "Left_Long_Window_Planter_" + i, new Vector3(-6.42f, 0.38f, z), new Vector3(0.38f, 0.26f, 1.55f), "Concrete");
+                Sphere(root, "Left_Long_Planter_Leaf_A_" + i, new Vector3(-6.42f, 0.66f, z - 0.38f), new Vector3(0.22f, 0.16f, 0.32f), "PlantDark");
+                Sphere(root, "Left_Long_Planter_Leaf_B_" + i, new Vector3(-6.42f, 0.66f, z + 0.36f), new Vector3(0.2f, 0.15f, 0.3f), "Green");
+
+                Cube(root, "Right_Long_Window_Planter_" + i, new Vector3(6.42f, 0.38f, z + 4.8f), new Vector3(0.38f, 0.26f, 1.55f), "Concrete");
+                Sphere(root, "Right_Long_Planter_Leaf_A_" + i, new Vector3(6.42f, 0.66f, z + 4.42f), new Vector3(0.22f, 0.16f, 0.32f), "PlantDark");
+                Sphere(root, "Right_Long_Planter_Leaf_B_" + i, new Vector3(6.42f, 0.66f, z + 5.16f), new Vector3(0.2f, 0.15f, 0.3f), "Green");
+            }
+
+            Cube(root, "Bakery_Side_Display_Table", new Vector3(-5.98f, 0.52f, -7.25f), new Vector3(0.52f, 0.16f, 1.1f), "Wood");
+            Cube(root, "Bakery_Display_Table_Leg_A", new Vector3(-5.98f, 0.3f, -7.62f), new Vector3(0.08f, 0.32f, 0.08f), "Wood");
+            Cube(root, "Bakery_Display_Table_Leg_B", new Vector3(-5.98f, 0.3f, -6.88f), new Vector3(0.08f, 0.32f, 0.08f), "Wood");
+            for (var i = 0; i < 3; i++)
+            {
+                Cylinder(root, "Bakery_Table_Treat_" + i, new Vector3(-5.98f, 0.66f, -7.56f + i * 0.36f), new Vector3(0.12f, 0.04f, 0.12f), i % 2 == 0 ? "Cream" : "Pink");
+            }
+
+            Cube(root, "Convenience_Side_Crate_A", new Vector3(5.78f, 0.34f, -2.8f), new Vector3(0.34f, 0.28f, 0.48f), "Blue");
+            Cube(root, "Convenience_Side_Crate_B", new Vector3(5.78f, 0.34f, -2.22f), new Vector3(0.34f, 0.28f, 0.42f), "Green");
+            Cube(root, "Small_Recycling_Bin", new Vector3(5.78f, 0.5f, 1.2f), new Vector3(0.36f, 0.62f, 0.36f), "Blue");
+            Cube(root, "Small_Recycling_Bin_Lid", new Vector3(5.78f, 0.84f, 1.2f), new Vector3(0.42f, 0.065f, 0.42f), "WallTrim");
+        }
+
+        private static void CreateStreetAirDetails(Transform root)
+        {
+            Cloud(root, "Soft_Cloud_Left", new Vector3(-12f, 10.5f, 32f), 1.0f);
+            Cloud(root, "Soft_Cloud_Right", new Vector3(13f, 10.1f, 24f), 0.82f);
+            Cloud(root, "Soft_Cloud_Horizon", new Vector3(-2f, 8.4f, 56f), 0.7f);
+        }
+
+        private static void CreateCompositionShadows(Transform root)
+        {
+            Cube(root, "Left_Building_Soft_Shadow", new Vector3(-4.4f, 0.055f, 5.5f), new Vector3(3.4f, 0.018f, 18f), "ShadowSoft");
+            Cube(root, "Right_Building_Soft_Shadow", new Vector3(4.9f, 0.055f, 14f), new Vector3(2.8f, 0.018f, 20f), "ShadowSoft");
+            Cube(root, "Palm_Shadow_Left_A", new Vector3(-4.8f, 0.06f, 7f), new Vector3(3.8f, 0.016f, 0.72f), "ShadowSoft").transform.localRotation = Quaternion.Euler(0f, -18f, 0f);
+            Cube(root, "Palm_Shadow_Right_A", new Vector3(4.4f, 0.06f, 23f), new Vector3(3.4f, 0.016f, 0.66f), "ShadowSoft").transform.localRotation = Quaternion.Euler(0f, -18f, 0f);
+        }
+
+        private static void CreateSunAndSeaPolish(Transform root)
+        {
+            for (var i = 0; i < 5; i++)
+            {
+                var z = -8.0f + i * 10.2f;
+                Cube(root, "Warm_Sun_Patch_Street_" + i, new Vector3(-1.8f + (i % 2) * 2.2f, 0.069f, z), new Vector3(3.5f, 0.01f, 2.0f), "SunPatch").transform.localRotation = Quaternion.Euler(0f, -18f, 0f);
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var z = -12.0f + i * 11.0f;
+                Cube(root, "Left_Facade_Warm_Sunwash_" + i, new Vector3(-6.68f, 3.08f, z), new Vector3(0.035f, 3.2f, 3.8f), "FacadeWarmLight");
+                Cube(root, "Right_Facade_Cool_Shadow_" + i, new Vector3(6.68f, 2.86f, z + 2.8f), new Vector3(0.035f, 3.0f, 3.5f), "FacadeCoolShadow");
+            }
+
+            Cube(root, "Sea_Air_Horizon_Mist", new Vector3(0f, 1.08f, 49.5f), new Vector3(26f, 0.20f, 0.08f), "OceanMist");
+            Cube(root, "Ocean_Bright_Entrance_Glint", new Vector3(0f, 0.065f, 46.2f), new Vector3(22f, 0.018f, 0.12f), "OceanGlint");
+            Cube(root, "Promenade_Long_Warm_Highlight", new Vector3(0f, 0.095f, 39.55f), new Vector3(12.5f, 0.014f, 0.26f), "SunPatch");
+        }
+
+        private static void CreatePlayerScaleMarker(Transform root)
+        {
+            var marker = new GameObject("DaMogu_Player_Scale_And_Camera_Target");
+            marker.transform.SetParent(root, false);
+            marker.transform.position = new Vector3(0f, 0f, -4.8f);
+
+            Capsule(marker.transform, "Left_Leg", new Vector3(-0.12f, 0.46f, 0f), new Vector3(0.055f, 0.37f, 0.055f), "PlayerSkin");
+            Capsule(marker.transform, "Right_Leg", new Vector3(0.12f, 0.46f, 0f), new Vector3(0.055f, 0.37f, 0.055f), "PlayerSkin");
+            Capsule(marker.transform, "Left_Sock", new Vector3(-0.13f, 0.18f, 0.005f), new Vector3(0.075f, 0.085f, 0.075f), "HoodieWhite");
+            Capsule(marker.transform, "Right_Sock", new Vector3(0.13f, 0.18f, 0.005f), new Vector3(0.075f, 0.085f, 0.075f), "HoodieWhite");
+            Sphere(marker.transform, "Left_Shoe", new Vector3(-0.13f, 0.07f, -0.06f), new Vector3(0.14f, 0.055f, 0.19f), "ShoePink");
+            Sphere(marker.transform, "Right_Shoe", new Vector3(0.13f, 0.07f, -0.06f), new Vector3(0.14f, 0.055f, 0.19f), "ShoePink");
+            Cube(marker.transform, "Left_Shoe_White_Sole", new Vector3(-0.13f, 0.045f, -0.055f), new Vector3(0.18f, 0.025f, 0.22f), "HoodieWhite");
+            Cube(marker.transform, "Right_Shoe_White_Sole", new Vector3(0.13f, 0.045f, -0.055f), new Vector3(0.18f, 0.025f, 0.22f), "HoodieWhite");
+
+            Cube(marker.transform, "Dark_Shorts", new Vector3(0f, 0.84f, -0.01f), new Vector3(0.40f, 0.17f, 0.19f), "ShortDark");
+            Cube(marker.transform, "Shorts_Back_Pleat_Left", new Vector3(-0.11f, 0.82f, -0.125f), new Vector3(0.03f, 0.15f, 0.035f), "ShortSoftLine");
+            Cube(marker.transform, "Shorts_Back_Pleat_Right", new Vector3(0.11f, 0.82f, -0.125f), new Vector3(0.03f, 0.15f, 0.035f), "ShortSoftLine");
+            Sphere(marker.transform, "Soft_Hoodie_Torso", new Vector3(0f, 1.15f, 0f), new Vector3(0.27f, 0.35f, 0.14f), "PlayerPink");
+            Cube(marker.transform, "Flat_Hoodie_Back_Panel", new Vector3(0f, 1.12f, -0.13f), new Vector3(0.42f, 0.44f, 0.045f), "PlayerPink");
+            Cube(marker.transform, "Hoodie_Back_Soft_Center_Fold", new Vector3(0f, 1.13f, -0.158f), new Vector3(0.035f, 0.38f, 0.025f), "PlayerPinkShadow");
+            Cube(marker.transform, "Hoodie_Back_Left_Highlight", new Vector3(-0.14f, 1.15f, -0.16f), new Vector3(0.04f, 0.34f, 0.02f), "PlayerPinkLight");
+            Cube(marker.transform, "White_Hood_Back", new Vector3(0f, 1.37f, 0.09f), new Vector3(0.36f, 0.2f, 0.12f), "HoodieWhite");
+            Sphere(marker.transform, "Rounded_White_Hood_Lip", new Vector3(0f, 1.42f, -0.045f), new Vector3(0.25f, 0.08f, 0.045f), "HoodieWhite");
+            Cube(marker.transform, "Hoodie_White_Shoulder_Yoke", new Vector3(0f, 1.36f, -0.05f), new Vector3(0.48f, 0.12f, 0.08f), "HoodieWhite");
+            Cube(marker.transform, "Hoodie_Hem", new Vector3(0f, 0.93f, -0.02f), new Vector3(0.45f, 0.06f, 0.18f), "HoodieWhite");
+
+            Capsule(marker.transform, "Left_Sleeve", new Vector3(-0.29f, 1.1f, -0.02f), new Vector3(0.052f, 0.28f, 0.052f), "PlayerPink").transform.localRotation = Quaternion.Euler(4f, 0f, -8f);
+            Capsule(marker.transform, "Right_Sleeve", new Vector3(0.29f, 1.1f, -0.02f), new Vector3(0.052f, 0.28f, 0.052f), "PlayerPink").transform.localRotation = Quaternion.Euler(4f, 0f, 8f);
+            Capsule(marker.transform, "Left_Sleeve_Cuff", new Vector3(-0.32f, 0.91f, -0.02f), new Vector3(0.056f, 0.032f, 0.056f), "HoodieWhite");
+            Capsule(marker.transform, "Right_Sleeve_Cuff", new Vector3(0.32f, 0.91f, -0.02f), new Vector3(0.056f, 0.032f, 0.056f), "HoodieWhite");
+            Capsule(marker.transform, "Left_Hand", new Vector3(-0.33f, 0.82f, -0.02f), new Vector3(0.04f, 0.066f, 0.04f), "PlayerSkin");
+            Capsule(marker.transform, "Right_Hand", new Vector3(0.33f, 0.82f, -0.02f), new Vector3(0.04f, 0.066f, 0.04f), "PlayerSkin");
+
+            Sphere(marker.transform, "Head", new Vector3(0f, 1.58f, 0f), new Vector3(0.165f, 0.185f, 0.155f), "PlayerSkin");
+            Sphere(marker.transform, "Hair_Crown_Cap", new Vector3(0f, 1.64f, -0.03f), new Vector3(0.17f, 0.12f, 0.12f), "HairBrown");
+            Sphere(marker.transform, "Rounded_Bob_Hair_Back", new Vector3(0f, 1.52f, -0.09f), new Vector3(0.19f, 0.19f, 0.115f), "HairBrown");
+            Sphere(marker.transform, "Bob_Hair_Lower_Nape", new Vector3(0f, 1.42f, -0.1f), new Vector3(0.17f, 0.075f, 0.07f), "HairBrown");
+            Sphere(marker.transform, "Left_Hair_Side", new Vector3(-0.105f, 1.49f, -0.065f), new Vector3(0.048f, 0.125f, 0.045f), "HairBrown");
+            Sphere(marker.transform, "Right_Hair_Side", new Vector3(0.105f, 1.49f, -0.065f), new Vector3(0.048f, 0.125f, 0.045f), "HairBrown");
+            Sphere(marker.transform, "Small_Hair_Bun", new Vector3(0f, 1.735f, -0.045f), new Vector3(0.064f, 0.05f, 0.064f), "HairBrown");
+            Cube(marker.transform, "Small_Hair_Bun_Base", new Vector3(0f, 1.695f, -0.052f), new Vector3(0.10f, 0.045f, 0.052f), "HairBrown");
+            Cube(marker.transform, "Hair_Back_Highlight_Left", new Vector3(-0.065f, 1.56f, -0.188f), new Vector3(0.02f, 0.14f, 0.016f), "HairHighlight");
+            Cube(marker.transform, "Hair_Back_Highlight_Right", new Vector3(0.065f, 1.54f, -0.188f), new Vector3(0.018f, 0.12f, 0.016f), "HairHighlight");
+            Cube(marker.transform, "Hair_Bob_Center_Depth_Shadow", new Vector3(0f, 1.48f, -0.185f), new Vector3(0.028f, 0.12f, 0.016f), "HairDeepShadow");
+            Cube(marker.transform, "Crossbody_Bag_Strap", new Vector3(0.02f, 1.17f, -0.16f), new Vector3(0.045f, 0.62f, 0.03f), "Cream").transform.localRotation = Quaternion.Euler(0f, 0f, -28f);
+            Cube(marker.transform, "Small_Crossbody_Bag", new Vector3(0.26f, 0.94f, -0.15f), new Vector3(0.16f, 0.14f, 0.06f), "Cream");
+            Cube(marker.transform, "Small_Crossbody_Bag_Flap", new Vector3(0.26f, 0.99f, -0.185f), new Vector3(0.14f, 0.035f, 0.035f), "WarmLight");
+        }
+
+        private static void PlaceKenney(Transform parent, string name, string assetPath, Vector3 position, Vector3 rotation, Vector3 scale)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (asset == null)
+            {
+                return;
+            }
+
+            var instance = PrefabUtility.InstantiatePrefab(asset, parent) as GameObject;
+            if (instance == null)
+            {
+                instance = UnityEngine.Object.Instantiate(asset, parent);
+            }
+
+            instance.name = name;
+            instance.transform.localPosition = position;
+            instance.transform.localRotation = Quaternion.Euler(rotation);
+            instance.transform.localScale = scale;
+        }
+
+        private static void PlaceThemedPrefab(Transform parent, string name, string assetPath, Vector3 position, Vector3 rotation, Vector3 scale, string accent)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (asset == null)
+            {
+                Debug.LogWarning("[StarBay] Missing optional prefab: " + assetPath);
+                return;
+            }
+
+            var instance = PrefabUtility.InstantiatePrefab(asset, parent) as GameObject;
+            if (instance == null)
+            {
+                instance = UnityEngine.Object.Instantiate(asset, parent);
+            }
+
+            instance.name = name;
+            instance.transform.localPosition = position;
+            instance.transform.localRotation = Quaternion.Euler(rotation);
+            instance.transform.localScale = scale;
+            RepaintPrefabMaterials(instance, accent);
+        }
+
+        private static void RepaintPrefabMaterials(GameObject instance, string accent)
+        {
+            foreach (var renderer in instance.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var materialName = renderer.sharedMaterial != null ? renderer.sharedMaterial.name.ToLowerInvariant() : string.Empty;
+                var objectName = renderer.gameObject.name.ToLowerInvariant();
+                var chosen = "WallSlight";
+
+                if (materialName.Contains("glass") || materialName.Contains("window") || objectName.Contains("glass") || objectName.Contains("window"))
+                {
+                    chosen = "Glass";
+                }
+                else if (materialName.Contains("metal") || objectName.Contains("rail") || objectName.Contains("antenna"))
+                {
+                    chosen = "Metal";
+                }
+                else if (materialName.Contains("green") || objectName.Contains("plant") || objectName.Contains("tree"))
+                {
+                    chosen = "PlantDark";
+                }
+                else if (objectName.Contains("sign") || objectName.Contains("trim") || objectName.Contains("stripe"))
+                {
+                    chosen = accent;
+                }
+                else if (objectName.Contains("roof") || objectName.Contains("floor"))
+                {
+                    chosen = "Concrete";
+                }
+
+                var mat = LoadMaterial(chosen);
+                if (mat != null)
+                {
+                    renderer.sharedMaterial = mat;
+                }
+            }
+        }
+
+        private static GameObject Cube(Transform parent, string name, Vector3 position, Vector3 scale, string materialName)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+            go.transform.localScale = scale;
+            ApplyMaterial(go, materialName);
+            return go;
+        }
+
+        private static GameObject Quad(Transform parent, string name, Vector3 position, Vector3 scale, Vector3 rotation, string materialName)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+            go.transform.localRotation = Quaternion.Euler(rotation);
+            go.transform.localScale = scale;
+            ApplyMaterial(go, materialName);
+            return go;
+        }
+
+        private static GameObject SlopedAwning(Transform parent, string name, Vector3 position, Vector3 size, string materialName)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+
+            var w = size.x * 0.5f;
+            var d = size.z * 0.5f;
+            var high = size.y * 0.5f;
+            var low = -size.y * 0.5f;
+            var thickness = Mathf.Max(0.045f, size.y * 0.22f);
+
+            var mesh = new Mesh();
+            mesh.name = name + "_Mesh";
+            mesh.vertices = new[]
+            {
+                new Vector3(-w, high, d),
+                new Vector3(w, high, d),
+                new Vector3(-w, low, -d),
+                new Vector3(w, low, -d),
+                new Vector3(-w, high - thickness, d),
+                new Vector3(w, high - thickness, d),
+                new Vector3(-w, low - thickness, -d),
+                new Vector3(w, low - thickness, -d)
+            };
+            mesh.triangles = new[]
+            {
+                0, 2, 1, 1, 2, 3,
+                4, 5, 6, 5, 7, 6,
+                0, 1, 4, 1, 5, 4,
+                2, 6, 3, 3, 6, 7,
+                0, 4, 2, 2, 4, 6,
+                1, 3, 5, 3, 7, 5
+            };
+            mesh.uv = new[]
+            {
+                new Vector2(0f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(0f, 0f),
+                new Vector2(1f, 0f),
+                new Vector2(0f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(0f, 0f),
+                new Vector2(1f, 0f)
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
+            go.AddComponent<MeshRenderer>();
+            ApplyMaterial(go, materialName);
+            return go;
+        }
+
+        private static GameObject Cylinder(Transform parent, string name, Vector3 position, Vector3 scale, string materialName)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+            go.transform.localScale = scale;
+            ApplyMaterial(go, materialName);
+            return go;
+        }
+
+        private static GameObject Capsule(Transform parent, string name, Vector3 position, Vector3 scale, string materialName)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+            go.transform.localScale = scale;
+            ApplyMaterial(go, materialName);
+            return go;
+        }
+
+        private static GameObject Sphere(Transform parent, string name, Vector3 position, Vector3 scale, string materialName)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = position;
+            go.transform.localScale = scale;
+            ApplyMaterial(go, materialName);
+            return go;
+        }
+
+        private static void Planter(Transform parent, string name, Vector3 position)
+        {
+            var planter = new GameObject(name);
+            planter.transform.SetParent(parent, false);
+            planter.transform.localPosition = position;
+            Cube(planter.transform, "Box", new Vector3(0f, 0.28f, 0f), new Vector3(1.1f, 0.42f, 0.72f), "Concrete");
+            Sphere(planter.transform, "Flowers_A", new Vector3(-0.28f, 0.62f, 0f), new Vector3(0.28f, 0.18f, 0.28f), "Green");
+            Sphere(planter.transform, "Flowers_B", new Vector3(0.22f, 0.66f, 0.08f), new Vector3(0.24f, 0.16f, 0.24f), "Pink");
+        }
+
+        private static void FineFlowerPlanter(Transform parent, string name, Vector3 position, string flowerA, string flowerB)
+        {
+            var planter = new GameObject(name);
+            planter.transform.SetParent(parent, false);
+            planter.transform.localPosition = position;
+
+            Cube(planter.transform, "Long_Box", new Vector3(0f, 0.26f, 0f), new Vector3(0.62f, 0.36f, 1.32f), "StepStone");
+            Cube(planter.transform, "Soil_Line", new Vector3(0f, 0.47f, 0f), new Vector3(0.56f, 0.05f, 1.18f), "DoorFrameDark");
+            for (var i = 0; i < 5; i++)
+            {
+                var z = -0.46f + i * 0.23f;
+                Sphere(planter.transform, "Leaf_Cluster_" + i, new Vector3(0f, 0.64f, z), new Vector3(0.17f, 0.11f, 0.16f), i % 2 == 0 ? "PlantDark" : "Green");
+                Sphere(planter.transform, "Flower_Cluster_" + i, new Vector3(0f, 0.78f, z + 0.03f), new Vector3(0.075f, 0.055f, 0.075f), i % 2 == 0 ? flowerA : flowerB);
+            }
+        }
+
+        private static void Palm(Transform parent, string name, Vector3 position)
+        {
+            var palm = new GameObject(name);
+            palm.transform.SetParent(parent, false);
+            palm.transform.localPosition = position;
+            Cylinder(palm.transform, "Trunk", new Vector3(0f, 2.2f, 0f), new Vector3(0.2f, 2.2f, 0.2f), "Wood");
+            for (var i = 0; i < 5; i++)
+            {
+                var frond = Cube(palm.transform, "Frond_" + i, new Vector3(0f, 4.34f, 0f), new Vector3(0.2f, 0.08f, 2.0f), "Green");
+                frond.transform.localRotation = Quaternion.Euler(18f, i * 72f, 0f);
+            }
+        }
+
+        private static void Bench(Transform parent, string name, Vector3 position, float yaw)
+        {
+            var bench = new GameObject(name);
+            bench.transform.SetParent(parent, false);
+            bench.transform.localPosition = position;
+            bench.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            Cube(bench.transform, "Seat", new Vector3(0f, 0.25f, 0f), new Vector3(1.8f, 0.18f, 0.45f), "Wood");
+            Cube(bench.transform, "Back", new Vector3(0f, 0.65f, 0.22f), new Vector3(1.8f, 0.55f, 0.12f), "Wood");
+        }
+
+        private static void CafeUmbrella(Transform parent, string name, Vector3 position)
+        {
+            var umbrella = new GameObject(name);
+            umbrella.transform.SetParent(parent, false);
+            umbrella.transform.localPosition = position;
+            Cylinder(umbrella.transform, "Pole", new Vector3(0f, 1.25f, 0f), new Vector3(0.045f, 1.25f, 0.045f), "Metal");
+            Cube(umbrella.transform, "Canopy_A", new Vector3(0f, 2.42f, 0f), new Vector3(1.6f, 0.12f, 1.6f), "Cream").transform.localRotation = Quaternion.Euler(0f, 45f, 0f);
+            Cube(umbrella.transform, "Canopy_B", new Vector3(0f, 2.44f, 0f), new Vector3(1.3f, 0.10f, 1.3f), "Green").transform.localRotation = Quaternion.Euler(0f, 45f, 0f);
+        }
+
+        private static void BeachUmbrella(Transform parent, string name, Vector3 position, string accent)
+        {
+            var umbrella = new GameObject(name);
+            umbrella.transform.SetParent(parent, false);
+            umbrella.transform.localPosition = position;
+            Cylinder(umbrella.transform, "Slim_Pole", new Vector3(0f, 0.74f, 0f), new Vector3(0.035f, 0.72f, 0.035f), "Metal");
+            SlopedAwning(umbrella.transform, "Canopy_A", new Vector3(0f, 1.45f, 0f), new Vector3(1.6f, 0.16f, 1.0f), accent).transform.localRotation = Quaternion.Euler(0f, 18f, 0f);
+            SlopedAwning(umbrella.transform, "Canopy_B", new Vector3(0f, 1.46f, 0f), new Vector3(1.42f, 0.12f, 0.85f), "Cream").transform.localRotation = Quaternion.Euler(0f, 108f, 0f);
+        }
+
+        private static void BeachLounger(Transform parent, string name, Vector3 position, float yaw)
+        {
+            var lounger = new GameObject(name);
+            lounger.transform.SetParent(parent, false);
+            lounger.transform.localPosition = position;
+            lounger.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            Cube(lounger.transform, "Seat_Slat", new Vector3(0f, 0.18f, 0f), new Vector3(1.3f, 0.08f, 0.48f), "Wood");
+            Cube(lounger.transform, "Back_Slat", new Vector3(-0.48f, 0.42f, 0f), new Vector3(0.72f, 0.08f, 0.48f), "Wood").transform.localRotation = Quaternion.Euler(0f, 0f, 24f);
+            Cube(lounger.transform, "Fabric_Cushion", new Vector3(0.18f, 0.24f, 0f), new Vector3(0.72f, 0.05f, 0.42f), "Cream");
+        }
+
+        private static void Bicycle(Transform parent, string name, Vector3 position, float yaw)
+        {
+            var bike = new GameObject(name);
+            bike.transform.SetParent(parent, false);
+            bike.transform.localPosition = position;
+            bike.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            Cylinder(bike.transform, "Front_Wheel", new Vector3(0f, 0.45f, 0.48f), new Vector3(0.04f, 0.32f, 0.32f), "Metal").transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            Cylinder(bike.transform, "Rear_Wheel", new Vector3(0f, 0.45f, -0.48f), new Vector3(0.04f, 0.32f, 0.32f), "Metal").transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            Cube(bike.transform, "Frame_Main", new Vector3(0f, 0.82f, 0f), new Vector3(0.08f, 0.08f, 0.9f), "Blue");
+            Cube(bike.transform, "Seat", new Vector3(0f, 1.06f, -0.12f), new Vector3(0.18f, 0.08f, 0.28f), "DarkGlass");
+            Cube(bike.transform, "Handle", new Vector3(0f, 1.12f, 0.52f), new Vector3(0.48f, 0.06f, 0.08f), "Metal");
+        }
+
+        private static void Cloud(Transform parent, string name, Vector3 position, float scale)
+        {
+            var cloud = new GameObject(name);
+            cloud.transform.SetParent(parent, false);
+            cloud.transform.localPosition = position;
+            Sphere(cloud.transform, "Puff_A", Vector3.zero, new Vector3(1.2f, 0.28f, 0.34f) * scale, "CloudWhite");
+            Sphere(cloud.transform, "Puff_B", new Vector3(0.72f * scale, 0.08f * scale, 0f), new Vector3(0.82f, 0.22f, 0.28f) * scale, "CloudWhite");
+            Sphere(cloud.transform, "Puff_C", new Vector3(-0.82f * scale, 0.02f * scale, 0f), new Vector3(0.76f, 0.2f, 0.25f) * scale, "CloudWhite");
+        }
+
+        private static void Label(Transform parent, string name, string text, Vector3 position, float size)
+        {
+            var label = new GameObject(name);
+            label.transform.SetParent(parent, false);
+            label.transform.localPosition = position;
+            label.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            var mesh = label.AddComponent<TextMesh>();
+            mesh.text = text;
+            mesh.fontSize = 64;
+            mesh.characterSize = size * 0.1f;
+            mesh.anchor = TextAnchor.MiddleCenter;
+            mesh.alignment = TextAlignment.Center;
+            mesh.color = Color.white;
+        }
+
+        private static void SideLabel(Transform parent, string name, string text, Vector3 position, float size, int side)
+        {
+            var label = new GameObject(name);
+            label.transform.SetParent(parent, false);
+            label.transform.localPosition = position;
+            label.transform.localRotation = Quaternion.Euler(0f, side < 0 ? 90f : -90f, 0f);
+            var mesh = label.AddComponent<TextMesh>();
+            mesh.text = text;
+            mesh.fontSize = 64;
+            mesh.characterSize = size * 0.1f;
+            mesh.anchor = TextAnchor.MiddleCenter;
+            mesh.alignment = TextAlignment.Center;
+            mesh.color = Color.white;
+        }
+
+        private static void EnsureMaterials()
+        {
+            Directory.CreateDirectory(MaterialFolder);
+            PaverMat("Paver");
+            Mat("PaverLight", new Color(0.72f, 0.71f, 0.68f));
+            Mat("PaverWarm", new Color(0.64f, 0.63f, 0.60f));
+            Mat("Sidewalk", new Color(0.70f, 0.69f, 0.66f));
+            Mat("Curb", new Color(0.58f, 0.58f, 0.55f));
+            Mat("Joint", new Color(0.56f, 0.57f, 0.55f));
+            Mat("JointSoft", new Color(0.66f, 0.66f, 0.63f));
+            WallMat("Wall", new Color(0.82f, 0.80f, 0.74f));
+            WallMat("WallSlight", new Color(0.76f, 0.76f, 0.71f));
+            WallMat("WallCleanLight", new Color(0.86f, 0.85f, 0.79f));
+            WallMat("WallCleanCool", new Color(0.73f, 0.75f, 0.73f));
+            WallMat("BakeryWallWarm", new Color(0.88f, 0.83f, 0.73f));
+            WallMat("ConvenienceWallCool", new Color(0.68f, 0.72f, 0.72f));
+            Mat("WallTrim", new Color(0.70f, 0.70f, 0.66f));
+            Mat("WallShadow", new Color(0.58f, 0.58f, 0.53f));
+            Mat("FacadeSoftShadow", new Color(0.42f, 0.45f, 0.43f, 0.22f));
+            Mat("StoneBase", new Color(0.54f, 0.53f, 0.50f));
+            GlassMat("Glass", new Color(0.55f, 0.78f, 0.92f, 0.52f));
+            GlassMat("DarkGlass", new Color(0.15f, 0.28f, 0.35f, 0.82f));
+            GlassMat("BakeryWindowSoft", new Color(0.66f, 0.86f, 0.92f, 0.62f));
+            GlassMat("ConvenienceWindowSoft", new Color(0.48f, 0.70f, 0.80f, 0.70f));
+            AwningMat("Pink", new Color(0.96f, 0.48f, 0.58f));
+            AwningMat("AwningSalmon", new Color(0.92f, 0.54f, 0.55f));
+            Mat("Cream", new Color(1.0f, 0.88f, 0.68f));
+            AwningMat("Blue", new Color(0.22f, 0.56f, 0.91f));
+            AwningMat("Green", new Color(0.38f, 0.72f, 0.46f));
+            AwningMat("Yellow", new Color(0.95f, 0.73f, 0.32f));
+            WoodMat("Wood", new Color(0.62f, 0.42f, 0.24f));
+            Mat("Metal", new Color(0.46f, 0.49f, 0.50f));
+            Mat("WhiteFrame", new Color(0.86f, 0.88f, 0.86f));
+            Mat("DoorFrameDark", new Color(0.24f, 0.25f, 0.24f));
+            Mat("WindowFrameShadow", new Color(0.18f, 0.21f, 0.21f, 0.44f));
+            Mat("StepStone", new Color(0.66f, 0.65f, 0.60f));
+            Mat("WarmLight", new Color(1f, 0.82f, 0.48f));
+            Mat("BulbGlow", new Color(1f, 0.88f, 0.58f));
+            Mat("InteriorWarm", new Color(0.86f, 0.72f, 0.56f));
+            Mat("BakeryInteriorWarm", new Color(0.92f, 0.78f, 0.58f));
+            Mat("ShopInteriorDeep", new Color(0.26f, 0.30f, 0.30f, 0.68f));
+            Mat("SignDark", new Color(0.30f, 0.32f, 0.30f));
+            Mat("CurtainWarm", new Color(0.92f, 0.76f, 0.62f, 0.68f));
+            Mat("CurtainCool", new Color(0.48f, 0.66f, 0.78f, 0.64f));
+            Mat("GlassHighlight", new Color(0.74f, 0.88f, 0.96f, 0.36f));
+            Mat("SunPatch", new Color(0.94f, 0.82f, 0.52f, 0.16f));
+            Mat("FacadeWarmLight", new Color(0.90f, 0.78f, 0.52f, 0.14f));
+            Mat("FacadeCoolShadow", new Color(0.28f, 0.36f, 0.40f, 0.16f));
+            Mat("OceanMist", new Color(0.82f, 0.95f, 1f, 0.34f));
+            WaterMat("Ocean", new Color(0.19f, 0.68f, 0.86f, 0.92f));
+            WaterMat("OceanDeep", new Color(0.08f, 0.40f, 0.64f, 0.94f));
+            WaterMat("OceanLight", new Color(0.48f, 0.86f, 0.96f, 0.76f));
+            Mat("OceanViewAqua", new Color(0.44f, 0.82f, 0.90f, 0.52f));
+            Mat("OceanDistanceBlue", new Color(0.30f, 0.66f, 0.82f, 0.58f));
+            Mat("SeaDepthSoft", new Color(0.52f, 0.78f, 0.88f, 0.44f));
+            Mat("OceanGlint", new Color(0.88f, 0.98f, 1f, 0.48f));
+            Mat("SeaFoam", new Color(0.80f, 0.92f, 0.94f));
+            Mat("CloudWhite", new Color(0.94f, 0.97f, 1f, 0.62f));
+            Mat("Sand", new Color(0.90f, 0.78f, 0.55f));
+            Mat("WetSand", new Color(0.70f, 0.62f, 0.48f));
+            Mat("Island", new Color(0.32f, 0.55f, 0.66f));
+            Mat("DistantCoast", new Color(0.28f, 0.48f, 0.57f));
+            Mat("IslandSoft", new Color(0.45f, 0.63f, 0.70f));
+            Mat("DistantCoastSoft", new Color(0.54f, 0.68f, 0.74f));
+            Mat("Concrete", new Color(0.70f, 0.68f, 0.62f));
+            Mat("DrainDark", new Color(0.20f, 0.23f, 0.23f));
+            Mat("TactileYellow", new Color(0.78f, 0.69f, 0.46f));
+            Mat("Red", new Color(0.78f, 0.18f, 0.16f));
+            Mat("PlantDark", new Color(0.16f, 0.42f, 0.28f));
+            Mat("FlowerPink", new Color(0.98f, 0.50f, 0.68f));
+            Mat("FlowerYellow", new Color(1f, 0.82f, 0.30f));
+            Mat("ShadowSoft", new Color(0.12f, 0.14f, 0.15f, 0.20f));
+            Mat("PlayerPink", new Color(0.96f, 0.62f, 0.76f));
+            Mat("PlayerPinkLight", new Color(1f, 0.76f, 0.86f));
+            Mat("PlayerPinkShadow", new Color(0.86f, 0.46f, 0.62f));
+            Mat("PlayerSkin", new Color(1f, 0.76f, 0.62f));
+            Mat("SkinSoftShadow", new Color(0.92f, 0.56f, 0.46f));
+            Mat("HairBrown", new Color(0.20f, 0.12f, 0.08f));
+            Mat("HairHighlight", new Color(0.34f, 0.22f, 0.16f));
+            Mat("HairDeepShadow", new Color(0.10f, 0.06f, 0.045f));
+            Mat("HoodieWhite", new Color(0.88f, 0.86f, 0.84f));
+            Mat("ShortDark", new Color(0.08f, 0.12f, 0.18f));
+            Mat("ShortSoftLine", new Color(0.18f, 0.22f, 0.30f));
+            Mat("ShoePink", new Color(1f, 0.72f, 0.80f));
+            HeroStorefrontGraphicMat("HeroBakeryGraphic", new Color(0.92f, 0.54f, 0.55f), true);
+            HeroStorefrontGraphicMat("HeroConvenienceGraphic", new Color(0.22f, 0.56f, 0.91f), false);
+            UpperFacadeGraphicMat("UpperFacadeWarmGraphic", new Color(0.84f, 0.83f, 0.77f), new Color(0.64f, 0.86f, 0.96f));
+            UpperFacadeGraphicMat("UpperFacadeCoolGraphic", new Color(0.70f, 0.73f, 0.72f), new Color(0.54f, 0.77f, 0.88f));
+            StorefrontDecalMat("StorefrontBakeryDecal", new Color(0.92f, 0.54f, 0.55f), true);
+            StorefrontDecalMat("StorefrontConvenienceDecal", new Color(0.22f, 0.56f, 0.91f), false);
+            FacadeMat("FacadePink", new Color(0.96f, 0.48f, 0.58f), true);
+            FacadeMat("FacadeGreen", new Color(0.38f, 0.72f, 0.46f), false);
+            FacadeMat("FacadeBlue", new Color(0.22f, 0.56f, 0.91f), false);
+            FacadeMat("FacadeYellow", new Color(0.95f, 0.73f, 0.32f), false);
+        }
+
+        private static void WallMat(string name, Color baseColor)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+            for (var y = 0; y < 256; y++)
+            {
+                for (var x = 0; x < 256; x++)
+                {
+                    var grain = (((x * 13 + y * 7) % 23) - 11) / 255f;
+                    var panelLine = (y % 64 == 0 || x % 96 == 0) ? -0.035f : 0f;
+                    texture.SetPixel(x, y, Shift(baseColor, grain + panelLine));
+                }
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, false, new Vector2(3f, 3f), Color.white);
+        }
+
+        private static void GlassMat(string name, Color baseColor)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+            for (var y = 0; y < 256; y++)
+            {
+                for (var x = 0; x < 256; x++)
+                {
+                    var t = y / 255f;
+                    var c = Color.Lerp(Shift(baseColor, -0.08f), Shift(baseColor, 0.18f), t);
+                    c.a = baseColor.a;
+                    texture.SetPixel(x, y, c);
+                }
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                Diagonal(texture, 24 + i * 52, 42 + i * 16, 112, new Color(0.93f, 0.98f, 1f, baseColor.a));
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, true, new Vector2(1f, 1f), Color.white);
+        }
+
+        private static void AwningMat(string name, Color baseColor)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(128, 128, TextureFormat.RGBA32, false);
+            for (var y = 0; y < 128; y++)
+            {
+                for (var x = 0; x < 128; x++)
+                {
+                    var stripe = (x / 24) % 2 == 0 ? 0.06f : -0.04f;
+                    var rib = y % 18 == 0 ? -0.06f : 0f;
+                    texture.SetPixel(x, y, Shift(baseColor, stripe + rib));
+                }
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, false, new Vector2(2f, 1f), Color.white);
+        }
+
+        private static void WoodMat(string name, Color baseColor)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(128, 128, TextureFormat.RGBA32, false);
+            for (var y = 0; y < 128; y++)
+            {
+                for (var x = 0; x < 128; x++)
+                {
+                    var grain = Mathf.Sin((x + y * 0.35f) * 0.18f) * 0.035f;
+                    var line = y % 26 == 0 ? -0.05f : 0f;
+                    texture.SetPixel(x, y, Shift(baseColor, grain + line));
+                }
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, false, new Vector2(3f, 1f), Color.white);
+        }
+
+        private static void WaterMat(string name, Color baseColor)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+            for (var y = 0; y < 256; y++)
+            {
+                for (var x = 0; x < 256; x++)
+                {
+                    var gradient = Mathf.Lerp(-0.04f, 0.08f, y / 255f);
+                    var wave = Mathf.Sin((x * 0.12f) + (y * 0.045f)) * 0.025f;
+                    var fine = ((x + y * 3) % 37 == 0) ? 0.08f : 0f;
+                    var c = Shift(baseColor, gradient + wave + fine);
+                    c.a = baseColor.a;
+                    texture.SetPixel(x, y, c);
+                }
+            }
+
+            for (var i = 0; i < 7; i++)
+            {
+                Diagonal(texture, 10 + i * 34, 40 + i * 18, 72, new Color(0.86f, 0.98f, 1f, Mathf.Min(0.58f, baseColor.a)));
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, true, new Vector2(2.6f, 5.2f), Color.white);
+        }
+
+        private static void SaveTextureMaterial(string name, string texturePath, Texture2D texture, bool transparent, Vector2 scale, Color color)
+        {
+            File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(texturePath);
+
+            var importedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (importedTexture != null)
+            {
+                importedTexture.wrapMode = TextureWrapMode.Repeat;
+                importedTexture.filterMode = FilterMode.Bilinear;
+            }
+
+            var path = MaterialFolder + "/" + name + ".mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                AssetDatabase.CreateAsset(mat, path);
+            }
+
+            mat.color = color;
+            mat.mainTexture = importedTexture;
+            mat.SetTexture("_BaseMap", importedTexture);
+            mat.mainTextureScale = scale;
+            mat.SetTextureScale("_BaseMap", scale);
+            if (transparent)
+            {
+                mat.SetFloat("_Surface", 1f);
+                mat.SetFloat("_AlphaClip", 0f);
+                mat.SetFloat("_ZWrite", 0f);
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                mat.renderQueue = 3000;
+            }
+            else
+            {
+                mat.renderQueue = -1;
+            }
+
+            TuneMaterial(mat, name, transparent);
+            EditorUtility.SetDirty(mat);
+        }
+
+        private static void TuneMaterial(Material mat, string name, bool transparent)
+        {
+            if (mat.HasProperty("_BaseColor"))
+            {
+                mat.SetColor("_BaseColor", mat.color);
+            }
+
+            var smoothness = 0.18f;
+            var metallic = 0f;
+            if (name.Contains("Glass") || name.Contains("Ocean"))
+            {
+                smoothness = 0.86f;
+            }
+            else if (name.Contains("Metal") || name.Contains("Drain"))
+            {
+                smoothness = 0.58f;
+                metallic = 0.45f;
+            }
+            else if (name.Contains("Wall"))
+            {
+                smoothness = 0.28f;
+            }
+            else if (name.Contains("Awning") || name == "Pink" || name == "Blue" || name == "Green" || name == "Yellow")
+            {
+                smoothness = 0.38f;
+            }
+            else if (name.Contains("Storefront") || name.Contains("Graphic"))
+            {
+                smoothness = 0.42f;
+            }
+
+            if (mat.HasProperty("_Smoothness"))
+            {
+                mat.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (mat.HasProperty("_Metallic"))
+            {
+                mat.SetFloat("_Metallic", metallic);
+            }
+
+            if (transparent)
+            {
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                if (mat.HasProperty("_Blend"))
+                {
+                    mat.SetFloat("_Blend", 0f);
+                }
+            }
+
+            if (name.Contains("Storefront") || name.Contains("Graphic"))
+            {
+                if (mat.HasProperty("_Cull"))
+                {
+                    mat.SetFloat("_Cull", 0f);
+                }
+
+                mat.renderQueue = 2450;
+            }
+        }
+
+        private static Color Shift(Color color, float amount)
+        {
+            return new Color(
+                Mathf.Clamp01(color.r + amount),
+                Mathf.Clamp01(color.g + amount),
+                Mathf.Clamp01(color.b + amount),
+                color.a);
+        }
+
+        private static void PaverMat(string name)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+            var baseColor = new Color(0.69f, 0.69f, 0.66f);
+            var warm = new Color(0.75f, 0.74f, 0.69f);
+            var cool = new Color(0.63f, 0.64f, 0.62f);
+            for (var y = 0; y < 256; y++)
+            {
+                for (var x = 0; x < 256; x++)
+                {
+                    var row = y / 34;
+                    var shiftedX = x + (row % 2) * 24;
+                    var block = ((shiftedX / 48) + row) % 3;
+                    var grain = (((x * 7 + y * 11) % 31) - 15) / 900f;
+                    var color = block == 0 ? baseColor : (block == 1 ? warm : cool);
+                    var jointLine = shiftedX % 48 < 2 || y % 34 < 2 ? -0.075f : 0f;
+                    texture.SetPixel(x, y, Shift(color, grain + jointLine));
+                }
+            }
+
+            texture.Apply();
+            File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(texturePath);
+
+            var importedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (importedTexture != null)
+            {
+                importedTexture.wrapMode = TextureWrapMode.Repeat;
+                importedTexture.filterMode = FilterMode.Bilinear;
+            }
+
+            var path = MaterialFolder + "/" + name + ".mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                AssetDatabase.CreateAsset(mat, path);
+            }
+
+            mat.color = Color.white;
+            mat.mainTexture = importedTexture;
+            mat.SetTexture("_BaseMap", importedTexture);
+            mat.mainTextureScale = new Vector2(3f, 12f);
+            mat.SetTextureScale("_BaseMap", new Vector2(3f, 12f));
+            TuneMaterial(mat, name, false);
+            EditorUtility.SetDirty(mat);
+        }
+
+        private static void FacadeMat(string name, Color accent, bool bakery)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(512, 512, TextureFormat.RGBA32, false);
+            var wall = new Color(0.93f, 0.90f, 0.84f);
+            var glassTop = new Color(0.64f, 0.86f, 0.98f);
+            var glassBottom = new Color(0.18f, 0.35f, 0.43f);
+            var frame = new Color(0.96f, 0.96f, 0.92f);
+            var warm = new Color(1f, 0.80f, 0.45f);
+            var dark = new Color(0.12f, 0.18f, 0.22f);
+
+            for (var y = 0; y < 512; y++)
+            {
+                for (var x = 0; x < 512; x++)
+                {
+                    texture.SetPixel(x, y, wall);
+                }
+            }
+
+            Rect(texture, 0, 0, 512, 48, new Color(0.54f, 0.53f, 0.50f));
+            Rect(texture, 0, 330, 512, 64, accent);
+            Rect(texture, 48, 82, 152, 210, dark);
+            Rect(texture, 218, 82, 246, 210, glassBottom);
+            Rect(texture, 58, 92, 132, 188, glassTop);
+            Rect(texture, 230, 92, 222, 188, glassTop);
+            Rect(texture, 48, 280, 416, 14, frame);
+            Rect(texture, 48, 78, 416, 12, frame);
+
+            for (var i = 0; i < 6; i++)
+            {
+                Rect(texture, 58 + i * 68, 400, 46, 74, glassTop);
+                Rect(texture, 52 + i * 68, 394, 58, 86, frame);
+            }
+
+            for (var i = 0; i < 6; i++)
+            {
+                Rect(texture, i * 86, 306, 44, 24, i % 2 == 0 ? accent : new Color(1f, 0.88f, 0.68f));
+            }
+
+            Rect(texture, 70, 178, 110, 12, warm);
+            Rect(texture, 248, 172, 180, 14, warm);
+            Rect(texture, 250, 116, 176, 12, new Color(0.60f, 0.42f, 0.25f));
+            Rect(texture, 250, 146, 176, 12, new Color(0.60f, 0.42f, 0.25f));
+
+            for (var i = 0; i < 8; i++)
+            {
+                var productColor = bakery
+                    ? (i % 2 == 0 ? new Color(1f, 0.65f, 0.76f) : new Color(1f, 0.87f, 0.58f))
+                    : (i % 3 == 0 ? new Color(0.25f, 0.60f, 0.95f) : (i % 3 == 1 ? new Color(0.35f, 0.78f, 0.44f) : new Color(0.96f, 0.72f, 0.30f)));
+                Rect(texture, 262 + i * 20, 126 + (i % 2) * 28, 14, 18, productColor);
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                Diagonal(texture, 236 + i * 34, 112 + i * 10, 78, new Color(0.92f, 0.98f, 1f));
+            }
+
+            texture.Apply();
+            File.WriteAllBytes(texturePath, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(texturePath);
+
+            var importedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (importedTexture != null)
+            {
+                importedTexture.wrapMode = TextureWrapMode.Clamp;
+                importedTexture.filterMode = FilterMode.Bilinear;
+            }
+
+            var path = MaterialFolder + "/" + name + ".mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                AssetDatabase.CreateAsset(mat, path);
+            }
+
+            mat.color = Color.white;
+            mat.mainTexture = importedTexture;
+            mat.SetTexture("_BaseMap", importedTexture);
+            TuneMaterial(mat, name, false);
+            EditorUtility.SetDirty(mat);
+        }
+
+        private static void StorefrontDecalMat(string name, Color accent, bool bakery)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(512, 256, TextureFormat.RGBA32, false);
+            var wall = bakery ? new Color(0.88f, 0.82f, 0.72f) : new Color(0.66f, 0.70f, 0.70f);
+            var glassTop = new Color(0.66f, 0.88f, 0.98f);
+            var glassBottom = new Color(0.20f, 0.38f, 0.46f);
+            var frame = new Color(0.90f, 0.92f, 0.88f);
+            var wood = new Color(0.56f, 0.36f, 0.18f);
+            var warm = new Color(1f, 0.82f, 0.48f);
+            var deep = new Color(0.12f, 0.19f, 0.22f);
+
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var grain = (((x * 11 + y * 5) % 29) - 14) / 420f;
+                    texture.SetPixel(x, y, Shift(wall, grain));
+                }
+            }
+
+            Rect(texture, 0, 212, 512, 28, accent);
+            Rect(texture, 0, 204, 512, 8, frame);
+            if (!bakery)
+            {
+                Rect(texture, 0, 196, 512, 10, new Color(0.34f, 0.76f, 0.42f));
+                Rect(texture, 0, 188, 512, 7, frame);
+            }
+            else
+            {
+                for (var stripe = 0; stripe < 10; stripe++)
+                {
+                    Rect(texture, stripe * 54, 188, 28, 24, stripe % 2 == 0 ? accent : new Color(1f, 0.86f, 0.66f));
+                }
+            }
+
+            Rect(texture, 28, 26, 138, 156, deep);
+            Rect(texture, 178, 26, 306, 156, deep);
+            Rect(texture, 38, 36, 118, 136, glassTop);
+            Rect(texture, 190, 36, 282, 136, glassTop);
+            Rect(texture, 24, 182, 462, 8, frame);
+            Rect(texture, 24, 22, 462, 8, frame);
+            for (var mullion = 0; mullion < 5; mullion++)
+            {
+                Rect(texture, 180 + mullion * 62, 28, 6, 154, frame);
+            }
+
+            Rect(texture, 206, 78, 240, 8, wood);
+            Rect(texture, 206, 116, 240, 8, wood);
+            Rect(texture, 206, 154, 240, 8, wood);
+            for (var i = 0; i < 12; i++)
+            {
+                var item = bakery
+                    ? (i % 3 == 0 ? new Color(1f, 0.66f, 0.78f) : (i % 3 == 1 ? new Color(1f, 0.88f, 0.58f) : new Color(0.96f, 0.78f, 0.54f)))
+                    : (i % 3 == 0 ? new Color(0.18f, 0.54f, 0.90f) : (i % 3 == 1 ? new Color(0.30f, 0.74f, 0.42f) : new Color(0.95f, 0.72f, 0.26f)));
+                Rect(texture, 220 + i * 18, 88 + (i % 3) * 28, 10, 18, item);
+            }
+
+            if (bakery)
+            {
+                Rect(texture, 58, 64, 78, 10, warm);
+                Rect(texture, 62, 94, 70, 10, wood);
+                for (var i = 0; i < 5; i++)
+                {
+                    Rect(texture, 70 + i * 12, 104, 8, 9, i % 2 == 0 ? new Color(1f, 0.66f, 0.78f) : new Color(1f, 0.88f, 0.58f));
+                }
+            }
+            else
+            {
+                Rect(texture, 54, 52, 80, 92, glassBottom);
+                Rect(texture, 92, 52, 4, 92, frame);
+                Rect(texture, 60, 148, 68, 7, warm);
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                Diagonal(texture, 210 + i * 48, 52 + i * 10, 74, new Color(0.92f, 0.98f, 1f));
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, false, new Vector2(1f, 1f), Color.white);
+        }
+
+        private static void HeroStorefrontGraphicMat(string name, Color accent, bool bakery)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(768, 512, TextureFormat.RGBA32, false);
+            var wall = bakery ? new Color(0.86f, 0.80f, 0.69f) : new Color(0.58f, 0.65f, 0.67f);
+            var glassTop = bakery ? new Color(0.68f, 0.90f, 0.96f) : new Color(0.52f, 0.78f, 0.88f);
+            var glassBottom = bakery ? new Color(0.42f, 0.66f, 0.74f) : new Color(0.20f, 0.42f, 0.52f);
+            var frame = new Color(0.92f, 0.94f, 0.90f);
+            var wood = new Color(0.56f, 0.34f, 0.17f);
+            var warm = new Color(1f, 0.82f, 0.48f);
+            var deep = new Color(0.10f, 0.18f, 0.22f);
+
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var grain = (((x * 17 + y * 9) % 37) - 18) / 700f;
+                    texture.SetPixel(x, y, Shift(wall, grain));
+                }
+            }
+
+            Rect(texture, 0, 392, 768, 58, accent);
+            Rect(texture, 0, 450, 768, 18, frame);
+            Rect(texture, 0, 374, 768, 14, frame);
+            if (bakery)
+            {
+                for (var stripe = 0; stripe < 12; stripe++)
+                {
+                    Rect(texture, stripe * 64, 338, 34, 36, stripe % 2 == 0 ? accent : new Color(1f, 0.86f, 0.66f));
+                }
+            }
+            else
+            {
+                Rect(texture, 0, 354, 768, 22, new Color(0.32f, 0.76f, 0.43f));
+                Rect(texture, 0, 380, 768, 10, frame);
+            }
+
+            Rect(texture, 42, 56, 178, 272, deep);
+            Rect(texture, 236, 56, 484, 272, deep);
+            Rect(texture, 58, 72, 146, 240, glassTop);
+            Rect(texture, 252, 72, 448, 240, glassTop);
+            Rect(texture, 42, 328, 678, 14, frame);
+            Rect(texture, 42, 44, 678, 14, frame);
+            Rect(texture, 220, 50, 12, 286, frame);
+            for (var i = 0; i < 5; i++)
+            {
+                Rect(texture, 304 + i * 78, 60, 8, 266, frame);
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                var y = 112 + i * 54;
+                Rect(texture, 282, y, 360, 10, wood);
+                Rect(texture, 286, y + 10, 340, 4, warm);
+            }
+
+            for (var i = 0; i < 22; i++)
+            {
+                var px = 300 + (i % 11) * 30;
+                var py = 126 + (i / 11) * 86 + (i % 2) * 14;
+                var item = bakery
+                    ? (i % 3 == 0 ? new Color(1f, 0.62f, 0.76f) : (i % 3 == 1 ? new Color(1f, 0.88f, 0.55f) : new Color(0.94f, 0.72f, 0.48f)))
+                    : (i % 3 == 0 ? new Color(0.16f, 0.54f, 0.94f) : (i % 3 == 1 ? new Color(0.28f, 0.72f, 0.42f) : new Color(1f, 0.78f, 0.36f)));
+                Rect(texture, px, py, bakery ? 18 : 16, bakery ? 16 : 38, item);
+            }
+
+            if (bakery)
+            {
+                Rect(texture, 82, 112, 92, 16, warm);
+                Rect(texture, 82, 164, 92, 12, wood);
+                Rect(texture, 82, 210, 92, 12, wood);
+                for (var i = 0; i < 7; i++)
+                {
+                    Rect(texture, 92 + i * 11, 176, 8, 8, i % 2 == 0 ? new Color(1f, 0.62f, 0.76f) : new Color(1f, 0.88f, 0.55f));
+                    Rect(texture, 92 + i * 11, 222, 8, 8, i % 2 == 0 ? new Color(0.94f, 0.72f, 0.48f) : new Color(1f, 0.88f, 0.55f));
+                }
+            }
+            else
+            {
+                Rect(texture, 78, 88, 96, 176, glassBottom);
+                Rect(texture, 122, 88, 6, 176, frame);
+                Rect(texture, 84, 278, 84, 10, warm);
+            }
+
+            for (var i = 0; i < 7; i++)
+            {
+                Diagonal(texture, 280 + i * 58, 98 + i * 12, 92, new Color(0.92f, 0.98f, 1f));
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, false, new Vector2(1f, 1f), Color.white);
+        }
+
+        private static void UpperFacadeGraphicMat(string name, Color wall, Color glass)
+        {
+            var texturePath = MaterialFolder + "/" + name + "_Texture.png";
+            var texture = new Texture2D(768, 384, TextureFormat.RGBA32, false);
+            var frame = new Color(0.91f, 0.93f, 0.90f);
+            var shadow = new Color(0.46f, 0.50f, 0.50f);
+            var rail = new Color(0.66f, 0.72f, 0.72f);
+            var curtainWarm = new Color(0.92f, 0.74f, 0.58f);
+            var curtainCool = new Color(0.56f, 0.70f, 0.78f);
+
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var grain = (((x * 19 + y * 13) % 41) - 20) / 900f;
+                    texture.SetPixel(x, y, Shift(wall, grain));
+                }
+            }
+
+            Rect(texture, 0, 0, 768, 18, shadow);
+            Rect(texture, 0, 366, 768, 18, Shift(wall, -0.08f));
+            for (var floor = 0; floor < 2; floor++)
+            {
+                var baseY = 56 + floor * 150;
+                Rect(texture, 0, baseY - 18, 768, 8, Shift(wall, -0.06f));
+                for (var bay = 0; bay < 4; bay++)
+                {
+                    var x = 68 + bay * 170;
+                    Rect(texture, x - 12, baseY - 10, 112, 110, shadow);
+                    Rect(texture, x, baseY, 88, 84, frame);
+                    Rect(texture, x + 10, baseY + 10, 68, 64, glass);
+                    Rect(texture, x + 42, baseY + 10, 5, 64, frame);
+                    Rect(texture, x + 10, baseY + 42, 68, 4, frame);
+                    Rect(texture, x + 14, baseY + 12, 12, 60, (bay + floor) % 2 == 0 ? curtainWarm : curtainCool);
+                    Rect(texture, x + 62, baseY + 12, 10, 60, (bay + floor) % 2 == 0 ? curtainCool : curtainWarm);
+                    Rect(texture, x - 6, baseY - 24, 104, 10, rail);
+                    Rect(texture, x - 10, baseY - 42, 112, 22, new Color(glass.r, glass.g, glass.b, 0.84f));
+                }
+            }
+
+            for (var i = 0; i < 3; i++)
+            {
+                var x = 118 + i * 210;
+                Rect(texture, x, 310, 54, 24, frame);
+                Rect(texture, x + 8, 318, 38, 4, rail);
+                Rect(texture, x + 8, 326, 38, 4, rail);
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                Diagonal(texture, 100 + i * 116, 92 + i * 14, 74, new Color(0.92f, 0.98f, 1f));
+            }
+
+            texture.Apply();
+            SaveTextureMaterial(name, texturePath, texture, false, new Vector2(1f, 1f), Color.white);
+        }
+
+        private static void Rect(Texture2D texture, int x, int y, int width, int height, Color color)
+        {
+            for (var yy = y; yy < y + height; yy++)
+            {
+                if (yy < 0 || yy >= texture.height)
+                {
+                    continue;
+                }
+
+                for (var xx = x; xx < x + width; xx++)
+                {
+                    if (xx >= 0 && xx < texture.width)
+                    {
+                        texture.SetPixel(xx, yy, color);
+                    }
+                }
+            }
+        }
+
+        private static void Diagonal(Texture2D texture, int x, int y, int length, Color color)
+        {
+            for (var i = 0; i < length; i++)
+            {
+                for (var thickness = 0; thickness < 4; thickness++)
+                {
+                    var xx = x + i;
+                    var yy = y + i / 2 + thickness;
+                    if (xx >= 0 && xx < texture.width && yy >= 0 && yy < texture.height)
+                    {
+                        texture.SetPixel(xx, yy, color);
+                    }
+                }
+            }
+        }
+
+        private static void Fill(Texture2D texture, Color color)
+        {
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    texture.SetPixel(x, y, color);
+                }
+            }
+        }
+
+        private static void Blit(Texture2D target, Texture2D source, int offsetX, int offsetY)
+        {
+            for (var y = 0; y < source.height; y++)
+            {
+                for (var x = 0; x < source.width; x++)
+                {
+                    target.SetPixel(offsetX + x, offsetY + y, source.GetPixel(x, y));
+                }
+            }
+
+            UnityEngine.Object.DestroyImmediate(source);
+        }
+
+        private static void Mat(string name, Color color)
+        {
+            var path = MaterialFolder + "/" + name + ".mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
+                AssetDatabase.CreateAsset(mat, path);
+            }
+
+            mat.color = color;
+            if (color.a < 0.98f)
+            {
+                mat.SetFloat("_Surface", 1f);
+                mat.SetFloat("_AlphaClip", 0f);
+                mat.SetFloat("_ZWrite", 0f);
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                mat.renderQueue = 3000;
+            }
+            else
+            {
+                mat.renderQueue = -1;
+            }
+            TuneMaterial(mat, name, color.a < 0.98f);
+            EditorUtility.SetDirty(mat);
+        }
+
+        private static void ApplyMaterial(GameObject go, string materialName)
+        {
+            var mat = LoadMaterial(materialName);
+            if (mat != null)
+            {
+                go.GetComponent<Renderer>().sharedMaterial = mat;
+            }
+        }
+
+        private static Material LoadMaterial(string materialName)
+        {
+            return AssetDatabase.LoadAssetAtPath<Material>(MaterialFolder + "/" + materialName + ".mat");
+        }
+    }
+}

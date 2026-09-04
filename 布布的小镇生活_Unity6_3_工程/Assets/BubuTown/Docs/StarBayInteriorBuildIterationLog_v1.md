@@ -1,0 +1,568 @@
+# 星湾镇室内装修原型迭代记录 v1
+
+## 当前目标
+
+- 以 `/Users/zhendian/Desktop/目标/室内目标图/星湾镇_室内最终目标多角度_v1.png` 为视觉目标持续搭建。
+- 第一阶段先完成可运行、可查看、可继续替换资产的 Unity 室内原型。
+
+## 已完成
+
+- v335 已修复目标公寓厨房防溅墙缺材质问题：隐藏 `KitchenTileWall` 缺失材质对象，重铺奶油小砖墙与低对比砖缝，避免 Unity 洋红坏材质进入截图。
+- v336 已把目标公寓客厅中心的大件换回 Blender 成品模型：`目标图精修海蓝沙发.fbx` 与 `目标原木小茶几.fbx`，并隐藏多轮沙发/茶几硬贴片，降低程序块感。
+- v337-v339 已重铺目标公寓厨房：使用 `目标灰台面厨房.fbx` 作为成品模型底座，补厨房材质关键词映射，并清理高饱和粉色挂巾条，让厨房从拼片状态继续往目标图的粉柜灰台面方向靠近。
+- v340 已把残留未定义材质名替换为已存在材质，避免隐藏对象或台面边缘再次显示 Unity 洋红坏材质。
+- v341 已回到 Blender 源模型精修 `目标灰台面厨房.fbx`：补圆角灰石台面、粉柜主体、柜门柔亮内框、金色拉手、水槽柔蓝面、托盘与杯碗，并重新导入 Unity 生成截图。
+- v342 已精修 `目标图床品软雕.fbx`，把床品从多层硬线贴片改为更圆润的一体软被、床尾下垂布、低鼓面和少量低对比绗缝。
+- v343 已修正目标公寓床品比例：隐藏旧床品叠层和 v342 小软被，重放更大、更贴合床面的 Blender 软被，让粉色床品覆盖比例更接近目标图。
+- v344 已重做并重挂 `目标图厚粉窗帘单片.fbx`：加入厚布背面、波浪褶、束腰暗面、顶部布头和底部软坠，替换旧平面窗帘贴片。
+- v345 已新增 `目标图高级海蓝布艺沙发.fbx` 与 `目标图高级原木茶几.fbx`，并在 Unity 中隐藏旧沙发/茶几补丁层，只保留整模家具、柔布材质和接地阴影，减少程序块感。
+- v346 已新增 `目标图高级床头柜台灯组合.fbx`，把目标公寓床头柜、台灯、小书、水杯从多轮小方块补丁改为 Blender 整模组合，并保留暖光小灯与接地柔影。
+- v347 已新增 `目标图高级后墙搁板画框组合.fbx` 与 `目标图高级厨房便签板组合.fbx`，把后墙搁板、相框、书本、盆栽和厨房侧墙便签板改为 Blender 整模组合。
+- v348 已清理 v347 墙面装饰后方过重的灰色背板阴影，只保留极细贴墙影，避免墙面再次出现大片程序块感。
+- v349 已新增 `目标图高级温润原木床架.fbx`，尝试把床头、床侧、床尾和短脚从多段硬条替换成 Blender 整模床架；目检发现初版朝向反了，高床头挡住床品。
+- v350 已隐藏 v349 错误朝向床架，旋转 180 度并压低/收小床架尺寸，让高床头回到墙边，前侧只保留低矮圆角床尾木梁。
+- v351 已新增 `目标图高级灰台面粉柜厨房.fbx`，把目标公寓厨房从旧散块、Kenney 组合和多轮补丁层改为一件 Blender 整模：包含圆角灰台面、粉色柜门、金色拉手、水槽水龙头、奶油小砖防溅墙、原木搁板、杯碗、绿植和柔粉挂巾；同时修正贴墙柔光材质名，清掉洋红坏材质块。
+- v352 已新增 `目标图高级整床成品.fbx`，尝试把床架、床垫、粉色被面、枕头、蓝靠枕和猫抱枕合并为一件整床模型，隐藏旧床体/床品/枕头/床架叠层；目检发现粉被侧面和床头/床尾板在主视角里仍显得偏厚。
+- v353 已在 Blender 源模型里压薄整床粉被、降低床尾垂边和床头板高度，并新增 `目标公寓_整床粉被压薄修正_v353` 覆盖层，继续降低床区大板块感，让床更接近目标图里的原木床架+柔粉床品组合。
+- v354 已验证“3D 模型 + 目标图风格贴纸”的路线：生成 `target_blue_sofa_decal_v354.png` 沙发布艺贴纸，并尝试贴到沙发坐垫、前脸和靠背；目检发现大面积竖贴会像深色牌子，不适合直接覆盖。
+- v355 已新增 `目标公寓_沙发贴纸牌清理_v355`，隐藏 v354 的三张突兀贴纸牌，只保留克制的坐垫柔光、低对比织纹和软凹缝；结论是后续贴纸应优先用于床被顶面、坐垫顶面、柜门面、纸箱标签等受控局部表面。
+- 最新截图已输出到 `/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_室内装修美术原型实际画面_v355_沙发贴纸牌清理.png` 与 `/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_室内装修美术原型整体预览_v355_沙发贴纸牌清理.png`。
+- 已创建独立场景：`Assets/Scenes/StarBayInteriorDecorationPrototype.unity`。
+- 已搭建三楼第一间小套间：毛坯灰地板、空墙、厨房区、客厅卧室区、基础灯、纸箱、睡袋、装修网格。
+- 已搭建星湾旅店房间：床、门、窗、小桌、靠窗椅、行李、床头柜、床头灯、海景窗、地毯。
+- 已实现装修模式原型：主角站在屋内摆放家具、网格显示、90 度旋转、墙上物品贴墙、墙纸/地板/灯光切换。
+- 已加入五套第一版风格：可爱粉色、木质自然、现代简约、蛋糕主题、电竞主题。
+- 已下载并解压 Kenney Furniture Pack CC0 资源到 `Assets/BubuTown/External/CC0/Kenney/FurnitureKit/Raw/`。
+- 已把关键家具正式替换为 Kenney FBX：旅店床、圆桌、椅子、床头柜、台灯；小套间水槽、灶台、小冰箱、沙发、茶几、盆栽；风格陈列中的床、桌、书柜、沙发、落地灯、电脑桌、显示器等。
+- 已生成中文命名家具 Prefab 库：`Assets/BubuTown/Prefabs/室内家具CC0_Kenney/`。
+- 已按视频思路接入 Poly Haven CC0 贴图，替换小套间墙面、地面、旅店木地板、旅店墙面、窗帘布料、墙纸/地板样板。
+- 已补充小套间粉色格纹窗帘、窗帘杆、粉色墙纸样板、木地板替换样板。
+- 已新增星湾镇卡通化生成贴图，替代过脏的真实水泥贴图：干净灰白墙、浅色地砖、粉色心形墙纸、粉色格纹窗帘、蛋糕糖针墙纸、电竞霓虹墙纸、电竞深色地板、旅店条纹床品。
+- 已补充软装细节：窗帘褶皱、旅店床品被面和床尾披毯、客厅沙发抱枕、茶几杂志和杯子。
+- 已继续替换结构细节：旅店门套/窗套、小套间门套/落地窗框/卧室窗框、厨房下柜/上柜、客厅电视柜、墙上书本摆件。
+- 已新增 `06_装修后主题房间预览`：可爱粉色、木质自然、电竞主题三个整套房间角，用来对照后续装修系统的最终效果。
+- 已接入 Poly Haven CC0 高质量家具模型，并优先替换最显眼的大件：客厅现代沙发、客厅木质茶几、客厅阳台盆栽、旅店小桌、旅店靠窗椅、旅店床头柜。
+- 已新增 Poly Haven 模型加载与材质绑定流程：场景构建时若高质量模型存在则自动使用，若缺失则回退到 Kenney 家具，避免后续资源迁移时破坏原型。
+- 已确认本机 Blender 可用，并新增 `Tools/GenerateStarBayBlenderFurniture.py` 批处理建模脚本。
+- 已生成第一批星湾镇专属主题家具 FBX：可爱粉色软包床、蛋糕奶油床、电竞霓虹电脑桌、现代圆角沙发、圆润小台灯。
+- 已把 Blender 生成家具接入风格陈列与主题房间预览，并新增 `07_Blender生成主题家具近景陈列` 用于无遮挡检查。
+- 已按“先做好一个风格”的方向新增 `08_可爱粉色精修样板间`，集中打磨可爱粉色：细心形墙纸、浅粉地板、粉色软包床、粉色床头柜、云朵梳妆台、爱心小沙发、草莓圆桌、心形地毯、圆润台灯、壁挂星星灯。
+- 已修正 Blender 生成家具材质绑定：Unity 构建时按中文部件名自动套用草莓粉、奶油白、金色、玻璃蓝等材质，避免 FBX 导入后变成灰色。
+- 已新增 `09_目标图方向三楼单身公寓`，对照目标图重新搭建一套单身公寓：灰色网格地砖、温白墙、大落地窗、阳台栏杆、厨房区、粉木单人床、原木床头柜、海蓝沙发、原木茶几、搬家纸箱、盆栽、墙上搁板和基础吸顶灯。
+- 已补强目标图方向房间的画面层次：窗外分成天空、远海、街道、楼房、棕榈树；室内增加厨房挂杆/挂布/杯子、床尾毯、茶几书本/杯垫、搁板相框/书本等软装。
+- 已修正目标公寓大窗显示方式：把窗景移到室内可见面，整面蓝玻璃改为少量反光条，使窗外街景和远海能在多角度截图里读出来。
+- 已软化目标公寓床品表现：为枕头和抱枕叠加圆角垫，增加被面折边，并给厨房柜门补充分隔线和金属把手。
+- 已开始用免费 CC0 模型替换目标公寓大件家具：床体、枕头、厨房水槽柜、抽屉柜、电灶、小冰箱、上柜、咖啡机均改用 Kenney Furniture Kit 模型，降低程序块感。
+- 已移除目标公寓中不适合当前窗洞比例的 Kenney 滑窗墙体模型，保留手工窗框和可见窗外街景，避免窗边出现多余白墙。
+- 已继续替换目标公寓中块感明显的小物：搬家纸箱堆改为 Kenney 开箱/闭箱模型组合，床边地垫改为 Kenney 圆角地毯，圆坐垫改为扁圆软垫。
+- 已把目标公寓客厅区核心家具继续替换为 Poly Haven CC0 高质量模型：海蓝沙发、原木茶几、原木床头柜、窗边大盆栽；其中沙发统一染成目标图方向的海蓝色。
+- 已统一目标公寓高质量茶几和床头柜材质为暖原木色，避免 Poly Haven 原始材质过暗、过旧，与目标图的清爽小套间气质不一致。
+- 已修正目标公寓家具摆放硬伤：撤下在当前房间中朝向不稳的 Poly Haven 沙发/茶几，改用稳定落地的 Kenney 沙发和茶几；下压床品、枕头和抱枕高度，并补床边木轨，解决床面浮空感。
+- 已按贴图板/Impostor 思路新增窗外大图覆盖：生成 `starbay_window_backdrop_painted_v1.png`，并用 Quad 面片贴到目标公寓大窗后方，手工窗框和栏杆压在前景，替换原先的色块式窗外街景。
+- 已生成 8 张 Modly/Hunyuan3D Mini 单件家具输入图：粉木单人床、海蓝小沙发、原木小茶几、灰台面粉柜厨房、原木床头柜、圆润台灯、搬家纸箱堆、窗帘落地窗，并输出联系表 `星湾镇_Modly家具输入图_联系表_v2.png`。
+- 已确认本机真实 Modly 路径为 `/Users/zhendian/Documents/Modly/`，Hunyuan3D Mini 权重已存在，本地运行时端口 `127.0.0.1:8765` 只在 Modly 应用启动时开启。
+- 已新增 `Tools/GenerateStarBayModlyMesh.py`，可直接使用 Modly 扩展 venv 与已下载权重从图片生成 GLB。首批试件 `目标公寓_原木床头柜_Modly低清试件.glb` 与 `目标公寓_粉木单人床_Modly低清试件.glb` 已成功生成。
+- 已新增 `Tools/PreviewStarBayModlyMeshInBlender.py`，用于导入 Modly GLB、归中落地、输出预览并转 FBX。床头柜与粉木单人床试件已转为 Unity 可导入 FBX。
+- 已把目标公寓床头柜优先替换为 `目标公寓_原木床头柜_Modly图生3D低清试件`，粉木单人床优先替换为 `目标公寓_粉木单人床_Modly图生3D低清试件`，保留 Poly Haven、Kenney 与 Blender 生成模型作为回退。
+- 已继续用 Modly/Hunyuan3D Mini 生成并接入目标公寓 `目标公寓_海蓝小沙发_Modly图生3D低清试件` 与 `目标公寓_原木小茶几_Modly图生3D低清试件`。两者均先经 Blender 归中落地并导出 FBX，再进入 Unity 用 `FitToBounds` 与 `DropToLocalGround` 校准，解决原先沙发/茶几程序块感明显的问题。
+- 已继续生成并接入 `目标公寓_灰台面粉柜厨房_Modly图生3D低清试件`、`目标公寓_圆润台灯_Modly图生3D低清试件`、`搬家纸箱堆_Modly图生3D低清试件`。厨房模型已能清楚读出水槽、水龙头、柜门和墙上搁板；台灯已稳定放到床头柜上；纸箱堆已贴地但远景识别仍需下一轮重绘输入图或补清晰封箱线继续优化。
+- 已按 GitHub 网格放置项目和 B 站室内速建/网格摆放教程的做法，补强运行时装修系统：家具增加地面、靠墙、墙上三类规则；床、沙发、桌子等大件开始按多格占用校验；墙上物品仍吸附最近墙面；非法位置预览会变红并拒绝摆放。
+- 已把目标公寓的 Modly 家具复制到 `Assets/Resources/星湾镇室内家具Modly/`，运行时装修目录现在会优先加载粉木单人床、海蓝小沙发、原木小茶几、圆润台灯、原木床头柜等真实 FBX 试件，缺资源时才回退到程序化家具。
+- 已修正运行时装修网格的家具落点高度：地面家具根节点从 `0.35` 下调到 `0.04`，避免 Play 模式里床、沙发、茶几整体浮空。
+- 已继续把目标图方向整套家具排到运行时装修目录最前面：`目标公寓_粉木单人床`、`目标公寓_原木床头柜`、`目标公寓_海蓝小沙发`、`目标公寓_原木小茶几`、`目标公寓_厨房组合`、`目标公寓_圆润台灯`、`目标公寓_搬家纸箱堆`。
+- 已把主线 `BubuTownDecorationGrid` 同步到新规则：预览会按合法/非法染色，墙上物品预览会吸附最近墙面；`BubuTownInteractionSystem` 在确认摆放前会拒绝边界不足或靠墙要求不满足的位置。
+- 已继续把 Blender 生成主题家具镜像到运行时 `Resources`：`蛋糕奶油床`、`电竞霓虹电脑桌`、`云朵粉色梳妆台`、`壁挂星星灯`。运行时的蛋糕床、电竞桌、粉色梳妆台、墙上搁板/海报会优先使用这些 FBX，进一步减少程序块感。
+- 已补强目标公寓静态样板间软装贴片细节：床品缝线和床尾折边、枕套边线、厨房粉柜门板贴片、台面前沿线、金色柜门把手、纸箱胶带/标签，以及窗边和床边小画框。v47 初版床品线条过高，已在 v48 压回被面并缩窄。
+- 已把目标公寓纸箱从 Modly 低清试件优先项改为 Blender 硬边纸箱堆优先项：静态样板间和运行时 `fur_target_boxes` 都会优先使用 `目标搬家纸箱堆.fbx`，Modly 纸箱保留为备用。
+- 已补强目标公寓墙面和窗帘细节：窗帘束带、深色褶线、窗台托板、窗台小绿植、画框边条、搁板小照片、厨房旁便签板与彩色便签，让墙面装饰更像成品房陈设而不是临时色块。
+- 已继续修正目标公寓的落地和朝向问题：运行时地面家具根节点下调后，床、沙发、茶几不再浮空；静态样板间继续使用稳定落地的 Kenney/Modly/Blender 组合。
+- 已把目标公寓光影层改为 v56：删除会在俯视图里显得像程序块的大面积黄光片，只保留很淡的窗框光线、轻接地阴影和真实点光源。
+- 已把吸顶灯罩从方块改为扁圆形，并在导出“目标公寓_俯视布局”截图时临时隐藏吸顶灯罩 Renderer，让俯视图更接近目标图的去顶平面效果。
+- 已继续清理目标公寓中的“平板小物”：错位的床尾粉色块移回床面，茶几书本改为 Kenney `books` 模型，杯垫改为扁圆软垫，搁板小书也改为模型。
+- 已新增小物贴图化材质：`TargetPostcardArt`、`TargetMemoBoard`、`TargetPinkCabinetPanel`、`TargetFoldedBlanket`，让墙画、便签板、粉柜门和折叠毯不再只是纯色块。
+- 已移除墙画厚底板，只保留细边框和贴图画芯，减少墙面上大片米色/粉色色卡的观感。
+- 已继续模型化厨房和搁板：厨房台面新增 Kenney 微波炉、搅拌机模型，上方搁板增加支架、碗、书和小盆栽；后墙搁板也补了支架、小贴图照片和摆件。
+- 已修正 v60 中微波炉在主视角贴边显得过大的问题：v61 缩小并后移厨房小电器，避免它再次形成大灰块。
+- 已继续增加目标公寓软装舒适度：沙发新增奶油/粉色圆抱枕和靠背高光，床边地毯新增柔软内芯与织纹线，圆坐垫加内层高光，床头柜补小金色拉手，地砖加入非常轻的磨痕材质。
+- 已新增 `TargetRugSoftPattern` 和 `TileWear` 材质，用更柔和的纹理替代纯色地毯/地面细节。
+- 已继续软化 v62 中偏硬的沙发与地毯细节：沙发坐垫分割线改为半透明柔缝，靠背高光拆成短线；床边地毯包边和织纹缩窄，降低由 cube 线条造成的程序块感。
+- 已新增 `SofaSeamSoft`、`SofaHighlightSoft`、`RugWeaveSoft` 三个半透明材质，用来让软装边线更像织物/高光，而不是硬物体。
+- 已新增目标公寓 v64 空间完整度层：浅色天花板、天花收边线、墙顶柔阴影和墙角柔阴影，让主视角更像完整室内房间，而不是露天程序盒子。
+- 已调整目标公寓俯视截图导出逻辑：拍平面布局时临时隐藏天花和墙顶对象，保留目标图那种拆顶俯视效果。
+- 已继续细化墙面和柜面：v65 把墙画、便签板、粉柜贴图面压薄，并新增软阴影、相纸内衬、柜门柔光，降低墙面贴片的厚块感。
+- 已新增 v66 圆润墙饰搁板层：后墙搁板和厨房搁板增加圆端、贴墙柔阴影、画框玻璃高光、厨房小挂钩和杯口细节，让墙面小物更像装饰件。
+- 已开始为目标公寓大件家具接入专用贴图：v67 新增粉色床品布纹、奶油枕面布纹、海蓝沙发布纹、暖木纹、纸箱纤维和纸箱印刷纹。
+- 已修正 v67 中沙发大贴图覆盖片造成的平板感：v68 撤掉沙发大面覆盖，只保留模型自身布纹材质、软缝线和高光，让沙发轮廓恢复正常。
+- 已按目标图继续新增 v69 暖光软装层：窗边暖阳光斜面、墙面暖光、半透明薄纱窗帘、床品柔软鼓包、原木床头横梁、床上圆靠枕和床头暖灯补光，让主视角更接近目标图的温暖成品房效果。
+- 已新增 v70 目标图贴图升级层：自生成温白细纹墙纸、柔灰瓷砖、升级粉色床品图案和粉色窗帘布纹，并叠加床品滚边、猫抱枕、木茶几/床头柜清漆高光、沙发柔软纹理线，让大面积表面更接近目标图的干净精装修感。
+- 已继续推进家具模型轮廓圆润化：v71 先为床、沙发、茶几和窗帘增加圆角/鼓包/底摆；发现床脚和沙发圆球过重后，v72 改为克制小圆角和半透明柔包高光，保留柔和轮廓但避免新增明显圆球感。
+- 已新增两件目标图方向 Blender 精修家具：`目标图精修粉木单人床.fbx` 与 `目标图精修海蓝沙发.fbx`，床包含圆角木床架、高木床头、粉色被面、奶油枕头、蓝色靠枕和猫抱枕，沙发包含圆角底座、软扶手、鼓起坐垫和抱枕。
+- 已把目标公寓床和沙发优先切换到 Blender 精修模型，Modly 低清试件与 Kenney 模型继续作为缺资源时的备用回退。
+- v293 针对 v292 厨房近景检查中“柜门像贴片”的问题，新增 `目标公寓_厨房柜体立体感收束_v293`：隐藏 v289 的薄柜门层，重铺粉色一体柜身、左右侧板、厚门板、内嵌柔亮框、金色浮雕把手、内退踢脚线和贴地柔影，让厨房区更接近目标图里的灰台面粉柜成品感。
+- v294 针对 v293 厨房检查图里仍显粗糙的水槽和台面小物，新增 `目标公寓_厨房水槽台面细节收束_v294`：隐藏早期大杯子、旧水槽和多轮粗水龙头叠层，重铺薄金属水槽外沿、细长柔蓝水面、细水龙头竖管/横弯嘴、小出水口、排水槽线、暖木小托盘、缩小杯碟和轻接触影，继续降低厨房近景程序块感。
+- v295 转向主视角里最显眼的粉床区域，新增 `目标公寓_床品软体边缘收束_v295`：隐藏 v280/v286 的硬床尾包边、侧边竖片、旧圆角和过密竖向压线，重铺一体柔粉厚被面、低柔鼓光、整片软垂布、圆润薄滚边、珊瑚薄毯、低对比横向绗缝和床尾轻接触影，让床品从“几何叠片”继续接近目标图里的柔软粉色床。
+- v296 继续处理 v295 近景里抢眼的床架前沿硬横条，新增 `目标公寓_床架前沿低对比收束_v296`：隐藏 v290 的厚前沿木板、深色下口线、明显木纹线和偏大的前脚，重铺更低矮浅木前沿、极淡亮边、小圆木角、低调短脚和整体接触影，让粉床下沿更轻、更接近目标图里的温润木床。
+- v297 转向目标图的视觉中心大窗，新增 `目标公寓_大窗窗帘柔化收束_v297`：隐藏多轮叠加的硬玻璃罩、过亮斜光、v285 厚粉帘与 v270 窗帘卷边，保留窗外海街图并重铺极轻奶油薄纱、低曝清透玻璃、短斜柔光、低对比粉帘褶、细束带和错落阳台花槽叶，让大窗更像目标图里的柔和海景窗，而不是一整块平贴图。
+- v298 继续处理 v297 专项检查中偏硬、偏粗的窗框和阳台栏杆，新增 `目标公寓_细窗框阳台栏杆收束_v298`：隐藏基础粗窗框、旧阳台栏杆、v217/v256/v267 深色窗框压边和 v262 深灰线，重铺浅暖灰细窗框、中竖梃/横梃、薄窗台托板、细阳台横杆与五根细立柱，并加极淡玻璃接缝和贴墙柔影，让窗边结构线不再压过海景。
+- v299 针对 v298 专项图里窗下栏杆变成一排黑线的问题，新增 `目标公寓_阳台栏杆低调浅色收束_v299`：隐藏 v298 黑色阳台栏杆和过重窗台暗影，重铺更靠窗外的浅灰短栏杆、浅木窗台薄边和极淡投影，让窗下结构继续减弱，避免抢过床和海景。
+- v300 继续精准清理 v299 中窗台下剩余的暗支撑线，新增 `目标公寓_窗台暗线清理收束_v300`：隐藏更早的 `阳台_v174_` 深色栏杆、旧窗台/花槽厚块和过重窗台投影，重铺干净浅木窗台薄板、极浅单横线栏杆、短柱与低矮花槽叶，让窗下区域从黑色支撑线回到目标图那种干净明亮的海景窗台。
+- v301 针对 v300 中窗下短柱和小叶点仍显碎的问题，新增 `目标公寓_连续阳台护栏收束_v301`：隐藏 v299/v300 的分散栏杆与碎花槽，重铺连续浅灰上沿/下沿、半透明护栏玻璃和低对比绿植带，让大窗下方从一排短线变成更整体、更接近目标图阳台栏杆的连续结构。
+- v302 针对 v301 截图里床边、窗帘杆、窗台和花槽仍像散件的问题，新增 `目标公寓_家具碎片减法收束_v302`：隐藏旧黑色窗帘杆、床脚小球、床架细线和点状绿植，改用柔粉布艺窗帘盒、连续浅木窗台、一体柔粉床裙与低基座覆盖，让近景先从“拼出来的程序块”往“成套软装家具”靠近。
+- v303 针对 v302 中床底仍露出棕色长条、沙发脚在远景像散落小块的问题，新增 `目标公寓_大件家具底部成品化_v303`：隐藏旧床边轨、床架前沿、沙发短脚与小接触点，重铺浅木低箱体、柔粉整洁床裙、海蓝沙发落地前裙和整体基座，让床和沙发先稳定读成完整大件家具。
+- v304 针对 v303 中床底木箱感偏厚、茶几小脚和桌面小物仍显碎、窗台绿点抢眼的问题，新增 `目标公寓_床茶几窗台清爽化_v304`：把床底改成更薄的浅木承托面和柔粉床尾垂布，茶几合并为整块圆润桌面与低矮支座，窗台去掉点状绿植后保留干净浅木长窗台与极简玻璃栏板。
+- v305 针对 v304 截图里床和茶几仍被早期源模型叠层影响的问题，新增 `目标公寓_床茶几源模型清场重铺_v305`：隐藏目标公寓旧床源模型、床品补丁、床架补丁、茶几源模型和多轮茶几小脚/小物，重新摆放低平台床、低矮床头、奶油床垫、柔粉被子、枕头抱枕、圆润原木茶几与一体底座，先保证大件家具不再像倒地散件。
+- v306 针对 v305 中茶几底部仍像木条、窗台和阳台栏杆仍有碎点的问题，新增 `目标公寓_茶几窗台柔和整面化_v306`：隐藏 v305 茶几、早期窗台/花槽/栏杆残留，重铺低矮整块圆润原木桌、内收暗木底座、连续浅木窗台、整面浅蓝玻璃护栏和海景柔和滤层，让窗边和客厅中心更接近目标图的整洁样板间读法。
+- v307 针对 v306 茶几仍偏厚重、床面偏平的问题，新增 `目标公寓_低矮茶几床品柔化_v307`：隐藏 v306 茶几，重铺更低矮的浅木桌面、内收短底座和更克制的杯册小物，同时给床面补大块柔光、细软边和前角柔鼓，让茶几比例更接近目标图，床品也不只是平面粉块。
+- v308 针对 v307 整体仍偏灰盒编辑器光照的问题，新增 `目标公寓_整体暖光材质统一_v308`：不再堆局部小件，而是在后墙、厨房墙、窗边墙、天花和地面加入低透明暖白/暖灰统一罩，补床区、茶几沙发区和窗边墙面的柔暖反光，并增加低强度整体暖补光，让目标公寓更接近目标图的温暖样板间渲染。
+- v309 针对 v308 俯视图里出现明显半透明圆形光斑的问题，新增 `目标公寓_暖光圆斑收束_v309`：隐藏过大的顶灯圆形光晕和大面积地面/墙面暖光斑，改为更小的顶灯柔光、均匀矩形地面反光和低透明窗边墙面暖光，避免调色层自己变成新的程序块。
+- v310 针对 v309 仍能看到早期顶灯圆形光晕的问题，新增 `目标公寓_顶灯圆片清理_v310`：隐藏目标公寓多轮顶灯/天花圆形柔光片，改用无圆片奶油方形柔光和均匀暖灰地面罩，避免俯视图出现不自然的半透明圆圈。
+- 已修正 v74 中精修床与旧贴图层叠加后过花的问题：v75 把床品绗缝和覆盖贴图改得更克制，只保留窄线、柔粉滚边和少量细节。
+- 已修正 Blender 源模型轴向问题：生成脚本现在会把 Unity 坐标的 `Y=高度` 转换成 Blender 的 `Z=高度` 后再导出 FBX，解决床、沙发等家具导入 Unity 后横躺/倒地的问题。v76 已重新导出整套 Blender 家具并重新生成目标公寓截图。
+- 已清理目标公寓旧遮盖硬条：v77 在生成时隐藏早期为低清模型补的床品硬线、床尾硬条、地毯硬边和多余圆角补丁，避免 Blender 精修家具被旧 cube 细节盖住。
+- 已回到 Blender 源模型修正粉木床比例：v78 把精修单人床的高木床头改成更接近目标图的低矮床头，减少主视角里“大木墙”挡住床面的观感。
+- 已把目标公寓厨房组合改为 Blender 模型优先：v79 优先加载 `目标灰台面厨房.fbx`，Modly 厨房低清试件改为备用，让厨房区更像一个完整家具模型而不是粉白拼板。
+- 已新增目标图方向软装 Blender 模型：`目标图柔粉椭圆地毯.fbx`、`目标图粉色圆坐垫.fbx`、`目标图厚粉窗帘单片.fbx`，v80 开始替换旧的 Kenney 地毯、压扁球坐垫和 cube 窗帘褶皱。
+- 已修正 v80 软装外圈过重的问题：v81 去掉地毯/坐垫上过强的 torus 圆环，改成低矮圆角软垫主体、薄包边和轻织纹，让地面软装更像实物而不是粉色线圈。
+- 已整理目标公寓墙面与厨房小物：v82 隐藏早期多轮叠加的零散便签、照片和小色块，新增一组更克制的床头海景画、大窗旁小画、厨房旁便签板、后墙搁板相纸、厨房碗碟和挂布，让墙面从碎贴片变成成组陈设。
+- 已重画目标公寓窗外大贴图并补窗边氛围：v83 生成更完整的星湾镇窗外景，包含两侧建筑、远海、街道、棕榈、玻璃反光、阳台花槽和室内暖阳光斜面。
+- 已修正 v83 窗景过曝：v84 降低窗外补光强度，收窄玻璃反光和海面光带，让窗外建筑与海线更清楚，保留暖光但避免整窗发黄。
+- 已继续加强大件家具材质层次：v85 在 Blender 源模型中给粉木床补床头木纹深槽、清漆高光和枕头缝边；给海蓝沙发补坐垫缝线、丝绒高光、靠背高光和底部暗边；给原木茶几补桌面木纹深槽、柔亮高光和下层板暗槽。
+- 已把目标公寓茶几改为 Blender 原木茶几优先，Modly 低清茶几改为备用，避免目标房间中心家具继续使用低清试件。
+- 已修正 v85 中茶几/床脚材质误判问题：v86 从金色映射里移除桌脚、床脚，并把桌脚、床脚、短木脚映射回 TargetWood；床头木纹深槽和清漆高光也改为独立 Blender 材质，避免所有木色细节混成一片。
+- 已新增软装模型化一轮：v87 用 Blender 生成 `目标图床品软雕.fbx`、`目标图床头枕头组.fbx`、`目标图薄纱窗帘.fbx`，减少床品、枕头和窗纱继续靠薄 cube 叠片表现。
+- 已修正 v87 床品落位：v88 把床品软雕缩薄、缩短并向床内收，避免床尾出现过厚粉色大包。
+- 已继续压低粉木床架：v89 降薄 Blender 精修床的圆角木床架与床尾垂边，减少近景里像整块木箱挡住床面的观感；截图显示仍需下一轮继续处理床头板/视角里的木板占比。
+- 已把粉木床从大块床架改为轻木轨结构：v90 将 Blender 精修床的主体改成左/右细木床轨、床尾细横轨、床头下横轨和浅木床板条，并降低 Unity 目标高度，让床品和枕头在近景里更突出；同时给窗外贴图补了街道透视、海岸光带和更多远楼细窗。
+- 已整理墙面、厨房和纸箱质感：v91 新增干净墙面补丁、整块厨房粉柜门、柜门柔光内框、纸箱大标签和更轻的窗玻璃横向反光，让厨房侧从零散贴片变得更像完整柜体。
+- 已清理远景易变成黑线的细薄片：v92 隐藏早期玻璃高光斜线、沙发短高光、地砖轻磨痕和旧窗玻璃反光，减少墙面/地面上的杂线干扰；仍需下一轮继续从根上重做墙面叠层。
+- 已把目标公寓底层墙体直接换成干净目标墙材质：v93 不再只靠前置补丁遮盖，后墙、左侧厨房墙和右侧大窗墙都使用 `TargetCleanWallPatch`；同时继续重画窗外贴图，补街道透视、远海白线、阳台栏杆和更细的远楼窗格。
+- 已新增目标公寓隔离截图通道：v94 截图时临时只渲染 `09_目标图方向三楼单身公寓` 内的 Renderer，避免其它展示区/标注影响目标图对比；场景内容本身不受影响。
+- 已做目标公寓内部叠层减法：v95 继续隐藏早期温白墙覆盖、旧墙画细框、旧搁板零件、旧厨房柜门碎贴片和旧纸箱胶带，让目标房间里保留更干净的底墙与后续重画陈设。
+- 已重新生成纸箱和窗帘 FBX：v96 在 Blender 源模型里把厚粉窗帘改成更圆润的布褶、软包边和底摆；把搬家纸箱堆改为端正低矮纸箱，并加入浅纸板正面、搬家标签、封箱胶带和印刷线。
+- 已修正目标公寓顶灯和纸箱可读性：v97 目标房间不再使用通用 `RoomLight` 自动生成的低位灯罩，改为专用无额外灯罩点光源；同时新增 `目标公寓_端正纸箱正面标签_v97`，让截图视角里的纸箱更像搬家箱而不是倒着的块。
+- 已柔化目标公寓地面：v98 将目标房间基础地板直接换成 `TargetSoftGridTile`，调淡瓷砖缝与噪声，并新增床前、茶几旁、窗边的大块暖色柔光面，降低灰盒网格感。
+- 已修正 Blender 导入家具材质识别：v99 将“胶带、标签、印刷线、浅纸板”的材质判断前置到“纸箱”之前，使纸箱堆的顶部胶带、浅色标签和印刷线能够在 Unity 截图里正常读出。
+- 已加入目标公寓样板间陈设收束层：v100 新增 `目标公寓_样板间陈设收束_v100`，补床区暖光洗墙、完整床头海景画、床品柔亮、粉猫抱枕、沙发软枕、窗台长花槽和厨房便签墙挂，让房间更接近目标图里的“已布置样板间”状态。
+- 已加强目标公寓柔和渲染氛围：v101 调暖环境光、降低日光硬阴影，新增 `目标公寓_柔和渲染氛围_v101`，用无投影的窗边暖光雾面、顶灯光晕、床边/沙发前地面漫反射和室内柔和补光，让多角度截图更接近目标图的温暖样板间渲染。
+- 已细化床品与窗纱 Blender 模型：v102 将 `目标图床品软雕.fbx` 改为带自然下垂床尾、圆鼓被角、更多柔和绗缝和局部高光的软被；将 `目标图薄纱窗帘.fbx` 改为带波浪细褶、柔软下摆和左右轻摆的窗纱，并新增 `目标公寓_床品窗纱模型细化_v102` 验证节点。
+- 已推进厨房与墙面成套感：v103 新增 `目标公寓_厨房墙面成套美化_v103`，补奶油小砖防溅墙、连续灰台面、水槽、水龙头、整洁粉柜门、厚实暖木搁板、碗杯盆栽、大窗旁海景画和统一后墙搁板，让厨房区更像目标图里的完整小公寓陈设。
+- 已升级窗景与墙面构图：v104 新增 `目标公寓_窗景与墙面构图升级_v104`，重绘窗外星湾镇大图贴片为海湾、街道、左右楼、栏杆、棕榈与云层的组合，并补厚木窗槛、长花槽、床头画组、搁板小摆件和厨房侧墙菜单框，进一步减少程序块感。
+- 已清理窗景旧色块：v105 移除 `TargetWindowBackdrop` 里覆盖在窗外大图前的天空、远海、街道、楼房与棕榈几何色块，只保留海湾高光和远街透视细线，让窗外画面主要由绘制贴图呈现。
+- 已柔化窗景并升级纸箱小物：v106 新增 `目标公寓_窗景柔化纸箱升级_v106`，降低窗外贴图楼房窗格对比，叠加照片感薄雾和海湾光晕，并补花槽端板、花朵、纸箱接触阴影、封箱带、浅色标签与墙挂柔影，让窗边和搬家箱更接近目标图的陈设质感。
+- 已收束墙面搁板与软装：v107 新增 `目标公寓_墙面搁板软装收束_v107`，把左墙空搁板补成带托架、书册、相框、花瓶和投影的完整墙挂，并补床前地毯厚边、织线、散落拖鞋和窗边大盆栽接触阴影，减少孤立木条和地面硬块感。
+- 已清理地毯线框问题：v108 移除 v107 里在俯视图中过于像辅助线的床前地毯厚边和织线，只保留低透明接触影、拖鞋与搁板陈设，避免新软装重新变成程序块。
+- 已收束厨房生活细节：v109 新增 `目标公寓_厨房细节收束_v109`，补下柜脚线柔影、柜门内凹高光、连续台面圆角亮边、炉头、水槽反光、砧板、杯碗、暖金挂杆、粉色擦手巾和小勺，让厨房区更接近目标图里的完整小厨房。
+- 已增强窗景纵深和墙面暖化：v110 新增 `目标公寓_窗景纵深墙面暖化_v110`，用远景空气透视、海湾雾带、街道柔亮楔形和左右楼边缘光压低窗景硬格感，同时将 `TargetCleanWallPatch` 调成温白灰泥细纹，补大墙柔层、墙角轻阴影和右窗旁竖向海报。
+- 已控制墙面雾化并补软阴影：v111 将 v110 的大面积后墙暖层缩小为床窗之间的局部洗墙光，避免墙面被糊成平面；同时补窗帘落墙柔影、床架贴地柔影和沙发贴地柔影，让主要家具更稳地坐在地面上。
+- 已细化 Blender 大件家具：v112 更新 `Tools/GenerateStarBayBlenderFurniture.py` 的目标床、海蓝沙发和原木茶几模型，补床品下垂被角与压点、沙发靠背压缝与粉色搭毯、抱枕鼓包，以及茶几书本、马克杯和杯垫，并新增 `目标公寓_Blender大件家具细化_v112` 验证节点。
+- 已软包化海蓝沙发：v113 继续更新 `目标图精修海蓝沙发.fbx`，补扶手前端软圆角、靠背鼓包、坐垫前鼓圆包、内侧轻陷、粉色搭毯折痕与圆脚垫，并新增 `目标公寓_海蓝沙发软包细化_v113` 验证节点，重点减少沙发方块感。
+- 已高级化墙地贴图：v114 将目标公寓墙面切到 `target_clean_wall_patch_v2.png`、地砖切到 `target_soft_grid_tile_v3.png`，增加灰泥纤维、手抹细纹、单块瓷砖色差、柔和填缝和轻微日照擦痕，并新增 `目标公寓_墙地贴图高级化_v114` 验证节点。
+- 已收束植物球块感：v115 新增 `目标公寓_植物去球块软装收束_v115`，隐藏多组旧窗台圆叶球与重复花槽点缀，补更少、更扁、更叶片化的窗台盆栽、沙发旁大盆栽和茶几小盆栽，同时把通用 `Plant` 改为圆盆、盆土、低叶冠与椭圆叶片组合。
+- 已修正植物尺寸落位：v116 放大 v115 的窗台、沙发旁和茶几叶片化植物，调整落位高度，并放大通用 `Plant` 的花盆、盆土和叶冠，让植物从远景仍可读但不再回到圆球串。
+- 已替换窗台厚叶花槽：v117 将 v115/v116 的窗台细线叶片改成低矮长方木盆、深色土面、厚圆叶冠和木盆高光，让窗台绿植在多角度截图里更像目标图花槽，减少细线和散点感。
+- 已增强窗外街景纵深：v118 新增 `目标公寓_窗外街景纵深_v118`，在玻璃后叠加海湾空气透视、右侧日照柔晕、两侧近楼边缘、阳台横线、街道透视暖色线和栏杆内侧暗线，同时强化窗外贴图里的楼体窗格、海岸白线和街道层次。
+- 已修正墙面搁板陈设：v119 新增 `目标公寓_墙面搁板陈设修正_v119`，隐藏旧搁板绿植残留，改为加厚圆角木板、斜支架、贴墙柔影、奶油花盆厚叶冠、粉/奶油立书、小海景相框和金色小摆件，修掉左墙搁板上方悬浮绿点。
+- 已精修床品床头软装：v120 新增 `目标公寓_床品床头软装精修_v120`，补床头暖灯贴墙柔光、床头柜灯罩光晕、床尾奶油厚包边、两侧粉色垂边、被面柔光、浅粉绗缝、枕头压痕、猫抱枕眼睛/脸光、床架高光和床脚接触影，让床区更接近目标图的可爱粉色成品床。
+- 已修正床侧柔边块感：v121 新增 `目标公寓_床侧柔边块感修正_v121`，隐藏 v120 两侧过厚的粉色垂边竖板，改为贴床面的薄柔边、圆角布角和床侧柔影，保留床品层次但避免重新出现程序块感。
+- 已继续收束厨房和纸箱质感：v122 新增 `目标公寓_厨房纸箱质感收束_v122`，隐藏旧的大块纸箱标签，改用暖纸板纤维贴图、半透明胶带、柔边标签纸；厨房补奶油防溅砖、台面柔亮线、水槽蓝灰反光和粉柜门贴图层，让近景更接近目标图里的“装修贴图/美术资产”而不是程序块。
+- 已修正纸箱堆倒地观感：v123 新增 `目标公寓_稳定落地纸箱替换_v123`，隐藏原先会在目标镜头里显得散架/倒放的纸箱堆模型，改为多只端正落地的暖纸板纹理箱、半开箱、柔边标签、封箱胶带和接触阴影。
+- 已精修床品与沙发织物：v124 新增 `目标公寓_床品沙发织物精修_v124`，隐藏旧的硬直床缝和沙发高光线，补低对比度粉色床品柔布贴图、海蓝沙发细织物贴图、被面柔鼓包、床尾圆润下垂、沙发坐垫鼓包与靠背软亮面。
+- 已修正 v124 床面过大粉板问题：v125 新增 `目标公寓_床面层次修正_v125`，隐藏过大的整张粉色柔布面，改为床中柔粉被面、床尾轻薄粉毯、奶油窄滚边和小范围柔光，恢复枕头、抱枕与床架层次。
+- 已收束窗帘和右下近景裁切：v126 新增 `目标公寓_窗帘与近景裁切收束_v126`，隐藏旧窗帘直板和会抢镜的右侧大纸箱堆，改用柔粉竖褶窗帘贴图、细束带、底部软摆，并把右侧搬家箱缩小后靠墙重摆。
+- 已统一墙面与厨房生活感：v127 新增 `目标公寓_墙面厨房生活感统一_v127`，为后墙、厨房墙、窗边墙补轻薄暖灰/日照层，整理厨房便签板、搁板、擦手巾、托盘杯具和小物接触阴影，让厨房区更像成套装修而不是零散功能块。
+- 已推进纸箱圆角与折边模型化：v128 新增 `目标公寓_纸箱圆角折边模型化_v128`，隐藏 v123/v126 的方盒纸箱，改为带纸板厚度、角部软边、半开折盖、内腔暗纸面、柔标签和压地阴影的美术化纸箱组。
+
+## 当前截图
+
+- 工程内预览：`Assets/BubuTown/Docs/StarBayInteriorDecorationPrototypePreview_v1.png`
+- Blender 家具近景：`Assets/BubuTown/Docs/StarBayInteriorBlenderFurnitureCloseups_v1.png`
+- 目标图：`/Users/zhendian/Desktop/目标/室内目标图/星湾镇_室内最终目标多角度_v1.png`
+- 实际图：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_室内装修美术原型实际画面_v15_Blender生成主题家具.png`
+- 近景图：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_室内装修美术原型实际画面_v16_Blender主题家具近景.png`
+- 可爱粉色精修图：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_室内装修美术原型实际画面_v20_可爱粉色单风格精修.png`
+- 目标图方向三楼单身公寓：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_室内装修美术原型实际画面_v128_纸箱圆角折边模型化.png`
+- Modly 输入图联系表：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly家具输入图_联系表_v2.png`
+- Modly 床头柜试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly原木床头柜低清试件完整预览_v2.png`
+- Modly 粉木单人床试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly粉木单人床低清试件完整预览_v1.png`
+- Modly 海蓝小沙发试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly海蓝小沙发低清试件完整预览_v1.png`
+- Modly 原木小茶几试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly原木小茶几低清试件完整预览_v1.png`
+- Modly 灰台面粉柜厨房试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly灰台面粉柜厨房低清试件完整预览_v1.png`
+- Modly 圆润台灯试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly圆润台灯低清试件完整预览_v1.png`
+- Modly 搬家纸箱堆试件预览：`/Users/zhendian/Desktop/目标/室内实际画面/星湾镇_Modly搬家纸箱堆低清试件完整预览_v1.png`
+- 运行时模型校验日志：`/tmp/starbay_interior_runtime_v45_validate.log`
+- 主题家具运行时校验日志：`/tmp/starbay_interior_runtime_v46_theme_validate_fix.log`
+- 软装贴片细节校验日志：`/tmp/starbay_interior_v48_validate.log`
+- 纸箱硬边优化校验日志：`/tmp/starbay_interior_v49_validate.log`
+- 墙面窗帘细节校验日志：`/tmp/starbay_interior_v50_validate.log`
+- 圆灯与俯视隐藏灯罩校验日志：`/tmp/starbay_interior_v56_validate.log`
+- 去平板小物与小物贴图化校验日志：`/tmp/starbay_interior_v59_validate.log`
+- 厨房搁板模型化校验日志：`/tmp/starbay_interior_v61_validate.log`
+- 软装舒适度校验日志：`/tmp/starbay_interior_v62_validate.log`
+- 沙发地毯软化校验日志：`/tmp/starbay_interior_v63_validate.log`
+- 天花墙角补全校验日志：`/tmp/starbay_interior_v64_validate.log`
+- 墙面柜面细化校验日志：`/tmp/starbay_interior_v65_validate.log`
+- 圆润墙饰搁板校验日志：`/tmp/starbay_interior_v66_validate.log`
+- 大件家具贴图校验日志：`/tmp/starbay_interior_v67_validate.log`
+- 家具贴图修正校验日志：`/tmp/starbay_interior_v68_validate.log`
+- 目标图暖光软装校验日志：`/tmp/starbay_interior_v69_validate.log`
+- 目标图贴图升级校验日志：`/tmp/starbay_interior_v70_validate.log`
+- 模型圆润化校验日志：`/tmp/starbay_interior_v71_validate.log`
+- 克制圆润化校验日志：`/tmp/starbay_interior_v72_validate.log`
+- Blender 精修床沙发校验日志：`/tmp/starbay_interior_v73_validate.log`
+- 精修模型贴图融合校验日志：`/tmp/starbay_interior_v74_validate.log`
+- 克制床品精修校验日志：`/tmp/starbay_interior_v75_validate.log`
+- Blender 家具轴向修正校验日志：`/tmp/starbay_interior_v76_validate.log`
+- 清理旧遮盖硬条校验日志：`/tmp/starbay_interior_v77_validate.log`
+- 低矮床头比例修正校验日志：`/tmp/starbay_interior_v78_validate.log`
+- Blender 厨房优先校验日志：`/tmp/starbay_interior_v79_validate.log`
+- 软装模型替换校验日志：`/tmp/starbay_interior_v80_validate.log`
+- 软装外圈修正校验日志：`/tmp/starbay_interior_v81_validate.log`
+- 墙面小物整理校验日志：`/tmp/starbay_interior_v82_validate.log`
+- 窗外景与暖光校验日志：`/tmp/starbay_interior_v83_validate.log`
+- 窗景过曝修正校验日志：`/tmp/starbay_interior_v84_validate_retry.log`
+- 大件家具材质层次校验日志：`/tmp/starbay_interior_v85_validate.log`
+- 木色材质修正校验日志：`/tmp/starbay_interior_v86_validate.log`
+- 软装模型化校验日志：`/tmp/starbay_interior_v87_validate.log`
+- 床品落位修正校验日志：`/tmp/starbay_interior_v88_validate.log`
+- 床架降薄校验日志：`/tmp/starbay_interior_v89_validate.log`
+- 轻木床架校验日志：`/tmp/starbay_interior_v90_validate.log`
+- 墙厨纸箱整理校验日志：`/tmp/starbay_interior_v91_validate.log`
+- 细线清理校验日志：`/tmp/starbay_interior_v92_validate.log`
+- 干净墙面窗景校验日志：`/tmp/starbay_interior_v93_validate.log`
+- 目标房间隔离截图校验日志：`/tmp/starbay_interior_v94_validate.log`
+- 内部叠层减法校验日志：`/tmp/starbay_interior_v95_validate.log`
+- 纸箱窗帘灯具修正校验日志：`/tmp/starbay_interior_v96_validate.log`
+- 端正纸箱与干净顶灯校验日志：`/tmp/starbay_interior_v97_validate.log`
+- 柔灰地砖与柔光校验日志：`/tmp/starbay_interior_v98_validate.log`
+- 纸箱材质识别修正校验日志：`/tmp/starbay_interior_v99_validate.log`
+- 样板间陈设收束校验日志：`/tmp/starbay_interior_v100_validate.log`
+- 柔和渲染氛围校验日志：`/tmp/starbay_interior_v101_validate.log`
+- 床品窗纱模型细化校验日志：`/tmp/starbay_interior_v102_validate.log`
+- 厨房墙面成套美化校验日志：`/tmp/starbay_interior_v103_validate.log`
+- 窗景与墙面构图升级校验日志：`/tmp/starbay_interior_v104_validate.log`
+- 窗景旧色块清理校验日志：`/tmp/starbay_interior_v105_validate.log`
+- 窗景柔化纸箱升级校验日志：`/tmp/starbay_interior_v106_validate.log`
+- 墙面搁板软装收束校验日志：`/tmp/starbay_interior_v107_validate.log`
+- 清理地毯线框校验日志：`/tmp/starbay_interior_v108_validate.log`
+- 厨房细节收束校验日志：`/tmp/starbay_interior_v109_validate.log`
+- 窗景纵深墙面暖化校验日志：`/tmp/starbay_interior_v110_validate.log`
+- 墙面雾化控制软阴影校验日志：`/tmp/starbay_interior_v111_validate.log`
+- Blender 大件家具细化校验日志：`/tmp/starbay_interior_v112_validate.log`
+- 海蓝沙发软包细化校验日志：`/tmp/starbay_interior_v113_validate.log`
+- 墙地贴图高级化校验日志：`/tmp/starbay_interior_v114_validate.log`
+- 植物去球块软装收束校验日志：`/tmp/starbay_interior_v115_validate.log`
+- 植物尺寸落位修正校验日志：`/tmp/starbay_interior_v116_validate.log`
+- 窗台厚叶花槽校验日志：`/tmp/starbay_interior_v117_validate.log`
+- 窗外街景纵深校验日志：`/tmp/starbay_interior_v118_validate.log`
+- 墙面搁板陈设修正校验日志：`/tmp/starbay_interior_v119_validate.log`
+- 床品床头软装精修校验日志：`/tmp/starbay_interior_v120_validate.log`
+- 床侧柔边块感修正校验日志：`/tmp/starbay_interior_v121_validate.log`
+- 厨房纸箱质感收束校验日志：`/tmp/starbay_interior_v122_validate.log`
+- 稳定落地纸箱替换校验日志：`/tmp/starbay_interior_v123_validate.log`
+- 床品沙发织物精修校验日志：`/tmp/starbay_interior_v124_validate.log`
+- 床面层次修正校验日志：`/tmp/starbay_interior_v125_validate.log`
+- 窗帘与近景裁切收束校验日志：`/tmp/starbay_interior_v126_validate.log`
+- 墙面厨房生活感统一校验日志：`/tmp/starbay_interior_v127_validate.log`
+- 纸箱圆角折边模型化校验日志：`/tmp/starbay_interior_v128_validate.log`
+- 桌面小物与暖光精修校验日志：`/tmp/starbay_interior_v129_validate.log`
+- 海蓝沙发软包结构精修校验日志：`/tmp/starbay_interior_v130_validate.log`
+- 地毯盆栽软装精修校验日志：`/tmp/starbay_interior_v131_validate.log`
+- 墙面相框搁板精修校验日志：`/tmp/starbay_interior_v132_validate.log`
+- 窗景厨房比例精修校验日志：`/tmp/starbay_interior_v133_validate.log`
+- 旅店标准间软装精修校验日志：`/tmp/starbay_interior_v134_validate.log`
+- 目标图四宫格镜头校验日志：`/tmp/starbay_interior_v135_validate.log`
+- 旅店暖光床品精修校验日志：`/tmp/starbay_interior_v136_validate.log`
+- 旅店镜头墙面修正校验日志：`/tmp/starbay_interior_v137_validate.log`
+- 旅店天花镜头重构校验日志：`/tmp/starbay_interior_v138_validate.log`
+- 床品窗景高级感精修校验日志：`/tmp/starbay_interior_v139_validate.log`
+- 旅店软装块感修正校验日志：`/tmp/starbay_interior_v140_validate.log`
+- 旅店桌椅比例修正校验日志：`/tmp/starbay_interior_v141_validate.log`
+- 旅店墙面床头软装精修校验日志：`/tmp/starbay_interior_v142_validate.log`
+- 旅店目标图镜头修正校验日志：`/tmp/starbay_interior_v143_validate.log`
+- 旅店床窗同屏镜头校验日志：`/tmp/starbay_interior_v144_validate.log`
+- 旅店海景窗主视角校验日志：`/tmp/starbay_interior_v145_validate.log`
+- 旅店右墙海景大窗校验日志：`/tmp/starbay_interior_v146_validate.log`
+- 旅店可见海景窗修正校验日志：`/tmp/starbay_interior_v147_validate.log`
+- 装修目录样式库面板校验日志：`/tmp/starbay_interior_v148_validate.log`
+- 四宫格样式库预览校验日志：`/tmp/starbay_interior_v149_validate.log`
+- 样式库家具剪影精修校验日志：`/tmp/starbay_interior_v150_validate.log`
+- 装修交互完善校验日志：`/tmp/starbay_interior_v151_validate.log`
+- 目标公寓软包材质增强校验日志：`/tmp/starbay_interior_v152_validate.log`
+- 旅店软装材质增强校验日志：`/tmp/starbay_interior_v153_validate.log`
+- 旅店床品板感修正校验日志：`/tmp/starbay_interior_v154_validate.log`
+- 旅店构图修正校验日志：`/tmp/starbay_interior_v155_validate.log`
+- 旅店前景遮挡修正校验日志：`/tmp/starbay_interior_v156_validate.log`
+- 旅店全貌隐藏前景遮挡校验日志：`/tmp/starbay_interior_v157_validate.log`
+- 旅店成品墙床细化校验日志：`/tmp/starbay_interior_v158_validate.log`
+- 目标公寓大件模型感增强校验日志：`/tmp/starbay_interior_v159_validate.log`
+- 旅店床品模型感增强校验日志：`/tmp/starbay_interior_v160_validate.log`
+- 旅店床品构图收束校验日志：`/tmp/starbay_interior_v161_validate.log`
+- 旅店床单旧条纹清理校验日志：`/tmp/starbay_interior_v162_validate.log`
+- 旅店小家具成品感增强校验日志：`/tmp/starbay_interior_v163_validate.log`
+- 旅店小家具遮挡修正校验日志：`/tmp/starbay_interior_v164_validate.log`
+- 旅店床头柜入镜构图校验日志：`/tmp/starbay_interior_v165_validate.log`
+- 旅店远侧床旁柜可见校验日志：`/tmp/starbay_interior_v166_validate.log`
+- 旅店床旁柜位置微调校验日志：`/tmp/starbay_interior_v167_validate.log`
+- 旅店床旁柜比例收束校验日志：`/tmp/starbay_interior_v168_validate.log`
+- 目标公寓生活细节增强校验日志：`/tmp/starbay_interior_v169_validate.log`
+- 目标公寓墙地光照柔化校验日志：`/tmp/starbay_interior_v170_validate.log`
+- 目标公寓顶光墙饰收束校验日志：`/tmp/starbay_interior_v171_validate.log`
+- 目标公寓顶灯降曝窗景增强校验日志：`/tmp/starbay_interior_v172_validate.log`
+- 目标公寓窗景过曝压制校验日志：`/tmp/starbay_interior_v173_validate.log`
+- 目标公寓窗户降曝细化校验日志：`/tmp/starbay_interior_v174_validate.log`
+- 目标公寓厨房床头近景精修校验日志：`/tmp/starbay_interior_v175_validate.log`
+- 目标公寓窗帘床品布料精修校验日志：`/tmp/starbay_interior_v176_validate.log`
+- 目标公寓床侧软床裙修正校验日志：`/tmp/starbay_interior_v177_validate.log`
+- 目标公寓沙发茶几近景精修校验日志：`/tmp/starbay_interior_v178_validate.log`
+- 目标公寓沙发圆鼓收束校验日志：`/tmp/starbay_interior_v179_validate.log`
+- 目标公寓沙发源模型收束校验日志：`/tmp/starbay_interior_v180_validate.log`
+- 目标公寓床品贴片收束校验日志：`/tmp/starbay_interior_v181_validate.log`
+- 家具目录缩略图美化校验日志：`/tmp/starbay_interior_v182_validate.log`
+- 目标公寓窗外街景比例收束校验日志：`/tmp/starbay_interior_v184_validate.log`
+- 目标公寓床头小物精修校验日志：`/tmp/starbay_interior_v185_validate.log`
+- 旅店标准间成品软装校验日志：`/tmp/starbay_interior_v186_validate.log`
+- 旅店床品贴地收束校验日志：`/tmp/starbay_interior_v187_validate.log`
+- 旅店温木床架细化校验日志：`/tmp/starbay_interior_v188_validate.log`
+- 旅店室内机位修正校验日志：`/tmp/starbay_interior_v190_validate.log`
+- 旅店剖开视角父级隐藏校验日志：`/tmp/starbay_interior_v194_validate.log`
+- 旅店左墙回填机位校验日志：`/tmp/starbay_interior_v195_validate.log`
+- 旅店小家具贴图化精修校验日志：`/tmp/starbay_interior_v196_validate.log`
+- 旅店床旁窗帘灯光精修校验日志：`/tmp/starbay_interior_v197_validate.log`
+- 旅店后墙整面融合校验日志：`/tmp/starbay_interior_v200_validate.log`
+- 旅店墙灯降曝校验日志：`/tmp/starbay_interior_v201_validate.log`
+- 旅店床品床旁柜模型感校验日志：`/tmp/starbay_interior_v202_validate.log`
+- 旅店家具落地软包修正校验日志：`/tmp/starbay_interior_v203_validate.log`
+- 旅店单床统一收束校验日志：`/tmp/starbay_interior_v204_validate.log`
+- 旅店床品床旁柜贴图细化校验日志：`/tmp/starbay_interior_v205_validate.log`
+- 目标公寓沙发茶几纸箱软化校验日志：`/tmp/starbay_interior_v206_validate.log`
+- 目标公寓墙地窗光高级化校验日志：`/tmp/starbay_interior_v207_validate.log`
+- 目标公寓地毯线条收束校验日志：`/tmp/starbay_interior_v208_validate.log`
+- 目标公寓纯柔面地毯修正校验日志：`/tmp/starbay_interior_v209_validate.log`
+- 目标公寓床品窗帘墙饰精修校验日志：`/tmp/starbay_interior_v210_validate.log`
+- 床头厨房旅店硬边收束校验日志：`/tmp/starbay_interior_v211_validate.log`
+- 床头横条收束修正校验日志：`/tmp/starbay_interior_v212_validate.log`
+- 硬线减法柔化校验日志：`/tmp/starbay_interior_v213_validate.log`
+- 窗景床架厨房小物精修校验日志：`/tmp/starbay_interior_v214_validate.log`
+- 窗户降曝街景显影校验日志：`/tmp/starbay_interior_v215_validate.log`
+- 窗景阳台栏杆细化校验日志：`/tmp/starbay_interior_v216_validate.log`
+- 窗景大图贴片柔化校验日志：`/tmp/starbay_interior_v217_validate.log`
+- 旅店窗景贴图与公寓压光校验日志：`/tmp/starbay_interior_v218_validate.log`
+- 截图灯光隔离与窗景降曝校验日志：`/tmp/starbay_interior_v219_validate.log`
+- 室内补光与软装提亮校验日志：`/tmp/starbay_interior_v220_validate.log`
+- 温白墙顶与窗帘细化校验日志：`/tmp/starbay_interior_v221_validate.log`
+- 床沙发贴图深化校验日志：`/tmp/starbay_interior_v222_validate.log`
+- 床架压薄沙发软化校验日志：`/tmp/starbay_interior_v223_validate.log`
+- Blender 床沙发源模型重修校验日志：`/tmp/starbay_interior_v224_validate.log`
+- 粉被垂边沙发布艺拆面校验日志：`/tmp/starbay_interior_v225_validate.log`
+- 床裙波浪沙发提亮校验日志：`/tmp/starbay_interior_v226_validate.log`
+- 窗景降曝与软装微修校验日志：`/tmp/starbay_interior_v227_validate.log`
+- 自然窗光与沙发布艺化校验日志：`/tmp/starbay_interior_v228_validate.log`
+- 窗户亮斑压制与沙发套布校验日志：`/tmp/starbay_interior_v229_validate.log`
+- Blender 沙发源模型布艺化校验日志：`/tmp/starbay_interior_v230_validate.log`
+- 窗外楼体遮斑与沙发源模型校验日志：`/tmp/starbay_interior_v231_validate.log`
+- 沙发圆润与小家具贴图细节校验日志：`/tmp/starbay_interior_v232_validate.log`
+- 床区软装与源模型小家具校验日志：`/tmp/starbay_interior_v233_validate.log`
+- 床区窗帘软装高级化校验日志：`/tmp/starbay_interior_v234_validate.log`
+- 地面杂块清理与软鞋替换校验日志：`/tmp/starbay_interior_v235_validate.log`
+- 旅店硬横条清理与墙饰重挂校验日志：`/tmp/starbay_interior_v236_validate.log`
+- 旅店床头板压低软包化校验日志：`/tmp/starbay_interior_v237_validate.log`
+- 旅店旧护墙板精准清理校验日志：`/tmp/starbay_interior_v238_validate.log`
+- 地砖柔化与旅店桌椅收束校验日志：`/tmp/starbay_interior_v239_validate.log`
+- 旅店细黑线与地砖网格减弱校验日志：`/tmp/starbay_interior_v240_validate.log`
+- 旅店硬线清理与家具软贴图校验日志：`/tmp/starbay_interior_v241_validate.log`
+- 旅店墙面补平刷与公寓柔面校验日志：`/tmp/starbay_interior_v242_validate.log`
+- 旅店完整挂画与墙面修复校验日志：`/tmp/starbay_interior_v243_validate.log`
+- 旅店挂画去重与床墙收净校验日志：`/tmp/starbay_interior_v244_validate.log`
+- 旅店挂画画芯补全校验日志：`/tmp/starbay_interior_v245_validate.log`
+- 公寓地面柔化与小家具成品化校验日志：`/tmp/starbay_interior_v246_validate.log`
+- 地面大圆影清理校验日志：`/tmp/starbay_interior_v247_validate.log`
+- 圆形高光收束校验日志：`/tmp/starbay_interior_v248_validate.log`
+- 窗光圆斑减法校验日志：`/tmp/starbay_interior_v249_validate.log`
+- 床沙发布艺贴图精修校验日志：`/tmp/starbay_interior_v250_validate.log`
+- 床前地毯坐垫成品化校验日志：`/tmp/starbay_interior_v251_validate.log`
+- 长方软毯与旅店行李精修校验日志：`/tmp/starbay_interior_v252_validate.log`
+- 床前旧圆毯残影清理校验日志：`/tmp/starbay_interior_v253_validate.log`
+- 旅店圆润家具与软毯低对比校验日志：`/tmp/starbay_interior_v254_validate.log`
+- 厨房窗景绿植深化校验日志：`/tmp/starbay_interior_v255_validate.log`
+- 窗景块感清理与厨房保留校验日志：`/tmp/starbay_interior_v256_validate.log`
+- 地面柔化与绿植体积校验日志：`/tmp/starbay_interior_v257_validate.log`
+- 局部灰色贴片减法校验日志：`/tmp/starbay_interior_v258_validate.log`
+- 桌柜纸箱与投影收束校验日志：`/tmp/starbay_interior_v259_validate.log`
+- 旧柔影残片清理校验日志：`/tmp/starbay_interior_v260_validate.log`
+- 床窗旅店完成度加强校验日志：`/tmp/starbay_interior_v261_validate.log`
+- 暖调材质统一校验日志：`/tmp/starbay_interior_v262_validate.log`
+- 旅店床尾毯收束校验日志：`/tmp/starbay_interior_v263_validate.log`
+- 旅店木地板回收校验日志：`/tmp/starbay_interior_v264_validate.log`
+- 旅店床尾大贴片清理校验日志：`/tmp/starbay_interior_v265_validate.log`
+- 窗景墙饰家具圆润校验日志：`/tmp/starbay_interior_v266_validate.log`
+- 窗景硬贴片清理校验日志：`/tmp/starbay_interior_v267_validate.log`
+- 家具体积与边角收束校验日志：`/tmp/starbay_interior_v268_validate.log`
+- 床沙发柜面贴图高级化校验日志：`/tmp/starbay_interior_v269_validate.log`
+- 大件轮廓软化校验日志：`/tmp/starbay_interior_v270_validate.log`
+- 旅店床尾椭圆影清理校验日志：`/tmp/starbay_interior_v271_validate.log`
+- 旅店整床大影清理校验日志：`/tmp/starbay_interior_v272_validate.log`
+- 旅店接触影残留清理校验日志：`/tmp/starbay_interior_v273_validate.log`
+- 旅店床尾残影精准清理校验日志：`/tmp/starbay_interior_v274_validate.log`
+- 旅店床尾残影源头清理校验日志：`/tmp/starbay_interior_v275_validate.log`
+- 旅店床尾深木纹收淡校验日志：`/tmp/starbay_interior_v276_validate.log`
+- 公寓沙发柜体结构精修校验日志：`/tmp/starbay_interior_v277_validate.log`
+- 公寓沙发布艺轮廓减块校验日志：`/tmp/starbay_interior_v278_validate.log`
+- 公寓沙发重叠补丁清场校验日志：`/tmp/starbay_interior_v279_validate.log`
+- 公寓床品叠片减法重铺校验日志：`/tmp/starbay_interior_v280_validate.log`
+- 公寓右侧纸箱端正重摆校验日志：`/tmp/starbay_interior_v281_validate.log`
+- 公寓厨房茶几成品面收束校验日志：`/tmp/starbay_interior_v282_validate.log`
+- 公寓海景大窗贴图强化校验日志：`/tmp/starbay_interior_v283_validate.log`
+- 公寓墙面搁板成组收束校验日志：`/tmp/starbay_interior_v284_validate.log`
+- 公寓窗帘布料柔化收束校验日志：`/tmp/starbay_interior_v285_validate.log`
+- 公寓床尾包边柔化收束校验日志：`/tmp/starbay_interior_v286_validate.log`
+- 公寓床头柜圆角成品化校验日志：`/tmp/starbay_interior_v287_validate.log`
+- 公寓床头柜抽屉柔粉修正校验日志：`/tmp/starbay_interior_v288_validate.log`
+- 公寓厨房灰石台粉柜成品化校验日志：`/tmp/starbay_interior_v289_validate.log`
+- 公寓床架温润木面收束校验日志：`/tmp/starbay_interior_v290_validate.log`
+- 旅店蓝窗帘柔化收束校验日志：`/tmp/starbay_interior_v291_validate.log`
+- 目标公寓厨房近景检查图校验日志：`/tmp/starbay_interior_v292_validate.log`
+- 目标公寓厨房近景检查图导出日志：`/tmp/starbay_interior_v292_target_capture.log`
+- 公寓厨房柜体立体感收束校验日志：`/tmp/starbay_interior_v293_validate_b.log`
+- 公寓厨房水槽台面细节收束校验日志：`/tmp/starbay_interior_v294_validate.log`
+- 公寓厨房水槽检查图导出日志：`/tmp/starbay_interior_v294_target_capture.log`
+- 公寓床品软体边缘收束校验日志：`/tmp/starbay_interior_v295_validate.log`
+- 公寓床架前沿低对比收束校验日志：`/tmp/starbay_interior_v296_validate.log`
+- 公寓大窗窗帘柔化收束校验日志：`/tmp/starbay_interior_v297_validate.log`
+- 公寓细窗框阳台栏杆收束校验日志：`/tmp/starbay_interior_v298_validate.log`
+- 公寓阳台栏杆低调浅色收束校验日志：`/tmp/starbay_interior_v299_validate.log`
+- 公寓窗台暗线清理收束校验日志：`/tmp/starbay_interior_v300_validate.log`
+- 公寓连续阳台护栏收束校验日志：`/tmp/starbay_interior_v301_validate.log`
+- 公寓家具碎片减法收束校验日志：`/tmp/starbay_interior_v302_validate.log`
+- 公寓大件家具底部成品化校验日志：`/tmp/starbay_interior_v303_validate.log`
+- 公寓床茶几窗台清爽化校验日志：`/tmp/starbay_interior_v304_validate.log`
+- 公寓床茶几源模型清场重铺校验日志：`/tmp/starbay_interior_v305_validate.log`
+- 公寓茶几窗台柔和整面化校验日志：`/tmp/starbay_interior_v306_validate.log`
+- 公寓低矮茶几床品柔化校验日志：`/tmp/starbay_interior_v307_validate.log`
+- 公寓整体暖光材质统一校验日志：`/tmp/starbay_interior_v308_validate.log`
+- 公寓暖光圆斑收束校验日志：`/tmp/starbay_interior_v309_validate.log`
+- 公寓顶灯圆片清理校验日志：`/tmp/starbay_interior_v310_validate.log`
+- 公寓墙厨床头柜成组收束校验日志：`/tmp/starbay_interior_v311_validate.log`
+- 公寓整床软装清爽重铺校验日志：`/tmp/starbay_interior_v312_validate.log`
+- 公寓床品套罩遮块校验日志：`/tmp/starbay_interior_v313_validate.log`
+- 公寓海蓝沙发软包重铺校验日志：`/tmp/starbay_interior_v314_validate.log`
+- 公寓沙发前脸遮罩校验日志：`/tmp/starbay_interior_v315_validate.log`
+- 公寓低矮茶几与床前坐垫重铺校验日志：`/tmp/starbay_interior_v316_validate.log`
+- 公寓整床成品罩面重铺校验日志：`/tmp/starbay_interior_v317_validate.log`
+- 公寓床头残留小物清场校验日志：`/tmp/starbay_interior_v318_validate.log`
+- 公寓厨房台灯沙发侧面成品化校验日志：`/tmp/starbay_interior_v319_validate.log`
+- 公寓台灯材质降噪修正校验日志：`/tmp/starbay_interior_v320_validate.log`
+- 公寓窗帘墙饰沙发柔化校验日志：`/tmp/starbay_interior_v321_validate.log`
+- 公寓厨房纸箱成品化校验日志：`/tmp/starbay_interior_v322_validate.log`
+- 公寓地面网格柔化暖调校验日志：`/tmp/starbay_interior_v323_validate.log`
+- 公寓地砖贴图降线校验日志：`/tmp/starbay_interior_v324_validate.log`
+- 公寓大件家具质感增强校验日志：`/tmp/starbay_interior_v325_validate.log`
+- 公寓沙发圆斑清理校验日志：`/tmp/starbay_interior_v326_validate.log`
+- 公寓厨房近景成品化校验日志：`/tmp/starbay_interior_v327_validate.log`
+- 公寓厨房检查视角截图日志：`/tmp/starbay_interior_v328_target_capture.log`
+- 公寓厨房镜头修正截图日志：`/tmp/starbay_interior_v329_target_capture.log`
+- 导入模型替换层场景生成日志：`/tmp/starbay_interior_v330_create.log`
+- 导入模型替换层校验日志：`/tmp/starbay_interior_v330_validate.log`
+- 导入模型替换层公寓截图日志：`/tmp/starbay_interior_v330_target_capture.log`
+- 导入模型替换层整体截图日志：`/tmp/starbay_interior_v330_capture.log`
+- 导入模型落地修正场景生成日志：`/tmp/starbay_interior_v331_create.log`
+- 导入模型落地修正校验日志：`/tmp/starbay_interior_v331_validate.log`
+- 导入模型落地修正公寓截图日志：`/tmp/starbay_interior_v331_target_capture.log`
+- 导入模型落地修正整体截图日志：`/tmp/starbay_interior_v331_capture.log`
+- 床沙发贴图增强场景生成日志：`/tmp/starbay_interior_v332_create.log`
+- 床沙发贴图增强校验日志：`/tmp/starbay_interior_v332_validate.log`
+- 床沙发贴图增强公寓截图日志：`/tmp/starbay_interior_v332_target_capture.log`
+- 床沙发贴图增强整体截图日志：`/tmp/starbay_interior_v332_capture.log`
+- 硬贴片清理场景生成日志：`/tmp/starbay_interior_v333_create.log`
+- 硬贴片清理校验日志：`/tmp/starbay_interior_v333_validate.log`
+- 硬贴片清理公寓截图日志：`/tmp/starbay_interior_v333_target_capture.log`
+- 硬贴片清理整体截图日志：`/tmp/starbay_interior_v333_capture.log`
+- 床被局部贴纸场景生成日志：`/tmp/starbay_interior_v356_create.log`
+- 床被局部贴纸校验日志：`/tmp/starbay_interior_v356_validate.log`
+- 床被局部贴纸公寓截图日志：`/tmp/starbay_interior_v356_target_capture.log`
+- 床被局部贴纸整体截图日志：`/tmp/starbay_interior_v356_capture.log`
+- 厨房柜门贴纸场景生成日志：`/tmp/starbay_interior_v357_create.log`
+- 厨房柜门贴纸校验日志：`/tmp/starbay_interior_v357_validate.log`
+- 厨房柜门贴纸公寓截图日志：`/tmp/starbay_interior_v357_target_capture.log`
+- 厨房柜门贴纸整体截图日志：`/tmp/starbay_interior_v357_capture.log`
+- 画框纸箱贴纸增强场景生成日志：`/tmp/starbay_interior_v358_create.log`
+- 画框纸箱贴纸增强校验日志：`/tmp/starbay_interior_v358_validate.log`
+- 画框纸箱贴纸增强公寓截图日志：`/tmp/starbay_interior_v358_target_capture.log`
+- 画框纸箱贴纸增强整体截图日志：`/tmp/starbay_interior_v358_capture.log`
+- 纸箱贴纸贴面修正场景生成日志：`/tmp/starbay_interior_v359_create.log`
+- 纸箱贴纸贴面修正校验日志：`/tmp/starbay_interior_v359_validate.log`
+- 纸箱贴纸贴面修正公寓截图日志：`/tmp/starbay_interior_v359_target_capture.log`
+- 纸箱贴纸贴面修正整体截图日志：`/tmp/starbay_interior_v359_capture.log`
+- 窗帘抱枕地毯软装场景生成日志：`/tmp/starbay_interior_v360_create.log`
+- 窗帘抱枕地毯软装校验日志：`/tmp/starbay_interior_v360_validate.log`
+- 窗帘抱枕地毯软装公寓截图日志：`/tmp/starbay_interior_v360_target_capture.log`
+- 窗帘抱枕地毯软装整体截图日志：`/tmp/starbay_interior_v360_capture.log`
+- 抱枕贴床修正场景生成日志：`/tmp/starbay_interior_v361_create.log`
+- 抱枕贴床修正校验日志：`/tmp/starbay_interior_v361_validate.log`
+- 抱枕贴床修正公寓截图日志：`/tmp/starbay_interior_v361_target_capture.log`
+- 抱枕贴床修正整体截图日志：`/tmp/starbay_interior_v361_capture.log`
+- 抱枕散点清理场景生成日志：`/tmp/starbay_interior_v362_create.log`
+- 抱枕散点清理校验日志：`/tmp/starbay_interior_v362_validate.log`
+- 抱枕散点清理公寓截图日志：`/tmp/starbay_interior_v362_target_capture.log`
+- 抱枕散点清理整体截图日志：`/tmp/starbay_interior_v362_capture.log`
+- 旧抱枕散件总清理场景生成日志：`/tmp/starbay_interior_v363_create.log`
+- 旧抱枕散件总清理校验日志：`/tmp/starbay_interior_v363_validate.log`
+- 旧抱枕散件总清理公寓截图日志：`/tmp/starbay_interior_v363_target_capture.log`
+- 旧抱枕散件总清理整体截图日志：`/tmp/starbay_interior_v363_capture.log`
+- 旧枕头组清理重铺场景生成日志：`/tmp/starbay_interior_v364_create.log`
+- 旧枕头组清理重铺校验日志：`/tmp/starbay_interior_v364_validate.log`
+- 旧枕头组清理重铺公寓截图日志：`/tmp/starbay_interior_v364_target_capture.log`
+- 旧枕头组清理重铺整体截图日志：`/tmp/starbay_interior_v364_capture.log`
+- 旅店贴图软装增强场景生成日志：`/tmp/starbay_interior_v365_create.log`
+- 旅店贴图软装增强校验日志：`/tmp/starbay_interior_v365_validate.log`
+- 旅店贴图软装增强整体截图日志：`/tmp/starbay_interior_v365_capture.log`
+- 旅店贴图软装增强公寓截图日志：`/tmp/starbay_interior_v365_target_capture.log`
+- 旅店床尾毯贴床修正场景生成日志：`/tmp/starbay_interior_v366_create.log`
+- 旅店床尾毯贴床修正校验日志：`/tmp/starbay_interior_v366_validate.log`
+- 旅店床尾毯贴床修正整体截图日志：`/tmp/starbay_interior_v366_capture.log`
+- 旅店床尾毯贴床修正公寓截图日志：`/tmp/starbay_interior_v366_target_capture.log`
+- 高级沙发整模重做 v367：新增 Blender 中文 FBX `目标图高级海蓝布艺沙发_v367.fbx`，用更低矮圆润的海蓝布艺整模替换旧沙发，保留茶几不动，校验层级 `目标公寓_高级沙发整模重做_v367`。
+- 干净沙发布纹完成层 v368：新增 `目标公寓_干净沙发布纹完成层_v368`，关闭历史 `沙发_` 残留层并重铺 v367 整模，补低对比坐垫布纹、靠背压缝和贴地柔影，减少程序块和小蓝点观感。
+- 高级沙发整模重做场景生成日志：`/tmp/starbay_interior_v367_create.log`
+- 高级沙发整模重做校验日志：`/tmp/starbay_interior_v367_validate.log`
+- 高级沙发整模重做公寓截图日志：`/tmp/starbay_interior_v367_target_capture.log`
+- 高级沙发整模重做整体截图日志：`/tmp/starbay_interior_v367_capture.log`
+- 干净沙发布纹完成层场景生成日志：`/tmp/starbay_interior_v368_create.log`
+- 干净沙发布纹完成层校验日志：`/tmp/starbay_interior_v368_validate.log`
+- 干净沙发布纹完成层公寓截图日志：`/tmp/starbay_interior_v368_target_capture.log`
+- 干净沙发布纹完成层整体截图日志：`/tmp/starbay_interior_v368_capture.log`
+- 旅店高级整床整模替换 v369：新增 Blender 中文 FBX `星湾旅店高级整床成品_v369.fbx`，用温木床架、奶油床垫、白被、珊瑚床尾毯、海蓝腰枕组成一个整床模型，隐藏旧旅店床、床垫、被子、枕头、床尾毯和床下旧阴影残层。
+- 旅店整床木色材质修正 v370：提高 `旅店高级` 材质关键词优先级，修正 v369 首次接入时床架误偏粉的问题，使木梁、木轨、床脚映射到温木材质，白被和珊瑚床尾毯保持各自材质。
+- 旅店高级整床整模替换场景生成日志：`/tmp/starbay_interior_v369_create.log`
+- 旅店高级整床整模替换校验日志：`/tmp/starbay_interior_v369_validate.log`
+- 旅店高级整床整模替换整体截图日志：`/tmp/starbay_interior_v369_capture.log`
+- 旅店高级整床整模替换公寓截图日志：`/tmp/starbay_interior_v369_target_capture.log`
+- 旅店整床木色材质修正场景生成日志：`/tmp/starbay_interior_v370_create.log`
+- 旅店整床木色材质修正校验日志：`/tmp/starbay_interior_v370_validate.log`
+- 旅店整床木色材质修正整体截图日志：`/tmp/starbay_interior_v370_capture.log`
+- 旅店整床木色材质修正公寓截图日志：`/tmp/starbay_interior_v370_target_capture.log`
+- 旅店窗边小家具整模替换 v371：新增 Blender 中文 FBX `星湾旅店窗边桌椅行李组合_v371.fbx`，把窗边小桌、木椅、粉色行李箱、桌面杯子/旅行本/盆栽做成同一套整模资源，并在 Unity 中隐藏旧桌椅行李碎片层。
+- 旅店小家具比例落位修正 v372：缩小 v371 组合整模并往房间内侧回收，减少贴边和过大问题，校验层级 `旅店_小家具比例落位修正_v372`。
+- 旅店窗边小家具整模替换场景生成日志：`/tmp/starbay_interior_v371_create.log`
+- 旅店窗边小家具整模替换校验日志：`/tmp/starbay_interior_v371_validate.log`
+- 旅店窗边小家具整模替换整体截图日志：`/tmp/starbay_interior_v371_capture.log`
+- 旅店窗边小家具整模替换公寓截图日志：`/tmp/starbay_interior_v371_target_capture.log`
+- 旅店小家具比例落位修正场景生成日志：`/tmp/starbay_interior_v372_create.log`
+- 旅店小家具比例落位修正校验日志：`/tmp/starbay_interior_v372_validate.log`
+- 旅店小家具比例落位修正整体截图日志：`/tmp/starbay_interior_v372_capture.log`
+- 旅店小家具比例落位修正公寓截图日志：`/tmp/starbay_interior_v372_target_capture.log`
+- 旅店小家具独立整模摆位 v373：新增三个独立 Blender 中文 FBX `星湾旅店圆角小桌_v373.fbx`、`星湾旅店软垫木椅_v373.fbx`、`星湾旅店粉色行李箱_v373.fbx`，Unity 中分别摆放，替代 v371/v372 组合整模的统一缩放限制。
+- 旅店行李桌椅构图回收 v374：微调独立小桌、椅子、行李箱的位置和缩放，解决 v373 行李箱被整体预览画面裁切的问题，保持三个小家具贴地且不倒放。
+- 旅店小家具独立整模摆位场景生成日志：`/tmp/starbay_interior_v373_create.log`
+- 旅店小家具独立整模摆位校验日志：`/tmp/starbay_interior_v373_validate.log`
+- 旅店小家具独立整模摆位整体截图日志：`/tmp/starbay_interior_v373_capture.log`
+- 旅店小家具独立整模摆位公寓截图日志：`/tmp/starbay_interior_v373_target_capture.log`
+- 旅店行李桌椅构图回收场景生成日志：`/tmp/starbay_interior_v374_create.log`
+- 旅店行李桌椅构图回收校验日志：`/tmp/starbay_interior_v374_validate.log`
+- 旅店行李桌椅构图回收整体截图日志：`/tmp/starbay_interior_v374_capture.log`
+- 旅店行李桌椅构图回收公寓截图日志：`/tmp/starbay_interior_v374_target_capture.log`
+
+## 下一轮重点
+
+- 继续沿目标图方向打磨三楼单身公寓和旅店标准间：v330 盘点并使用项目内已有 Kenney、Poly Haven、Blender 生成、Modly 试件资源，新增 `旅店_导入模型替换层_v330` 和 `目标公寓_导入模型替换层_v330`，优先把床、沙发、茶几、床头柜、桌椅、行李箱替换为导入模型和中文层级；v331 修正 v330 的旅店旧床品叠层与目标公寓 Poly Haven 沙发布罩边缘过夸张问题，旅店先隐藏旧床/桌/椅/地毯/行李对象再重放模型，目标公寓沙发改为更稳定的 Kenney 长沙发模型；v332 压薄旅店床垫和被面、补白被/珊瑚毯/枕头低对比织纹，并给目标公寓床品、沙发、茶几和地毯加贴图覆盖；v333 清理 v332 里重新产生的硬蓝贴片和矩形地毯贴片，改为低对比小面积软缝与椭圆柔面；v356-v357 验证“现成/生成模型本体 + 目标图画风局部贴纸”可行，床被顶面和厨房柜门能用局部贴图提升完成度；v358 给画框、便签板、床头柜抽屉、纸箱和窗帘加局部贴图，v359 修正纸箱 Quad 贴片侧向露边问题，改为薄盒贴面；v360 增加窗帘圆润布褶、抱枕和地毯绒边，v361-v364 连续清理床头抱枕高位散点和旧枕头组，改为更低位的整体枕头；v365 给旅店床品、画框、行李箱和桌面加贴图软装增强，v366 清理旅店床尾毯硬片并改为更贴床的低矮毯面；v367-v368 改为整模替换沙发并清理旧沙发残层，证明“目标图画风模型本体 + 局部布纹贴图”比堆程序块更稳定；v369-v370 将旅店床品也改为整床 FBX 并修正木色材质；v371-v372 将旅店窗边桌椅和行李箱做成整模组合并缩小回收落位；v373-v374 将桌、椅、行李拆分成独立整模并精确回收摆位，避免画面裁切。下一轮优先给旅店墙面与窗边小家具增加更真实的贴图层，或继续提升公寓床头柜、台灯和纸箱材质细节。
+- 单身公寓通过后，再用同一完成度推进旅店标准间和蛋糕主题、电竞主题。
+- 增加装修 UI 的家具目录面板、风格筛选、撤销、拾起/移动已摆家具、删除物体和鼠标点格。

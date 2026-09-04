@@ -31,6 +31,13 @@ previews/
 *.ipa
 *.apk
 *.aab
+*.dmg
+
+# Local Unity/editor crash and run logs
+*.log
+mono_crash.*
+*.blob
+:memory:.ses
 
 # Local QA screenshots/videos
 qa-*.png
